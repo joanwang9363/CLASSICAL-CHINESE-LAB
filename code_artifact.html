@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOAN PLAYGROUND｜出國準備管家・智慧整裝清單</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM (UMD Production) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Babel Standalone (在瀏覽器中直接編譯 JSX) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #FDFBF7;
+      color: #2C2825;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    // --- 核心邏輯純函式 ---
+    const resolveDestinationSpecificDocuments = (destination, travelersCount) => {
+      const dest = (destination || '').toLowerCase().trim();
+      const docs = [
+        {
+          id: 'doc-passports',
+          name: '護照正本 (效期需 6 個月以上)',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '出發前務必確認有效期限距回程日 6 個月以上，禁止托運',
+          dueTiming: {
+            windowText: '出發前 1~2 個月核對 (換發需 10~14 工作天)',
+            urgencyLevel: 'high'
+          }
+        },
+        {
+          id: 'doc-flight-tickets',
+          name: '電子機票憑證 (e-Ticket) ＆ 住宿訂房確認單',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '建議儲存至手機 Apple/Google 錢包並截圖或印紙本一份備查',
+          dueTiming: {
+            windowText: '出發前 3~7 天下載離線備份',
+            urgencyLevel: 'low'
+          }
+        }
+      ];
+
+      if (dest.includes('tokyo') || dest.includes('東京') || dest.includes('japan') || dest.includes('日本') || dest.includes('osaka') || dest.includes('京都')) {
+        docs.push({
+          id: 'doc-japan-vjw',
+          name: 'Visit Japan Web (VJW) 入境申報完成截圖/QR Code',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '登機前填妥並於手機截圖保存，避免抵達機場塞車連不上網路',
+          dueTiming: {
+            windowText: '出發前 1~3 天填寫並截圖保存',
+            urgencyLevel: 'low'
+          }
+        });
+        docs.push({
+          id: 'doc-japan-suica',
+          name: 'Suica / Pasmo 交通卡 (已加入手機錢包)',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '地鐵、公車與藥妝店/超商快速感應支付',
+          dueTiming: {
+            windowText: '出發前 1 週先綁定手機錢包並儲值',
+            urgencyLevel: 'low'
+          }
+        });
+      } else if (dest.includes('bali') || dest.includes('峇里島') || dest.includes('indonesia') || dest.includes('印尼')) {
+        docs.push({
+          id: 'doc-bali-evoa',
+          name: '印尼電子落地簽 (e-VoA) 核准憑證 / 美金現鈔',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '建議線上預辦省去現場排隊',
+          dueTiming: {
+            windowText: '出發前 3~14 天線上申辦 (審核約 1-3 工作天)',
+            urgencyLevel: 'medium'
+          }
+        });
+        docs.push({
+          id: 'doc-bali-tax',
+          name: '峇里島旅客觀光稅 (Love Bali) 繳納證明 QR',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '入境時抽查已繳納之證明',
+          dueTiming: {
+            windowText: '出發前 1~3 天線上繳納',
+            urgencyLevel: 'low'
+          }
+        });
+        docs.push({
+          id: 'doc-bali-ecd',
+          name: '印尼電子海關申報單 (ECD) QR Code',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: 1,
+          isChecked: false,
+          requirementNote: '官方規定僅限抵達前 3 天內填報',
+          dueTiming: {
+            windowText: '出發前 72 小時內填寫 (過早無法送出)',
+            urgencyLevel: 'low'
+          }
+        });
+      } else if (dest.includes('london') || dest.includes('倫敦') || dest.includes('paris') || dest.includes('巴黎') || dest.includes('europe') || dest.includes('歐洲')) {
+        docs.push({
+          id: 'doc-europe-insurance',
+          name: '歐洲申根醫療英文投保證明 (保額 3 萬歐元以上)',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '海關抽檢項目，需攜帶英文紙本證明正本',
+          dueTiming: {
+            windowText: '出發前 2~3 週投保並索取英文保單正本',
+            urgencyLevel: 'high'
+          }
+        });
+      } else if (dest.includes('usa') || dest.includes('美國') || dest.includes('canada') || dest.includes('加拿大')) {
+        docs.push({
+          id: 'doc-northamerica-esta',
+          name: 'ESTA (美國) 或 eTA (加拿大) 電子旅行授權核准憑證',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: travelersCount,
+          isChecked: false,
+          requirementNote: '官方審核可能需 72 小時以上，切勿出發當天才辦',
+          dueTiming: {
+            windowText: '出發前 1~2 週線上申請',
+            urgencyLevel: 'high'
+          }
+        });
+      }
+
+      docs.push({
+        id: 'doc-overseas-card',
+        name: '海外高回饋信用卡與提款卡 (已開通海外刷卡與 PIN 碼)',
+        category: 'documents_essentials',
+        targetLocation: 'carry_on',
+        quantity: 2,
+        isChecked: false,
+        requirementNote: '建議備妥兩張不同銀行信用卡分開存放',
+        dueTiming: {
+          windowText: '出發前 1~2 週致電銀行開通',
+          urgencyLevel: 'medium'
+        }
+      });
+
+      return docs;
+    };
+
+    const estimateClimateFromProfile = (destination, startDateStr) => {
+      const date = new Date(startDateStr || '2026-05-01');
+      const month = date.getMonth() + 1;
+      const destLower = (destination || '').toLowerCase().trim();
+
+      let high = 23, low = 16, risk = 'low', season = '春末舒適初夏';
+
+      if (destLower.includes('tokyo') || destLower.includes('東京') || destLower.includes('japan')) {
+        if (month >= 12 || month <= 2) { high = 11; low = 2; season = '冬季寒冷乾燥'; risk = 'low'; }
+        else if (month >= 3 && month <= 5) { high = 20; low = 11; season = '春季微風舒適'; risk = 'moderate'; }
+        else if (month >= 6 && month <= 8) { high = 31; low = 24; season = '盛夏潮濕炎熱'; risk = 'high'; }
+        else { high = 21; low = 13; season = '秋季微涼怡人'; risk = 'low'; }
+      } else if (destLower.includes('bali') || destLower.includes('峇里島') || destLower.includes('bangkok')) {
+        high = 32; low = 25; season = '熱帶暖陽渡假'; risk = (month >= 11 || month <= 3) ? 'high' : 'low';
+      } else if (destLower.includes('london') || destLower.includes('倫敦') || destLower.includes('paris')) {
+        if (month >= 11 || month <= 3) { high = 8; low = 3; season = '歐陸濕冷冬季'; risk = 'high'; }
+        else if (month >= 6 && month <= 8) { high = 25; low = 15; season = '浪漫宜人初夏'; risk = 'moderate'; }
+        else { high = 16; low = 9; season = '微涼風衣季節'; risk = 'moderate'; }
+      }
+
+      return {
+        avgTempHigh: high,
+        avgTempLow: low,
+        precipitationRisk: risk,
+        seasonName: season,
+        isForecastData: false,
+        climateSummary: `依歷史統計，${destination}在 ${month} 月通常為「${season}」，平均氣溫約 ${low}°C ~ ${high}°C。`
+      };
+    };
+
+    const calculateSmartLuggageList = (profile, climate) => {
+      const days = profile.durationDays;
+      let clothesFactor = days;
+      if (profile.laundryStrategy === 'wash_mid_trip') {
+        clothesFactor = Math.ceil(days / 2) + 1;
+      } else if (profile.laundryStrategy === 'wash_frequently') {
+        clothesFactor = Math.min(3, days);
+      }
+      clothesFactor = Math.max(1, clothesFactor);
+
+      const isCarryOnOnly = profile.luggageRestriction === 'carry_on_only';
+      const effectiveMeanTemp = ((climate.avgTempHigh + climate.avgTempLow) / 2) + (profile.tempPreference === 'runs_cold' ? -3 : profile.tempPreference === 'runs_hot' ? 3 : 0);
+
+      const destinationDocuments = resolveDestinationSpecificDocuments(profile.destination, profile.travelersCount);
+
+      const items = [
+        ...destinationDocuments,
+        {
+          id: 'item-tops',
+          name: effectiveMeanTemp < 15 ? '保暖上衣/針織衫/發熱打底衫' : '日常百搭上身 (短T/親膚方領襯衫/薄針織)',
+          category: 'clothing',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: clothesFactor,
+          isChecked: false,
+          requirementNote: `依 ${profile.durationDays} 天行程與洗衣安排，建議攜帶 ${clothesFactor} 件換搭`
+        },
+        {
+          id: 'item-bottoms',
+          name: effectiveMeanTemp < 15 ? '抗風刷毛顯瘦長褲 / 厚磅長裙' : '外出下身/裙裝 (高腰寬褲/直筒牛仔/垂墜長裙)',
+          category: 'clothing',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: Math.max(2, Math.ceil(clothesFactor * 0.6)),
+          isChecked: false,
+          requirementNote: '下身重覆穿搭率高，帶足版型好的基本款即可'
+        },
+        {
+          id: 'item-dress',
+          name: '拍照百搭連身洋裝 / 特殊場合套裝',
+          category: 'clothing',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: days > 3 ? 2 : 1,
+          isChecked: false,
+          requirementNote: '1件可應對精緻晚宴、特色咖啡廳拍照'
+        },
+        {
+          id: 'item-underwear',
+          name: '無痕貼身內著套組 / 舒適胸衣',
+          category: 'clothing',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: profile.laundryStrategy === 'no_laundry' ? days + 1 : clothesFactor + 1,
+          isChecked: false,
+          requirementNote: '多備 1 套因應氣候變化或突發狀況'
+        },
+        {
+          id: 'item-socks',
+          name: '透氣純棉隱形襪 / 機能減壓美腿厚襪',
+          category: 'clothing',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: profile.laundryStrategy === 'no_laundry' ? days + 1 : clothesFactor + 1,
+          isChecked: false
+        },
+        {
+          id: 'item-outerwear-primary',
+          name: effectiveMeanTemp < 12 
+            ? '防寒長版羽絨大衣 / 雙排釦厚羊毛大衣' 
+            : effectiveMeanTemp < 22 
+            ? '防風風衣外套 (Trench Coat) / 俐落小西裝' 
+            : '隨身抗UV薄針織罩衫 / 冷氣房披肩',
+          category: 'clothing',
+          targetLocation: 'carry_on',
+          quantity: days > 6 ? 2 : 1,
+          isChecked: false,
+          requirementNote: '建議隨身攜帶登機，應對機艙涼溫與抵達溫差'
+        },
+        {
+          id: 'item-shoes-spare',
+          name: '好走備用鞋（萬步休閒球鞋 / 瑪莉珍低跟鞋 / 涼拖）',
+          category: 'footwear',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: isCarryOnOnly ? 1 : 2,
+          isChecked: false,
+          requirementNote: '外出長時間步行必備雙腳舒緩替換'
+        },
+        {
+          id: 'item-skincare-kit',
+          name: '臉部保養分裝瓶 (卸妝/化妝水/精華液/鎖水乳霜)',
+          category: 'skincare_personal',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: 1,
+          isChecked: false,
+          requirementNote: isCarryOnOnly ? '隨身每瓶限 100ml 內且放入 1L 透明夾鏈袋' : '托運請旋緊瓶蓋並套夾鏈袋防氣壓滲漏'
+        },
+        {
+          id: 'item-facial-masks',
+          name: '高保濕急救修護面膜 (機艙抗乾燥與夜間舒緩)',
+          category: 'skincare_personal',
+          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
+          quantity: Math.min(days, 5),
+          isChecked: false,
+          requirementNote: '長途飛行機艙濕度極低，必備保濕'
+        },
+        {
+          id: 'item-makeup-pouch',
+          name: '日常外出美妝隨行包 (粉底/防曬/腮紅/唇膏/眉筆)',
+          category: 'skincare_personal',
+          targetLocation: 'carry_on',
+          quantity: 1,
+          isChecked: false
+        },
+        {
+          id: 'item-sanitary-pads',
+          name: '生理期應急隨身包 (衛生棉/棉條/護墊)',
+          category: 'skincare_personal',
+          targetLocation: 'carry_on',
+          quantity: 1,
+          isChecked: false,
+          requirementNote: '時差或氣候變化易影響週期，隨身備用最安心'
+        },
+        {
+          id: 'item-hair-styling',
+          name: '旅行用雙電壓整髮器 / 離子夾 / 造型髮夾與大抓夾',
+          category: 'accessories',
+          targetLocation: 'checked',
+          quantity: 1,
+          isChecked: false,
+          requirementNote: '插電式放托運最穩妥；無線充電式若鋰電池不可拆卸，部分國家禁止攜帶'
+        },
+        {
+          id: 'item-electronics',
+          name: '行動電源 (必隨身)、萬國轉接頭與多孔快充線',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: 1,
+          isChecked: false,
+          requirementNote: '行動電源與鋰電池「嚴禁托運」，必須隨身攜帶'
+        },
+        {
+          id: 'item-first-aid',
+          name: '個人保健隨行包 (止痛止經痛藥/胃藥/感冒藥/B群/暈車藥)',
+          category: 'documents_essentials',
+          targetLocation: 'carry_on',
+          quantity: 1,
+          isChecked: false
+        }
+      ];
+
+      return items;
+    };
+
+    const mergeLuggageListsSafely = (oldList, freshGeneratedList) => {
+      const mergedMap = new Map();
+      for (const item of oldList) {
+        if (item.isUserAdded) {
+          mergedMap.set(item.id, { ...item });
+        }
+      }
+      for (const freshItem of freshGeneratedList) {
+        const existing = oldList.find(i => i.id === freshItem.id || i.name === freshItem.name);
+        if (existing) {
+          mergedMap.set(freshItem.id, {
+            ...freshItem,
+            quantity: existing.isUserConfirmed ? existing.quantity : freshItem.quantity,
+            isChecked: existing.isChecked,
+            targetLocation: existing.targetLocation,
+            isUserConfirmed: existing.isUserConfirmed
+          });
+        } else {
+          mergedMap.set(freshItem.id, freshItem);
+        }
+      }
+      for (const oldItem of oldList) {
+        if (!oldItem.isUserAdded && !mergedMap.has(oldItem.id)) {
+          if (oldItem.isChecked || oldItem.isUserConfirmed) {
+            mergedMap.set(oldItem.id, {
+              ...oldItem,
+              name: `${oldItem.name} (前次行程保留)`
+            });
+          }
+        }
+      }
+      return Array.from(mergedMap.values());
+    };
+
+    // --- 主介面元件 ---
+    function App() {
+      const [profile, setProfile] = useState(() => {
+        const saved = localStorage.getItem('joan_luggage_profile');
+        return saved ? JSON.parse(saved) : {
+          destination: '東京 (Tokyo)',
+          startDate: '2026-05-15',
+          durationDays: 5,
+          travelersCount: 2,
+          tempPreference: 'runs_cold',
+          laundryStrategy: 'wash_mid_trip',
+          luggageRestriction: 'standard_checkin'
+        };
+      });
+
+      const [activeView, setActiveView] = useState('all');
+      const [showConfigDrawer, setShowConfigDrawer] = useState(false);
+      const [newItemName, setNewItemName] = useState('');
+      const [newItemCat, setNewItemCat] = useState('checked');
+      const [noticeMessage, setNoticeMessage] = useState('');
+
+      const climate = useMemo(() => {
+        return estimateClimateFromProfile(profile.destination, profile.startDate);
+      }, [profile.destination, profile.startDate]);
+
+      const [packingList, setPackingList] = useState(() => {
+        const saved = localStorage.getItem('joan_luggage_list');
+        if (saved) {
+          try { return JSON.parse(saved); } catch(e) {}
+        }
+        return calculateSmartLuggageList(profile, climate);
+      });
+
+      useEffect(() => {
+        localStorage.setItem('joan_luggage_profile', JSON.stringify(profile));
+      }, [profile]);
+
+      useEffect(() => {
+        localStorage.setItem('joan_luggage_list', JSON.stringify(packingList));
+        if (window.lucide) {
+          setTimeout(() => window.lucide.createIcons(), 50);
+        }
+      }, [packingList]);
+
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      }, [activeView, showConfigDrawer]);
+
+      const handleRegenerateList = () => {
+        const freshly = calculateSmartLuggageList(profile, climate);
+        const merged = mergeLuggageListsSafely(packingList, freshly);
+        setPackingList(merged);
+        setNoticeMessage(`已根據「${profile.destination}」入境規定與常模重新整理！妳勾選的項目已完整保留。`);
+        setTimeout(() => setNoticeMessage(''), 4000);
+      };
+
+      const quickSwitchDestination = (newDest) => {
+        const updatedProfile = { ...profile, destination: newDest };
+        setProfile(updatedProfile);
+        const newClimate = estimateClimateFromProfile(newDest, updatedProfile.startDate);
+        const freshLuggage = calculateSmartLuggageList(updatedProfile, newClimate);
+        setPackingList(prev => mergeLuggageListsSafely(prev, freshLuggage));
+        setNoticeMessage(`已快速切換為「${newDest}」，入境證件與氣候已更新！`);
+        setTimeout(() => setNoticeMessage(''), 4000);
+      };
+
+      const toggleItemCheck = (id) => {
+        setPackingList(prev => prev.map(item => 
+          item.id === id ? { ...item, isChecked: !item.isChecked, isUserConfirmed: true } : item
+        ));
+      };
+
+      const changeItemQuantity = (id, delta) => {
+        setPackingList(prev => prev.map(item => {
+          if (item.id === id) {
+            const nextQty = Math.max(1, item.quantity + delta);
+            return { ...item, quantity: nextQty, isUserConfirmed: true };
+          }
+          return item;
+        }));
+      };
+
+      const toggleTargetLocation = (id) => {
+        setPackingList(prev => prev.map(item => {
+          if (item.id === id) {
+            return { 
+              ...item, 
+              targetLocation: item.targetLocation === 'carry_on' ? 'checked' : 'carry_on',
+              isUserConfirmed: true 
+            };
+          }
+          return item;
+        }));
+      };
+
+      const handleAddNewItem = (e) => {
+        e.preventDefault();
+        if (!newItemName.trim()) return;
+        const userItem = {
+          id: `custom-${Date.now()}`,
+          name: newItemName.trim(),
+          category: 'skincare_personal',
+          targetLocation: newItemCat,
+          quantity: 1,
+          isChecked: false,
+          isUserAdded: true,
+          isUserConfirmed: true
+        };
+        setPackingList(prev => [userItem, ...prev]);
+        setNewItemName('');
+      };
+
+      const handleDeleteItem = (id) => {
+        setPackingList(prev => prev.filter(i => i.id !== id));
+      };
+
+      const packingStats = useMemo(() => {
+        const total = packingList.length;
+        const checked = packingList.filter(i => i.isChecked).length;
+        const percent = total === 0 ? 0 : Math.round((checked / total) * 100);
+        const carryCount = packingList.filter(i => i.targetLocation === 'carry_on').length;
+        const checkedCount = packingList.filter(i => i.targetLocation === 'checked').length;
+        return { total, checked, percent, carryCount, checkedCount };
+      }, [packingList]);
+
+      const filteredList = useMemo(() => {
+        if (activeView === 'carry_on') return packingList.filter(i => i.targetLocation === 'carry_on');
+        if (activeView === 'checked') return packingList.filter(i => i.targetLocation === 'checked');
+        return packingList;
+      }, [packingList, activeView]);
+
+      return (
+        <div className="min-h-screen">
+          <div className="h-2 w-full bg-gradient-to-r from-[#E87A5D] via-[#F4B266] to-[#4A7C59]"></div>
+
+          {/* Header */}
+          <header className="sticky top-0 z-30 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#EBE4D8] px-4 py-3 sm:px-6">
+            <div className="max-w-4xl mx-auto flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#E87A5D] to-[#F4B266] flex items-center justify-center text-white shadow-md shadow-[#E87A5D]/20">
+                  <i data-lucide="luggage" className="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-[#E87A5D] bg-[#FDF3EE] px-2 py-0.5 rounded-full border border-[#E87A5D]/20">
+                      JOAN PLAYGROUND
+                    </span>
+                    <span className="text-xs text-stone-500 font-medium">出國準備管家</span>
+                  </div>
+                  <h1 className="text-lg font-bold tracking-tight text-[#1E1B18]">
+                    智慧行李整裝清單
+                  </h1>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowConfigDrawer(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white border border-[#EBE4D8] text-stone-700 shadow-sm hover:border-[#E87A5D]"
+                >
+                  <i data-lucide="sliders-horizontal" className="w-3.5 h-3.5"></i>
+                  <span className="hidden sm:inline">旅程設定</span>
+                </button>
+                <button
+                  onClick={handleRegenerateList}
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-[#E87A5D] text-white shadow-md shadow-[#E87A5D]/25"
+                >
+                  <i data-lucide="refresh-cw" className="w-3.5 h-3.5"></i>
+                  <span className="hidden sm:inline">重新整理</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {noticeMessage && (
+            <div className="bg-[#4A7C59] text-white text-xs py-2 px-4 text-center font-medium shadow-inner flex items-center justify-center gap-2">
+              <i data-lucide="shield-check" className="w-4 h-4"></i>
+              <span>{noticeMessage}</span>
+            </div>
+          )}
+
+          <main className="max-w-4xl mx-auto px-4 py-6 space-y-5">
+            {/* 1. 旅程卡片 */}
+            <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#EBE4D8] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                  <span className="bg-[#FEF9E7] text-[#9A6B1F] border border-[#F4B266]/40 px-3 py-0.5 rounded-full">
+                    {profile.startDate}（{profile.durationDays} 天）
+                  </span>
+                  <span className="bg-[#F3F7F4] text-[#3B6649] border border-[#4A7C59]/30 px-3 py-0.5 rounded-full">
+                    同行 {profile.travelersCount} 人
+                  </span>
+                  <span className="bg-[#FDF3EE] text-[#C25434] border border-[#E87A5D]/30 px-3 py-0.5 rounded-full">
+                    {profile.laundryStrategy === 'wash_mid_trip' ? '途中洗滌 1 次' : profile.laundryStrategy === 'wash_frequently' ? '天天洗滌' : '不洗 (全套足額)'}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1E1B18]">
+                    {profile.destination}
+                  </h2>
+                  <div className="flex items-center gap-1 bg-[#FAF7F2] p-1 rounded-xl border border-[#EBE4D8]">
+                    <button 
+                      onClick={() => quickSwitchDestination('東京 (Tokyo)')}
+                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('東京') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
+                    >東京</button>
+                    <button 
+                      onClick={() => quickSwitchDestination('峇里島 (Bali)')}
+                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('峇里島') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
+                    >峇里島</button>
+                    <button 
+                      onClick={() => quickSwitchDestination('巴黎/歐洲 (Europe)')}
+                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('歐洲') || profile.destination.includes('巴黎') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
+                    >歐洲</button>
+                  </div>
+                </div>
+
+                <p className="text-xs text-stone-500">
+                  已自動換算入境證件、保濕面膜、生理期備品、衣物數量與整髮器托運提醒。
+                </p>
+              </div>
+
+              <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#EBE4D8] min-w-[200px]">
+                <div className="flex items-center justify-between text-xs text-stone-500">
+                  <span className="font-bold text-[#1E1B18]">{climate.seasonName}</span>
+                  <span className="text-[10px]">氣候統計</span>
+                </div>
+                <div className="text-2xl font-extrabold text-[#E87A5D]">
+                  {climate.avgTempLow}° ~ {climate.avgTempHigh}°C
+                </div>
+                <div className="text-[11px] text-stone-500 mt-1">
+                  降雨機率：{climate.precipitationRisk === 'high' ? '偏高 (已配置折傘)' : '適中 / 偏低'}
+                </div>
+              </div>
+            </div>
+
+            {/* 2. 打包進度與過濾切換 */}
+            <div className="bg-white rounded-3xl p-5 border border-[#EBE4D8] shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-[#1E1B18]">整裝進度</h3>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#E87A5D]/10 text-[#E87A5D]">
+                    {packingStats.percent}% ({packingStats.checked} / {packingStats.total})
+                  </span>
+                </div>
+
+                <div className="w-full sm:w-64 bg-[#FAF7F2] h-3 rounded-full overflow-hidden border border-[#EBE4D8]">
+                  <div 
+                    className="bg-gradient-to-r from-[#E87A5D] to-[#4A7C59] h-full transition-all duration-300"
+                    style={{ width: `${packingStats.percent}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
+                <button
+                  onClick={() => setActiveView('all')}
+                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
+                    activeView === 'all' ? 'bg-[#1E1B18] text-white' : 'bg-[#FAF7F2] text-stone-600'
+                  }`}
+                >全部 ({packingStats.total})</button>
+                <button
+                  onClick={() => setActiveView('carry_on')}
+                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
+                    activeView === 'carry_on' ? 'bg-[#E87A5D] text-white' : 'bg-[#FAF7F2] text-stone-600'
+                  }`}
+                >隨身登機包 ({packingStats.carryCount})</button>
+                <button
+                  onClick={() => setActiveView('checked')}
+                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
+                    activeView === 'checked' ? 'bg-[#4A7C59] text-white' : 'bg-[#FAF7F2] text-stone-600'
+                  }`}
+                >托運行李箱 ({packingStats.checkedCount})</button>
+              </div>
+            </div>
+
+            {/* 3. 新增物品 */}
+            <form onSubmit={handleAddNewItem} className="bg-white p-3 rounded-2xl border border-[#EBE4D8] flex flex-col sm:flex-row items-center gap-2 shadow-sm">
+              <input
+                type="text"
+                placeholder="輸入自訂備忘物品（如：安耐曬防曬乳、蒸汽眼罩、捲髮棒）..."
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                className="w-full flex-1 px-3 py-2 text-xs bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl focus:outline-none focus:border-[#E87A5D]"
+              />
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <select
+                  value={newItemCat}
+                  onChange={(e) => setNewItemCat(e.target.value)}
+                  className="text-xs bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl px-3 py-2 focus:outline-none"
+                >
+                  <option value="checked">放托運</option>
+                  <option value="carry_on">放隨身</option>
+                </select>
+                <button
+                  type="submit"
+                  className="bg-[#1E1B18] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-stone-800"
+                >
+                  加入清單
+                </button>
+              </div>
+            </form>
+
+            {/* 4. 清單列 */}
+            <div className="space-y-2.5">
+              {filteredList.map((item) => (
+                <div
+                  key={item.id}
+                  className={`p-3.5 rounded-2xl border transition-all flex items-start justify-between gap-3 ${
+                    item.isChecked 
+                      ? 'bg-stone-100/70 border-stone-200 opacity-60' 
+                      : 'bg-white border-[#EBE4D8] shadow-sm'
+                  }`}
+                >
+                  <div 
+                    onClick={() => toggleItemCheck(item.id)}
+                    className="flex items-start gap-3 flex-1 cursor-pointer"
+                  >
+                    <div className="mt-0.5">
+                      {item.isChecked ? (
+                        <i data-lucide="check-circle-2" className="w-5 h-5 text-[#4A7C59]"></i>
+                      ) : (
+                        <i data-lucide="circle" className="w-5 h-5 text-stone-300"></i>
+                      )}
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`text-sm font-bold ${item.isChecked ? 'line-through text-stone-400' : 'text-[#1E1B18]'}`}>
+                          {item.name}
+                        </span>
+
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          item.targetLocation === 'carry_on'
+                            ? 'bg-[#FDF3EE] text-[#E87A5D] border border-[#E87A5D]/30'
+                            : 'bg-[#F3F7F4] text-[#3B6649] border border-[#4A7C59]/30'
+                        }`}>
+                          {item.targetLocation === 'carry_on' ? '隨身包' : '托運箱'}
+                        </span>
+
+                        {item.category === 'documents_essentials' && (
+                          <span className="text-[10px] bg-[#FEF4ED] text-[#C25434] px-1.5 py-0.2 rounded font-bold">
+                            入境必備
+                          </span>
+                        )}
+                      </div>
+
+                      {item.dueTiming && (
+                        <div className="text-[10px] font-bold text-[#B26A00] flex items-center gap-1">
+                          <i data-lucide="clock" className="w-3 h-3"></i>
+                          <span>{item.dueTiming.windowText}</span>
+                        </div>
+                      )}
+
+                      {item.requirementNote && (
+                        <div className="text-[11px] text-[#A65B32]">
+                          💡 {item.requirementNote}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center border border-stone-200 rounded-lg overflow-hidden bg-stone-50">
+                      <button
+                        onClick={() => changeItemQuantity(item.id, -1)}
+                        className="px-2 py-0.5 text-xs font-bold text-stone-600 hover:bg-stone-200"
+                      >-</button>
+                      <span className="px-2 text-xs font-bold text-[#1E1B18]">{item.quantity}</span>
+                      <button
+                        onClick={() => changeItemQuantity(item.id, 1)}
+                        className="px-2 py-0.5 text-xs font-bold text-stone-600 hover:bg-stone-200"
+                      >+</button>
+                    </div>
+
+                    {item.category !== 'documents_essentials' && (
+                      <button
+                        onClick={() => toggleTargetLocation(item.id)}
+                        className="text-[10px] px-2 py-1 rounded bg-[#FAF7F2] border border-[#EBE4D8] text-stone-600 font-semibold"
+                      >
+                        {item.targetLocation === 'carry_on' ? '改托運' : '改隨身'}
+                      </button>
+                    )}
+
+                    {item.isUserAdded && (
+                      <button
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="text-stone-400 hover:text-red-500 p-1"
+                      >
+                        <i data-lucide="trash-2" className="w-3.5 h-3.5"></i>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+
+          {/* 抽屜設定 */}
+          {showConfigDrawer && (
+            <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm">
+              <div className="w-full max-w-sm bg-white h-full shadow-2xl p-6 overflow-y-auto space-y-5">
+                <div className="flex items-center justify-between border-b pb-3">
+                  <h3 className="font-extrabold text-base text-[#1E1B18]">出國旅程設定</h3>
+                  <button onClick={() => setShowConfigDrawer(false)} className="text-stone-400 text-sm font-bold">✕ 關閉</button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-stone-600 block mb-1">目的地城市</label>
+                    <input
+                      type="text"
+                      value={profile.destination}
+                      onChange={(e) => setProfile({ ...profile, destination: e.target.value })}
+                      className="w-full text-xs p-2.5 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-stone-600 block mb-1">出發日期</label>
+                      <input
+                        type="date"
+                        value={profile.startDate}
+                        onChange={(e) => setProfile({ ...profile, startDate: e.target.value })}
+                        className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-stone-600 block mb-1">旅行天數</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={profile.durationDays}
+                        onChange={(e) => setProfile({ ...profile, durationDays: parseInt(e.target.value) || 1 })}
+                        className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-stone-600 block mb-1">同行人數</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={profile.travelersCount}
+                      onChange={(e) => setProfile({ ...profile, travelersCount: parseInt(e.target.value) || 1 })}
+                      className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-stone-600 block mb-1">體質偏好</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: 'runs_cold', label: '較怕冷 ❄️' },
+                        { id: 'neutral', label: '一般中性 🌤️' },
+                        { id: 'runs_hot', label: '較怕熱 ☀️' }
+                      ].map(opt => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setProfile({ ...profile, tempPreference: opt.id })}
+                          className={`text-xs py-2 rounded-xl font-bold border ${
+                            profile.tempPreference === opt.id
+                              ? 'bg-[#E87A5D] text-white border-[#E87A5D]'
+                              : 'bg-[#FAF7F2] text-stone-600 border-[#EBE4D8]'
+                          }`}
+                        >{opt.label}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-stone-600 block mb-1">洗衣安排</label>
+                    <select
+                      value={profile.laundryStrategy}
+                      onChange={(e) => setProfile({ ...profile, laundryStrategy: e.target.value })}
+                      className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
+                    >
+                      <option value="wash_mid_trip">旅途中洗滌一次 (件數減半)</option>
+                      <option value="no_laundry">完全不洗，帶足每日換洗</option>
+                      <option value="wash_frequently">有洗衣機天天洗 (維持2~3套)</option>
+                    </select>
+                  </div>
+
+                  <div className="pt-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleRegenerateList();
+                        setShowConfigDrawer(false);
+                      }}
+                      className="w-full py-2.5 bg-[#E87A5D] text-white rounded-xl font-bold text-xs shadow-md"
+                    >
+                      套用設定並重新運算
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <footer className="text-center text-xs text-stone-400 py-6 border-t border-[#EBE4D8] mt-10">
+            JOAN PLAYGROUND・出國準備管家子模組 (完全獨立上線版)
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
