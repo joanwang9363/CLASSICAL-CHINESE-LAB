@@ -2,906 +2,2863 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JOAN PLAYGROUND｜出國準備管家・智慧整裝清單</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>文言語境研究所 CLASSICAL CHINESE LAB V1.1</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React & ReactDOM (UMD Production) -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <!-- Babel Standalone (在瀏覽器中直接編譯 JSX) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google 字體：思源宋體與黑體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+            serif: ['"Noto Serif TC"', 'serif'],
+          },
+          colors: {
+            lab: {
+              cream: '#FAF7F0',
+              creamDark: '#F3EDE0',
+              card: '#FFFDF9',
+              border: '#E5DAC0',
+              orange: '#B45309',
+              orangeHover: '#92400E',
+              green: '#065F46',
+              greenDark: '#044332',
+              brown: '#2C1E15',
+              muted: '#736151',
+              gold: '#D97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    /* 自訂捲軸與無障礙字級切換變數 */
+    :root {
+      --font-scale: 1rem;
+    }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #FDFBF7;
-      color: #2C2825;
+      background-color: #FAF7F0;
+      color: #2C1E15;
+      font-family: 'Noto Sans TC', sans-serif;
       -webkit-tap-highlight-color: transparent;
+    }
+    .text-dynamic {
+      font-size: var(--font-scale);
+    }
+    /* 平滑過渡 */
+    .fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* 點擊回饋 */
+    .touch-btn:active {
+      transform: scale(0.97);
     }
   </style>
 </head>
-<body>
-  <div id="root"></div>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 overflow-x-hidden">
 
-  <script type="text/babel">
-    const { useState, useMemo, useEffect } = React;
-
-    // --- 核心邏輯純函式 ---
-    const resolveDestinationSpecificDocuments = (destination, travelersCount) => {
-      const dest = (destination || '').toLowerCase().trim();
-      const docs = [
-        {
-          id: 'doc-passports',
-          name: '護照正本 (效期需 6 個月以上)',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '出發前務必確認有效期限距回程日 6 個月以上，禁止托運',
-          dueTiming: {
-            windowText: '出發前 1~2 個月核對 (換發需 10~14 工作天)',
-            urgencyLevel: 'high'
-          }
-        },
-        {
-          id: 'doc-flight-tickets',
-          name: '電子機票憑證 (e-Ticket) ＆ 住宿訂房確認單',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '建議儲存至手機 Apple/Google 錢包並截圖或印紙本一份備查',
-          dueTiming: {
-            windowText: '出發前 3~7 天下載離線備份',
-            urgencyLevel: 'low'
-          }
-        }
-      ];
-
-      if (dest.includes('tokyo') || dest.includes('東京') || dest.includes('japan') || dest.includes('日本') || dest.includes('osaka') || dest.includes('京都')) {
-        docs.push({
-          id: 'doc-japan-vjw',
-          name: 'Visit Japan Web (VJW) 入境申報完成截圖/QR Code',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '登機前填妥並於手機截圖保存，避免抵達機場塞車連不上網路',
-          dueTiming: {
-            windowText: '出發前 1~3 天填寫並截圖保存',
-            urgencyLevel: 'low'
-          }
-        });
-        docs.push({
-          id: 'doc-japan-suica',
-          name: 'Suica / Pasmo 交通卡 (已加入手機錢包)',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '地鐵、公車與藥妝店/超商快速感應支付',
-          dueTiming: {
-            windowText: '出發前 1 週先綁定手機錢包並儲值',
-            urgencyLevel: 'low'
-          }
-        });
-      } else if (dest.includes('bali') || dest.includes('峇里島') || dest.includes('indonesia') || dest.includes('印尼')) {
-        docs.push({
-          id: 'doc-bali-evoa',
-          name: '印尼電子落地簽 (e-VoA) 核准憑證 / 美金現鈔',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '建議線上預辦省去現場排隊',
-          dueTiming: {
-            windowText: '出發前 3~14 天線上申辦 (審核約 1-3 工作天)',
-            urgencyLevel: 'medium'
-          }
-        });
-        docs.push({
-          id: 'doc-bali-tax',
-          name: '峇里島旅客觀光稅 (Love Bali) 繳納證明 QR',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '入境時抽查已繳納之證明',
-          dueTiming: {
-            windowText: '出發前 1~3 天線上繳納',
-            urgencyLevel: 'low'
-          }
-        });
-        docs.push({
-          id: 'doc-bali-ecd',
-          name: '印尼電子海關申報單 (ECD) QR Code',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: 1,
-          isChecked: false,
-          requirementNote: '官方規定僅限抵達前 3 天內填報',
-          dueTiming: {
-            windowText: '出發前 72 小時內填寫 (過早無法送出)',
-            urgencyLevel: 'low'
-          }
-        });
-      } else if (dest.includes('london') || dest.includes('倫敦') || dest.includes('paris') || dest.includes('巴黎') || dest.includes('europe') || dest.includes('歐洲')) {
-        docs.push({
-          id: 'doc-europe-insurance',
-          name: '歐洲申根醫療英文投保證明 (保額 3 萬歐元以上)',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '海關抽檢項目，需攜帶英文紙本證明正本',
-          dueTiming: {
-            windowText: '出發前 2~3 週投保並索取英文保單正本',
-            urgencyLevel: 'high'
-          }
-        });
-      } else if (dest.includes('usa') || dest.includes('美國') || dest.includes('canada') || dest.includes('加拿大')) {
-        docs.push({
-          id: 'doc-northamerica-esta',
-          name: 'ESTA (美國) 或 eTA (加拿大) 電子旅行授權核准憑證',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: travelersCount,
-          isChecked: false,
-          requirementNote: '官方審核可能需 72 小時以上，切勿出發當天才辦',
-          dueTiming: {
-            windowText: '出發前 1~2 週線上申請',
-            urgencyLevel: 'high'
-          }
-        });
-      }
-
-      docs.push({
-        id: 'doc-overseas-card',
-        name: '海外高回饋信用卡與提款卡 (已開通海外刷卡與 PIN 碼)',
-        category: 'documents_essentials',
-        targetLocation: 'carry_on',
-        quantity: 2,
-        isChecked: false,
-        requirementNote: '建議備妥兩張不同銀行信用卡分開存放',
-        dueTiming: {
-          windowText: '出發前 1~2 週致電銀行開通',
-          urgencyLevel: 'medium'
-        }
-      });
-
-      return docs;
-    };
-
-    const estimateClimateFromProfile = (destination, startDateStr) => {
-      const date = new Date(startDateStr || '2026-05-01');
-      const month = date.getMonth() + 1;
-      const destLower = (destination || '').toLowerCase().trim();
-
-      let high = 23, low = 16, risk = 'low', season = '春末舒適初夏';
-
-      if (destLower.includes('tokyo') || destLower.includes('東京') || destLower.includes('japan')) {
-        if (month >= 12 || month <= 2) { high = 11; low = 2; season = '冬季寒冷乾燥'; risk = 'low'; }
-        else if (month >= 3 && month <= 5) { high = 20; low = 11; season = '春季微風舒適'; risk = 'moderate'; }
-        else if (month >= 6 && month <= 8) { high = 31; low = 24; season = '盛夏潮濕炎熱'; risk = 'high'; }
-        else { high = 21; low = 13; season = '秋季微涼怡人'; risk = 'low'; }
-      } else if (destLower.includes('bali') || destLower.includes('峇里島') || destLower.includes('bangkok')) {
-        high = 32; low = 25; season = '熱帶暖陽渡假'; risk = (month >= 11 || month <= 3) ? 'high' : 'low';
-      } else if (destLower.includes('london') || destLower.includes('倫敦') || destLower.includes('paris')) {
-        if (month >= 11 || month <= 3) { high = 8; low = 3; season = '歐陸濕冷冬季'; risk = 'high'; }
-        else if (month >= 6 && month <= 8) { high = 25; low = 15; season = '浪漫宜人初夏'; risk = 'moderate'; }
-        else { high = 16; low = 9; season = '微涼風衣季節'; risk = 'moderate'; }
-      }
-
-      return {
-        avgTempHigh: high,
-        avgTempLow: low,
-        precipitationRisk: risk,
-        seasonName: season,
-        isForecastData: false,
-        climateSummary: `依歷史統計，${destination}在 ${month} 月通常為「${season}」，平均氣溫約 ${low}°C ~ ${high}°C。`
-      };
-    };
-
-    const calculateSmartLuggageList = (profile, climate) => {
-      const days = profile.durationDays;
-      let clothesFactor = days;
-      if (profile.laundryStrategy === 'wash_mid_trip') {
-        clothesFactor = Math.ceil(days / 2) + 1;
-      } else if (profile.laundryStrategy === 'wash_frequently') {
-        clothesFactor = Math.min(3, days);
-      }
-      clothesFactor = Math.max(1, clothesFactor);
-
-      const isCarryOnOnly = profile.luggageRestriction === 'carry_on_only';
-      const effectiveMeanTemp = ((climate.avgTempHigh + climate.avgTempLow) / 2) + (profile.tempPreference === 'runs_cold' ? -3 : profile.tempPreference === 'runs_hot' ? 3 : 0);
-
-      const destinationDocuments = resolveDestinationSpecificDocuments(profile.destination, profile.travelersCount);
-
-      const items = [
-        ...destinationDocuments,
-        {
-          id: 'item-tops',
-          name: effectiveMeanTemp < 15 ? '保暖上衣/針織衫/發熱打底衫' : '日常百搭上身 (短T/親膚方領襯衫/薄針織)',
-          category: 'clothing',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: clothesFactor,
-          isChecked: false,
-          requirementNote: `依 ${profile.durationDays} 天行程與洗衣安排，建議攜帶 ${clothesFactor} 件換搭`
-        },
-        {
-          id: 'item-bottoms',
-          name: effectiveMeanTemp < 15 ? '抗風刷毛顯瘦長褲 / 厚磅長裙' : '外出下身/裙裝 (高腰寬褲/直筒牛仔/垂墜長裙)',
-          category: 'clothing',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: Math.max(2, Math.ceil(clothesFactor * 0.6)),
-          isChecked: false,
-          requirementNote: '下身重覆穿搭率高，帶足版型好的基本款即可'
-        },
-        {
-          id: 'item-dress',
-          name: '拍照百搭連身洋裝 / 特殊場合套裝',
-          category: 'clothing',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: days > 3 ? 2 : 1,
-          isChecked: false,
-          requirementNote: '1件可應對精緻晚宴、特色咖啡廳拍照'
-        },
-        {
-          id: 'item-underwear',
-          name: '無痕貼身內著套組 / 舒適胸衣',
-          category: 'clothing',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: profile.laundryStrategy === 'no_laundry' ? days + 1 : clothesFactor + 1,
-          isChecked: false,
-          requirementNote: '多備 1 套因應氣候變化或突發狀況'
-        },
-        {
-          id: 'item-socks',
-          name: '透氣純棉隱形襪 / 機能減壓美腿厚襪',
-          category: 'clothing',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: profile.laundryStrategy === 'no_laundry' ? days + 1 : clothesFactor + 1,
-          isChecked: false
-        },
-        {
-          id: 'item-outerwear-primary',
-          name: effectiveMeanTemp < 12 
-            ? '防寒長版羽絨大衣 / 雙排釦厚羊毛大衣' 
-            : effectiveMeanTemp < 22 
-            ? '防風風衣外套 (Trench Coat) / 俐落小西裝' 
-            : '隨身抗UV薄針織罩衫 / 冷氣房披肩',
-          category: 'clothing',
-          targetLocation: 'carry_on',
-          quantity: days > 6 ? 2 : 1,
-          isChecked: false,
-          requirementNote: '建議隨身攜帶登機，應對機艙涼溫與抵達溫差'
-        },
-        {
-          id: 'item-shoes-spare',
-          name: '好走備用鞋（萬步休閒球鞋 / 瑪莉珍低跟鞋 / 涼拖）',
-          category: 'footwear',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: isCarryOnOnly ? 1 : 2,
-          isChecked: false,
-          requirementNote: '外出長時間步行必備雙腳舒緩替換'
-        },
-        {
-          id: 'item-skincare-kit',
-          name: '臉部保養分裝瓶 (卸妝/化妝水/精華液/鎖水乳霜)',
-          category: 'skincare_personal',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: 1,
-          isChecked: false,
-          requirementNote: isCarryOnOnly ? '隨身每瓶限 100ml 內且放入 1L 透明夾鏈袋' : '托運請旋緊瓶蓋並套夾鏈袋防氣壓滲漏'
-        },
-        {
-          id: 'item-facial-masks',
-          name: '高保濕急救修護面膜 (機艙抗乾燥與夜間舒緩)',
-          category: 'skincare_personal',
-          targetLocation: isCarryOnOnly ? 'carry_on' : 'checked',
-          quantity: Math.min(days, 5),
-          isChecked: false,
-          requirementNote: '長途飛行機艙濕度極低，必備保濕'
-        },
-        {
-          id: 'item-makeup-pouch',
-          name: '日常外出美妝隨行包 (粉底/防曬/腮紅/唇膏/眉筆)',
-          category: 'skincare_personal',
-          targetLocation: 'carry_on',
-          quantity: 1,
-          isChecked: false
-        },
-        {
-          id: 'item-sanitary-pads',
-          name: '生理期應急隨身包 (衛生棉/棉條/護墊)',
-          category: 'skincare_personal',
-          targetLocation: 'carry_on',
-          quantity: 1,
-          isChecked: false,
-          requirementNote: '時差或氣候變化易影響週期，隨身備用最安心'
-        },
-        {
-          id: 'item-hair-styling',
-          name: '旅行用雙電壓整髮器 / 離子夾 / 造型髮夾與大抓夾',
-          category: 'accessories',
-          targetLocation: 'checked',
-          quantity: 1,
-          isChecked: false,
-          requirementNote: '插電式放托運最穩妥；無線充電式若鋰電池不可拆卸，部分國家禁止攜帶'
-        },
-        {
-          id: 'item-electronics',
-          name: '行動電源 (必隨身)、萬國轉接頭與多孔快充線',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: 1,
-          isChecked: false,
-          requirementNote: '行動電源與鋰電池「嚴禁托運」，必須隨身攜帶'
-        },
-        {
-          id: 'item-first-aid',
-          name: '個人保健隨行包 (止痛止經痛藥/胃藥/感冒藥/B群/暈車藥)',
-          category: 'documents_essentials',
-          targetLocation: 'carry_on',
-          quantity: 1,
-          isChecked: false
-        }
-      ];
-
-      return items;
-    };
-
-    const mergeLuggageListsSafely = (oldList, freshGeneratedList) => {
-      const mergedMap = new Map();
-      for (const item of oldList) {
-        if (item.isUserAdded) {
-          mergedMap.set(item.id, { ...item });
-        }
-      }
-      for (const freshItem of freshGeneratedList) {
-        const existing = oldList.find(i => i.id === freshItem.id || i.name === freshItem.name);
-        if (existing) {
-          mergedMap.set(freshItem.id, {
-            ...freshItem,
-            quantity: existing.isUserConfirmed ? existing.quantity : freshItem.quantity,
-            isChecked: existing.isChecked,
-            targetLocation: existing.targetLocation,
-            isUserConfirmed: existing.isUserConfirmed
-          });
-        } else {
-          mergedMap.set(freshItem.id, freshItem);
-        }
-      }
-      for (const oldItem of oldList) {
-        if (!oldItem.isUserAdded && !mergedMap.has(oldItem.id)) {
-          if (oldItem.isChecked || oldItem.isUserConfirmed) {
-            mergedMap.set(oldItem.id, {
-              ...oldItem,
-              name: `${oldItem.name} (前次行程保留)`
-            });
-          }
-        }
-      }
-      return Array.from(mergedMap.values());
-    };
-
-    // --- 主介面元件 ---
-    function App() {
-      const [profile, setProfile] = useState(() => {
-        const saved = localStorage.getItem('joan_luggage_profile');
-        return saved ? JSON.parse(saved) : {
-          destination: '東京 (Tokyo)',
-          startDate: '2026-05-15',
-          durationDays: 5,
-          travelersCount: 2,
-          tempPreference: 'runs_cold',
-          laundryStrategy: 'wash_mid_trip',
-          luggageRestriction: 'standard_checkin'
-        };
-      });
-
-      const [activeView, setActiveView] = useState('all');
-      const [showConfigDrawer, setShowConfigDrawer] = useState(false);
-      const [newItemName, setNewItemName] = useState('');
-      const [newItemCat, setNewItemCat] = useState('checked');
-      const [noticeMessage, setNoticeMessage] = useState('');
-
-      const climate = useMemo(() => {
-        return estimateClimateFromProfile(profile.destination, profile.startDate);
-      }, [profile.destination, profile.startDate]);
-
-      const [packingList, setPackingList] = useState(() => {
-        const saved = localStorage.getItem('joan_luggage_list');
-        if (saved) {
-          try { return JSON.parse(saved); } catch(e) {}
-        }
-        return calculateSmartLuggageList(profile, climate);
-      });
-
-      useEffect(() => {
-        localStorage.setItem('joan_luggage_profile', JSON.stringify(profile));
-      }, [profile]);
-
-      useEffect(() => {
-        localStorage.setItem('joan_luggage_list', JSON.stringify(packingList));
-        if (window.lucide) {
-          setTimeout(() => window.lucide.createIcons(), 50);
-        }
-      }, [packingList]);
-
-      useEffect(() => {
-        if (window.lucide) window.lucide.createIcons();
-      }, [activeView, showConfigDrawer]);
-
-      const handleRegenerateList = () => {
-        const freshly = calculateSmartLuggageList(profile, climate);
-        const merged = mergeLuggageListsSafely(packingList, freshly);
-        setPackingList(merged);
-        setNoticeMessage(`已根據「${profile.destination}」入境規定與常模重新整理！妳勾選的項目已完整保留。`);
-        setTimeout(() => setNoticeMessage(''), 4000);
-      };
-
-      const quickSwitchDestination = (newDest) => {
-        const updatedProfile = { ...profile, destination: newDest };
-        setProfile(updatedProfile);
-        const newClimate = estimateClimateFromProfile(newDest, updatedProfile.startDate);
-        const freshLuggage = calculateSmartLuggageList(updatedProfile, newClimate);
-        setPackingList(prev => mergeLuggageListsSafely(prev, freshLuggage));
-        setNoticeMessage(`已快速切換為「${newDest}」，入境證件與氣候已更新！`);
-        setTimeout(() => setNoticeMessage(''), 4000);
-      };
-
-      const toggleItemCheck = (id) => {
-        setPackingList(prev => prev.map(item => 
-          item.id === id ? { ...item, isChecked: !item.isChecked, isUserConfirmed: true } : item
-        ));
-      };
-
-      const changeItemQuantity = (id, delta) => {
-        setPackingList(prev => prev.map(item => {
-          if (item.id === id) {
-            const nextQty = Math.max(1, item.quantity + delta);
-            return { ...item, quantity: nextQty, isUserConfirmed: true };
-          }
-          return item;
-        }));
-      };
-
-      const toggleTargetLocation = (id) => {
-        setPackingList(prev => prev.map(item => {
-          if (item.id === id) {
-            return { 
-              ...item, 
-              targetLocation: item.targetLocation === 'carry_on' ? 'checked' : 'carry_on',
-              isUserConfirmed: true 
-            };
-          }
-          return item;
-        }));
-      };
-
-      const handleAddNewItem = (e) => {
-        e.preventDefault();
-        if (!newItemName.trim()) return;
-        const userItem = {
-          id: `custom-${Date.now()}`,
-          name: newItemName.trim(),
-          category: 'skincare_personal',
-          targetLocation: newItemCat,
-          quantity: 1,
-          isChecked: false,
-          isUserAdded: true,
-          isUserConfirmed: true
-        };
-        setPackingList(prev => [userItem, ...prev]);
-        setNewItemName('');
-      };
-
-      const handleDeleteItem = (id) => {
-        setPackingList(prev => prev.filter(i => i.id !== id));
-      };
-
-      const packingStats = useMemo(() => {
-        const total = packingList.length;
-        const checked = packingList.filter(i => i.isChecked).length;
-        const percent = total === 0 ? 0 : Math.round((checked / total) * 100);
-        const carryCount = packingList.filter(i => i.targetLocation === 'carry_on').length;
-        const checkedCount = packingList.filter(i => i.targetLocation === 'checked').length;
-        return { total, checked, percent, carryCount, checkedCount };
-      }, [packingList]);
-
-      const filteredList = useMemo(() => {
-        if (activeView === 'carry_on') return packingList.filter(i => i.targetLocation === 'carry_on');
-        if (activeView === 'checked') return packingList.filter(i => i.targetLocation === 'checked');
-        return packingList;
-      }, [packingList, activeView]);
-
-      return (
-        <div className="min-h-screen">
-          <div className="h-2 w-full bg-gradient-to-r from-[#E87A5D] via-[#F4B266] to-[#4A7C59]"></div>
-
-          {/* Header */}
-          <header className="sticky top-0 z-30 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#EBE4D8] px-4 py-3 sm:px-6">
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#E87A5D] to-[#F4B266] flex items-center justify-center text-white shadow-md shadow-[#E87A5D]/20">
-                  <i data-lucide="luggage" className="w-5 h-5"></i>
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-bold text-[#E87A5D] bg-[#FDF3EE] px-2 py-0.5 rounded-full border border-[#E87A5D]/20">
-                      JOAN PLAYGROUND
-                    </span>
-                    <span className="text-xs text-stone-500 font-medium">出國準備管家</span>
-                  </div>
-                  <h1 className="text-lg font-bold tracking-tight text-[#1E1B18]">
-                    智慧行李整裝清單
-                  </h1>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowConfigDrawer(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white border border-[#EBE4D8] text-stone-700 shadow-sm hover:border-[#E87A5D]"
-                >
-                  <i data-lucide="sliders-horizontal" className="w-3.5 h-3.5"></i>
-                  <span className="hidden sm:inline">旅程設定</span>
-                </button>
-                <button
-                  onClick={handleRegenerateList}
-                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-[#E87A5D] text-white shadow-md shadow-[#E87A5D]/25"
-                >
-                  <i data-lucide="refresh-cw" className="w-3.5 h-3.5"></i>
-                  <span className="hidden sm:inline">重新整理</span>
-                </button>
-              </div>
-            </div>
-          </header>
-
-          {noticeMessage && (
-            <div className="bg-[#4A7C59] text-white text-xs py-2 px-4 text-center font-medium shadow-inner flex items-center justify-center gap-2">
-              <i data-lucide="shield-check" className="w-4 h-4"></i>
-              <span>{noticeMessage}</span>
-            </div>
-          )}
-
-          <main className="max-w-4xl mx-auto px-4 py-6 space-y-5">
-            {/* 1. 旅程卡片 */}
-            <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#EBE4D8] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                  <span className="bg-[#FEF9E7] text-[#9A6B1F] border border-[#F4B266]/40 px-3 py-0.5 rounded-full">
-                    {profile.startDate}（{profile.durationDays} 天）
-                  </span>
-                  <span className="bg-[#F3F7F4] text-[#3B6649] border border-[#4A7C59]/30 px-3 py-0.5 rounded-full">
-                    同行 {profile.travelersCount} 人
-                  </span>
-                  <span className="bg-[#FDF3EE] text-[#C25434] border border-[#E87A5D]/30 px-3 py-0.5 rounded-full">
-                    {profile.laundryStrategy === 'wash_mid_trip' ? '途中洗滌 1 次' : profile.laundryStrategy === 'wash_frequently' ? '天天洗滌' : '不洗 (全套足額)'}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1E1B18]">
-                    {profile.destination}
-                  </h2>
-                  <div className="flex items-center gap-1 bg-[#FAF7F2] p-1 rounded-xl border border-[#EBE4D8]">
-                    <button 
-                      onClick={() => quickSwitchDestination('東京 (Tokyo)')}
-                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('東京') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
-                    >東京</button>
-                    <button 
-                      onClick={() => quickSwitchDestination('峇里島 (Bali)')}
-                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('峇里島') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
-                    >峇里島</button>
-                    <button 
-                      onClick={() => quickSwitchDestination('巴黎/歐洲 (Europe)')}
-                      className={`text-xs px-2 py-0.5 rounded-lg font-bold transition-all ${profile.destination.includes('歐洲') || profile.destination.includes('巴黎') ? 'bg-white shadow text-[#E87A5D]' : 'text-stone-500'}`}
-                    >歐洲</button>
-                  </div>
-                </div>
-
-                <p className="text-xs text-stone-500">
-                  已自動換算入境證件、保濕面膜、生理期備品、衣物數量與整髮器托運提醒。
-                </p>
-              </div>
-
-              <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#EBE4D8] min-w-[200px]">
-                <div className="flex items-center justify-between text-xs text-stone-500">
-                  <span className="font-bold text-[#1E1B18]">{climate.seasonName}</span>
-                  <span className="text-[10px]">氣候統計</span>
-                </div>
-                <div className="text-2xl font-extrabold text-[#E87A5D]">
-                  {climate.avgTempLow}° ~ {climate.avgTempHigh}°C
-                </div>
-                <div className="text-[11px] text-stone-500 mt-1">
-                  降雨機率：{climate.precipitationRisk === 'high' ? '偏高 (已配置折傘)' : '適中 / 偏低'}
-                </div>
-              </div>
-            </div>
-
-            {/* 2. 打包進度與過濾切換 */}
-            <div className="bg-white rounded-3xl p-5 border border-[#EBE4D8] shadow-sm space-y-4">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-[#1E1B18]">整裝進度</h3>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#E87A5D]/10 text-[#E87A5D]">
-                    {packingStats.percent}% ({packingStats.checked} / {packingStats.total})
-                  </span>
-                </div>
-
-                <div className="w-full sm:w-64 bg-[#FAF7F2] h-3 rounded-full overflow-hidden border border-[#EBE4D8]">
-                  <div 
-                    className="bg-gradient-to-r from-[#E87A5D] to-[#4A7C59] h-full transition-all duration-300"
-                    style={{ width: `${packingStats.percent}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
-                <button
-                  onClick={() => setActiveView('all')}
-                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
-                    activeView === 'all' ? 'bg-[#1E1B18] text-white' : 'bg-[#FAF7F2] text-stone-600'
-                  }`}
-                >全部 ({packingStats.total})</button>
-                <button
-                  onClick={() => setActiveView('carry_on')}
-                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
-                    activeView === 'carry_on' ? 'bg-[#E87A5D] text-white' : 'bg-[#FAF7F2] text-stone-600'
-                  }`}
-                >隨身登機包 ({packingStats.carryCount})</button>
-                <button
-                  onClick={() => setActiveView('checked')}
-                  className={`text-xs px-3.5 py-1.5 rounded-xl font-bold ${
-                    activeView === 'checked' ? 'bg-[#4A7C59] text-white' : 'bg-[#FAF7F2] text-stone-600'
-                  }`}
-                >托運行李箱 ({packingStats.checkedCount})</button>
-              </div>
-            </div>
-
-            {/* 3. 新增物品 */}
-            <form onSubmit={handleAddNewItem} className="bg-white p-3 rounded-2xl border border-[#EBE4D8] flex flex-col sm:flex-row items-center gap-2 shadow-sm">
-              <input
-                type="text"
-                placeholder="輸入自訂備忘物品（如：安耐曬防曬乳、蒸汽眼罩、捲髮棒）..."
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                className="w-full flex-1 px-3 py-2 text-xs bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl focus:outline-none focus:border-[#E87A5D]"
-              />
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <select
-                  value={newItemCat}
-                  onChange={(e) => setNewItemCat(e.target.value)}
-                  className="text-xs bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl px-3 py-2 focus:outline-none"
-                >
-                  <option value="checked">放托運</option>
-                  <option value="carry_on">放隨身</option>
-                </select>
-                <button
-                  type="submit"
-                  className="bg-[#1E1B18] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-stone-800"
-                >
-                  加入清單
-                </button>
-              </div>
-            </form>
-
-            {/* 4. 清單列 */}
-            <div className="space-y-2.5">
-              {filteredList.map((item) => (
-                <div
-                  key={item.id}
-                  className={`p-3.5 rounded-2xl border transition-all flex items-start justify-between gap-3 ${
-                    item.isChecked 
-                      ? 'bg-stone-100/70 border-stone-200 opacity-60' 
-                      : 'bg-white border-[#EBE4D8] shadow-sm'
-                  }`}
-                >
-                  <div 
-                    onClick={() => toggleItemCheck(item.id)}
-                    className="flex items-start gap-3 flex-1 cursor-pointer"
-                  >
-                    <div className="mt-0.5">
-                      {item.isChecked ? (
-                        <i data-lucide="check-circle-2" className="w-5 h-5 text-[#4A7C59]"></i>
-                      ) : (
-                        <i data-lucide="circle" className="w-5 h-5 text-stone-300"></i>
-                      )}
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-sm font-bold ${item.isChecked ? 'line-through text-stone-400' : 'text-[#1E1B18]'}`}>
-                          {item.name}
-                        </span>
-
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          item.targetLocation === 'carry_on'
-                            ? 'bg-[#FDF3EE] text-[#E87A5D] border border-[#E87A5D]/30'
-                            : 'bg-[#F3F7F4] text-[#3B6649] border border-[#4A7C59]/30'
-                        }`}>
-                          {item.targetLocation === 'carry_on' ? '隨身包' : '托運箱'}
-                        </span>
-
-                        {item.category === 'documents_essentials' && (
-                          <span className="text-[10px] bg-[#FEF4ED] text-[#C25434] px-1.5 py-0.2 rounded font-bold">
-                            入境必備
-                          </span>
-                        )}
-                      </div>
-
-                      {item.dueTiming && (
-                        <div className="text-[10px] font-bold text-[#B26A00] flex items-center gap-1">
-                          <i data-lucide="clock" className="w-3 h-3"></i>
-                          <span>{item.dueTiming.windowText}</span>
-                        </div>
-                      )}
-
-                      {item.requirementNote && (
-                        <div className="text-[11px] text-[#A65B32]">
-                          💡 {item.requirementNote}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="flex items-center border border-stone-200 rounded-lg overflow-hidden bg-stone-50">
-                      <button
-                        onClick={() => changeItemQuantity(item.id, -1)}
-                        className="px-2 py-0.5 text-xs font-bold text-stone-600 hover:bg-stone-200"
-                      >-</button>
-                      <span className="px-2 text-xs font-bold text-[#1E1B18]">{item.quantity}</span>
-                      <button
-                        onClick={() => changeItemQuantity(item.id, 1)}
-                        className="px-2 py-0.5 text-xs font-bold text-stone-600 hover:bg-stone-200"
-                      >+</button>
-                    </div>
-
-                    {item.category !== 'documents_essentials' && (
-                      <button
-                        onClick={() => toggleTargetLocation(item.id)}
-                        className="text-[10px] px-2 py-1 rounded bg-[#FAF7F2] border border-[#EBE4D8] text-stone-600 font-semibold"
-                      >
-                        {item.targetLocation === 'carry_on' ? '改托運' : '改隨身'}
-                      </button>
-                    )}
-
-                    {item.isUserAdded && (
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="text-stone-400 hover:text-red-500 p-1"
-                      >
-                        <i data-lucide="trash-2" className="w-3.5 h-3.5"></i>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </main>
-
-          {/* 抽屜設定 */}
-          {showConfigDrawer && (
-            <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm">
-              <div className="w-full max-w-sm bg-white h-full shadow-2xl p-6 overflow-y-auto space-y-5">
-                <div className="flex items-center justify-between border-b pb-3">
-                  <h3 className="font-extrabold text-base text-[#1E1B18]">出國旅程設定</h3>
-                  <button onClick={() => setShowConfigDrawer(false)} className="text-stone-400 text-sm font-bold">✕ 關閉</button>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-stone-600 block mb-1">目的地城市</label>
-                    <input
-                      type="text"
-                      value={profile.destination}
-                      onChange={(e) => setProfile({ ...profile, destination: e.target.value })}
-                      className="w-full text-xs p-2.5 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-bold text-stone-600 block mb-1">出發日期</label>
-                      <input
-                        type="date"
-                        value={profile.startDate}
-                        onChange={(e) => setProfile({ ...profile, startDate: e.target.value })}
-                        className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-stone-600 block mb-1">旅行天數</label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="30"
-                        value={profile.durationDays}
-                        onChange={(e) => setProfile({ ...profile, durationDays: parseInt(e.target.value) || 1 })}
-                        className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-stone-600 block mb-1">同行人數</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={profile.travelersCount}
-                      onChange={(e) => setProfile({ ...profile, travelersCount: parseInt(e.target.value) || 1 })}
-                      className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-stone-600 block mb-1">體質偏好</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'runs_cold', label: '較怕冷 ❄️' },
-                        { id: 'neutral', label: '一般中性 🌤️' },
-                        { id: 'runs_hot', label: '較怕熱 ☀️' }
-                      ].map(opt => (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          onClick={() => setProfile({ ...profile, tempPreference: opt.id })}
-                          className={`text-xs py-2 rounded-xl font-bold border ${
-                            profile.tempPreference === opt.id
-                              ? 'bg-[#E87A5D] text-white border-[#E87A5D]'
-                              : 'bg-[#FAF7F2] text-stone-600 border-[#EBE4D8]'
-                          }`}
-                        >{opt.label}</button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-stone-600 block mb-1">洗衣安排</label>
-                    <select
-                      value={profile.laundryStrategy}
-                      onChange={(e) => setProfile({ ...profile, laundryStrategy: e.target.value })}
-                      className="w-full text-xs p-2 bg-[#FAF7F2] border border-[#EBE4D8] rounded-xl font-semibold"
-                    >
-                      <option value="wash_mid_trip">旅途中洗滌一次 (件數減半)</option>
-                      <option value="no_laundry">完全不洗，帶足每日換洗</option>
-                      <option value="wash_frequently">有洗衣機天天洗 (維持2~3套)</option>
-                    </select>
-                  </div>
-
-                  <div className="pt-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleRegenerateList();
-                        setShowConfigDrawer(false);
-                      }}
-                      className="w-full py-2.5 bg-[#E87A5D] text-white rounded-xl font-bold text-xs shadow-md"
-                    >
-                      套用設定並重新運算
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <footer className="text-center text-xs text-stone-400 py-6 border-t border-[#EBE4D8] mt-10">
-            JOAN PLAYGROUND・出國準備管家子模組 (完全獨立上線版)
-          </footer>
+  <!-- ==================== 頂部精簡導航欄 ==================== -->
+  <header class="sticky top-0 z-40 bg-[#FAF7F0]/95 backdrop-blur-md border-b border-[#E6DEC8] px-2.5 md:px-5 py-1.5 shadow-xs">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+      <!-- 品牌標章（精簡緊湊） -->
+      <div onclick="navigateTo('home')" class="flex items-center gap-2 cursor-pointer group touch-btn shrink-0">
+        <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-amber-50 flex items-center justify-center font-serif text-sm md:text-base font-bold shadow-xs">
+          文
         </div>
-      );
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-sm md:text-base font-black tracking-wide text-amber-950">
+            文言語境研究所
+          </span>
+          <span class="hidden sm:inline text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-300">
+            V1.1
+          </span>
+        </div>
+      </div>
+
+      <!-- 右側輔助控制項（極致精簡、無壓迫排版） -->
+      <div class="flex items-center gap-1 md:gap-1.5 shrink-0">
+        <!-- 每日文人箋 · 晨讀語境籤 -->
+        <button onclick="openDailyWisdomModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="每日文人箋 · 晨讀語境籤">
+          <span>🎋</span>
+          <span class="hidden sm:inline font-serif text-[11px]">每日籤</span>
+        </button>
+
+        <!-- 貢院科舉大試入口 -->
+        <button onclick="openKejuModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold touch-btn shadow-2xs" title="進京赴考 · 科舉試院">
+          <span>🏛️</span>
+          <span class="font-serif text-[11px] md:text-xs">科舉</span>
+        </button>
+
+        <!-- 翰林雅號圖騰膠囊 -->
+        <button onclick="openRanksModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="查看翰林雅號與成就譜">
+          <span id="nav-rank-icon" class="text-xs">🪶</span>
+          <span id="nav-rank-title" class="font-serif text-[11px] md:text-xs">童生</span>
+        </button>
+
+        <!-- 字級切換（迷你緊湊型） -->
+        <div class="flex items-center bg-[#EDE6D4] rounded-lg p-0.5 border border-[#DFD5BF]">
+          <button onclick="setFontSize('normal')" id="btn-font-normal" class="px-1.5 py-0.5 text-[11px] rounded font-bold bg-amber-700 text-white transition-all">中</button>
+          <button onclick="setFontSize('large')" id="btn-font-large" class="px-1.5 py-0.5 text-[11px] rounded font-bold text-[#6C5C4D] transition-all">大</button>
+          <button onclick="setFontSize('huge')" id="btn-font-huge" class="hidden sm:block px-1.5 py-0.5 text-[11px] rounded font-bold text-[#6C5C4D] transition-all">特大</button>
+        </div>
+
+        <!-- 音效按鈕 -->
+        <button onclick="toggleSound()" id="btn-sound" class="p-1.5 rounded-lg bg-[#EDE6D4] text-[#6C5C4D] border border-[#DFD5BF] touch-btn" title="切換音效">
+          <svg id="icon-sound-on" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <svg id="icon-sound-off" class="w-3.5 h-3.5 hidden text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+          </svg>
+        </button>
+
+        <!-- 收藏簿（圖示徽標化） -->
+        <button onclick="navigateTo('bookmarks')" class="relative p-1.5 rounded-lg bg-[#EDE6D4] text-[#554335] border border-[#DFD5BF] text-xs font-bold touch-btn" title="成語名句收藏簿">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+          </svg>
+          <span id="nav-bookmark-count" class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-700 text-white text-[9px] flex items-center justify-center font-bold">0</span>
+        </button>
+
+        <!-- 管理審核入口 -->
+        <button onclick="openAdmin()" class="p-1.5 rounded-lg bg-[#EDE6D4] text-[#554335] border border-[#DFD5BF] touch-btn" title="題庫管理審核台">
+          <svg class="w-3.5 h-3.5 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 核心內容視圖容器 ==================== -->
+  <main id="app-container" class="max-w-4xl mx-auto w-full px-3 md:px-6 py-5 flex-grow">
+    <!-- 動態注入各個畫面 -->
+  </main>
+
+  <!-- ==================== 申訴視窗 Modal ==================== -->
+  <div id="modal-dispute" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-[#FFFDF9] rounded-3xl max-w-md w-full p-6 border-2 border-amber-400 shadow-2xl space-y-4 fade-in">
+      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-3">
+        <h3 class="font-serif text-base font-bold text-[#2A1D15] flex items-center gap-1.5">
+          <span>⚖️</span>
+          <span>提出學術爭議申訴 · 防誤導嚴格查核</span>
+        </h3>
+        <button onclick="closeDisputeModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-1">✕</button>
+      </div>
+      <p class="text-xs text-[#6C5B4C] leading-relaxed">
+        本所恪守<strong>「絕不故意誤導、絕不強設唯一正解」</strong>原則。若您認為在該情境中其他選項亦屬合理，請填寫理據，審核組將重新判定。
+      </p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#3B2B1E] mb-1">您認為哪一個選項也完全成立？</label>
+          <select id="dispute-option-select" class="w-full p-2.5 rounded-xl border border-stone-300 text-xs bg-white text-stone-800 font-bold focus:outline-none">
+            <!-- 動態生成選項 -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#3B2B1E] mb-1">具體疑義或語境補充說明：</label>
+          <textarea id="dispute-reason-input" rows="3" placeholder="請詳述為何該選項在情境中不可逕判為錯誤..." class="w-full p-3 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+        </div>
+      </div>
+      <div class="pt-2 border-t border-[#F0E6D0] flex justify-end gap-2">
+        <button onclick="closeDisputeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100">取消</button>
+        <button onclick="submitDispute()" class="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs touch-btn">送出申訴</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 管理者登入 Modal ==================== -->
+  <div id="modal-admin-login" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-[#FFFDF9] rounded-3xl max-w-sm w-full p-6 border-2 border-emerald-700 shadow-2xl space-y-4 fade-in">
+      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-3">
+        <h3 class="font-serif text-base font-bold text-emerald-950 flex items-center gap-1.5">
+          <span>🔐</span>
+          <span>審核組權限驗證</span>
+        </h3>
+        <button onclick="closeAdminLoginModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-1">✕</button>
+      </div>
+      <p class="text-xs text-[#6F5E4E]">
+        為維護正式題庫品質，題庫審查與爭議下架限審核員操作。請輸入審核權限碼：
+      </p>
+      <div>
+        <input type="password" id="admin-pass-input" placeholder="審核通行碼 (預設: joan2026)" class="w-full p-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none" />
+        <div class="text-[10px] text-stone-400 mt-1">預設本機審核碼：<strong class="text-emerald-800">joan2026</strong></div>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="closeAdminLoginModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600">取消</button>
+        <button onclick="handleAdminLogin()" class="px-5 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">驗證進入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 翰林雅號成就譜 Modal ==================== -->
+  <div id="modal-ranks" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#FFFDF9] rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-5 md:p-6 border-2 border-amber-500 shadow-2xl space-y-4 fade-in">
+      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-2.5">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-800 text-amber-100 flex items-center justify-center font-serif text-lg font-bold shadow-xs">
+            印
+          </div>
+          <div>
+            <h3 class="font-serif text-base font-black text-[#2A1D15]">翰林雅號 · 文階成就譜</h3>
+            <p class="text-[10px] text-[#786655]">字字推敲 · 歷練文苑品階</p>
+          </div>
+        </div>
+        <button onclick="closeRanksModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-2">✕</button>
+      </div>
+
+      <!-- 當前雅號展示框（傳統朱文印鑑徽章風格） -->
+      <div id="ranks-current-card" class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-[#F5EEDC] border border-amber-300 shadow-xs flex items-center justify-between gap-3">
+        <!-- 動態渲染當前雅號資訊 -->
+      </div>
+
+      <!-- 翰林六階品級列表 -->
+      <div class="space-y-1.5">
+        <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
+          <span class="w-1.5 h-3 bg-amber-700 rounded-full"></span>
+          <span>翰林六大晉升品階與圖騰</span>
+        </div>
+        <div id="ranks-tier-list" class="space-y-1.5">
+          <!-- 動態渲染六大階位與圖騰 -->
+        </div>
+      </div>
+
+      <!-- 特殊文墨成就勳章 -->
+      <div class="space-y-1.5 pt-2 border-t border-[#F0E6D0]">
+        <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
+          <span class="w-1.5 h-3 bg-emerald-700 rounded-full"></span>
+          <span>文房雅趣 · 專屬成就印記</span>
+        </div>
+        <div id="ranks-badges-grid" class="grid grid-cols-2 gap-2">
+          <!-- 動態渲染勳章 -->
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-[#F0E6D0] flex justify-end">
+        <button onclick="closeRanksModal()" class="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs touch-btn">
+          領略精進
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 每日文人箋 Modal ==================== -->
+  <div id="modal-daily-wisdom" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#FFFDF9] rounded-3xl max-w-md w-full p-5 md:p-6 border-2 border-amber-500 shadow-2xl space-y-4 fade-in">
+      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-2.5">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-800 text-amber-100 flex items-center justify-center font-serif text-lg font-bold shadow-xs">
+            籤
+          </div>
+          <div>
+            <h3 class="font-serif text-base font-black text-[#2A1D15]">每日文人箋 · 晨讀語境籤</h3>
+            <p class="text-[10px] text-[#786655]">日省一語 · 古人智慧照亮當下</p>
+          </div>
+        </div>
+        <button onclick="closeDailyWisdomModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-2">✕</button>
+      </div>
+
+      <div id="daily-wisdom-card-content" class="space-y-3">
+        <!-- 動態渲染晨讀籤內容 -->
+      </div>
+
+      <div class="pt-2 border-t border-[#F0E6D0] flex items-center justify-between">
+        <button onclick="copyDailyWisdom()" class="px-3 py-1.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-bold touch-btn flex items-center gap-1">
+          <span>📋 複製籤文</span>
+        </button>
+        <button onclick="closeDailyWisdomModal()" class="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs touch-btn">
+          收入心田
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 貢院科舉大試 Modal ==================== -->
+  <div id="modal-keju" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#FFFDF9] rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 md:p-6 border-2 border-emerald-600 shadow-2xl space-y-4 fade-in">
+      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-2.5">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-800 text-amber-100 flex items-center justify-center font-serif text-lg font-bold shadow-xs">
+            闈
+          </div>
+          <div>
+            <h3 class="font-serif text-base font-black text-[#2A1D15]">貢院科舉試院 · 進京赴考</h3>
+            <p class="text-[10px] text-[#786655]">十年寒窗 · 院試・鄉試・會試・殿試金榜題名</p>
+          </div>
+        </div>
+        <button onclick="closeKejuModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-2">✕</button>
+      </div>
+
+      <!-- 科舉總覽提示 -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 via-[#F3EFE3] to-amber-50 border border-emerald-300 text-xs text-[#3E2E22] space-y-1">
+        <div class="flex items-center justify-between font-bold text-emerald-950">
+          <span>📜 科舉考律告示</span>
+          <span id="keju-passed-summary" class="text-[10px] bg-emerald-200/80 text-emerald-950 px-2 py-0.5 rounded-full">已考取 0 / 4 功名</span>
+        </div>
+        <p class="text-[11px] leading-relaxed text-[#5F4E40]">
+          每試十道精選語境策問，唯有達到錄取門檻方得授受功名並准予報考下一闈。殿試更將依成績親策「狀元、榜眼、探花」三鼎甲！
+        </p>
+      </div>
+
+      <!-- 四大考科列表 -->
+      <div id="keju-stages-list" class="space-y-2.5">
+        <!-- 動態渲染四大考科 -->
+      </div>
+
+      <div class="pt-2 border-t border-[#F0E6D0] flex justify-end">
+        <button onclick="closeKejuModal()" class="px-5 py-2 rounded-xl bg-[#EDE4CE] hover:bg-[#E2D8BF] text-[#4A3B2C] font-bold text-xs touch-btn">
+          返回試院外
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Toast 提示通知 ==================== -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#291B13] text-amber-50 px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border border-amber-600/40 hidden items-center gap-2 fade-in">
+    <span>🔔</span>
+    <span id="toast-text">提示文字</span>
+  </div>
+
+  <!-- ==================== 頁尾版權與宣告 ==================== -->
+  <footer class="mt-8 border-t border-[#E6DDC8] bg-[#F4EDE0] py-5 px-4 text-center text-xs text-[#7B6A5A]">
+    <div class="max-w-4xl mx-auto space-y-1.5">
+      <div class="font-serif font-bold text-stone-800 text-xs md:text-sm">
+        文言語境研究所 CLASSICAL CHINESE LAB · V1.1
+      </div>
+      <p class="text-[10px] md:text-[11px] text-[#8C7A68]">
+        品牌歸屬：JOAN PLAYGROUND → JOAN ARCADE 小遊戲館 · 繁體中文教育專案
+      </p>
+      <div class="flex flex-wrap justify-center gap-2 md:gap-4 text-[10px] text-stone-500 pt-1">
+        <span>© 2026 JOAN ARCADE</span>
+        <span>·</span>
+        <span>教育部《成語典》與正統經傳注疏核驗</span>
+        <span>·</span>
+        <span>手機/平板/電腦全適應</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== 核心邏輯與完整題庫 ==================== -->
+  <script>
+    // ----------------------------------------------------
+    // 1. 嚴謹審核題庫（經教育部成語典與正統注疏核考，確保單一正解無雙答案）
+    // ----------------------------------------------------
+    const OFFICIAL_INITIAL_BANK = [
+      {
+        id: "q-idiom-01",
+        mode: "idiom",
+        difficulty: "easy",
+        title: "高檔手機包裝的取捨抉擇",
+        scenario: "科技公司發表旗艦新機，簡報花了半小時大讚以頂級絲絨與黑檀木雕刻而成的精裝外盒，結果實機測試時處理器頻頻過熱當機。消費者紛紛諷刺廠商把心思全花在外裝，卻丟棄了手機的核心實用性。",
+        options: [
+          {
+            id: "A",
+            text: "買櫝還珠",
+            isCorrect: true,
+            meaning: "櫝：木盒；珠：珍珠。比喻取捨不當，看重外表裝飾而捨棄實質內涵。",
+            usage: "用於因看重精美包裝外表而忽視、放棄實質貴重核心之場合。",
+            example: "買書只看封面裝幀卻不問內容好壞，豈不成了買櫝還珠？",
+            reason: "廠商極度講究木盒包裝（櫝）而手機本體效能低劣（珠），完全切合買櫝還珠之典故本意。"
+          },
+          {
+            id: "B",
+            text: "舍本逐末",
+            isCorrect: false,
+            meaning: "拋棄根本而追求枝微末節。",
+            usage: "形容處事抓不住重點，執著於瑣碎次要環節。",
+            example: "讀書不求理解思想，只死記字數，未免舍本逐末。",
+            reason: "雖有輕重顛倒之意，但缺乏『外表奢華包裝與實質價值』的具象對照，本題買櫝還珠更為精準神韻。"
+          },
+          {
+            id: "C",
+            text: "喧賓奪主",
+            isCorrect: false,
+            meaning: "客人的聲勢反壓過主人。比喻次要事物搶奪主要事物的地位。",
+            usage: "指配角鋒芒壓倒主角，或客體過度搶戲。",
+            example: "主持人的話講得比得獎者還多，未免有些喧賓奪主。",
+            reason: "著重在主客地位顛倒，非『因愛外盒而忽視本體品質』之取捨情境。"
+          },
+          {
+            id: "D",
+            text: "畫蛇添足",
+            isCorrect: false,
+            meaning: "畫蛇時添上腳。比喻做了多餘的事，反而把事情弄糟。",
+            usage: "形容多此一舉、自惹麻煩。",
+            example: "結尾已很完整，再加這句只是畫蛇添足。",
+            reason: "包裝設計本身並非完全多餘之舉，重點在於本末失衡，故非最佳用詞。"
+          }
+        ],
+        classical_text: {
+          work: "《韓非子》",
+          chapter: "外儲說左上",
+          author: "韓非（約前280-前233）",
+          original: "楚人有賣其珠於鄭者，為木蘭之櫃，薰以桂椒，綴以珠玉，飾以玫瑰，輯以羽翠。鄭人買其櫝而還其珠。此可謂善賣櫝矣，未可謂善鬻珠也。",
+          vernacular: "楚國有人在鄭國賣珍珠，做了名貴木蘭盒子，用香料薰染，飾以珠玉翡翠。鄭國人買了精緻木盒，卻把珍珠退還給他。這可說是善於賣木盒，不能說是善於賣珍珠。",
+          citationUrl: "教育部《成語典》「買櫝還珠」"
+        },
+        source_reference: {
+          title: "教育部成語典檢索：0048",
+          source: "中華民國教育部成語典",
+          note: "經審核單一正解無疑義"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-idiom-02",
+        mode: "idiom",
+        difficulty: "medium",
+        title: "專案初試身手的成效評估",
+        scenario: "新創團隊初次承辦全縣大型藝文展演，雖然因氣候驟變導致部分戶外演出略微延誤，但整體動線順暢、口碑極佳，主管在檢討會上總結：『雖然尚有進步空間，但以首次操刀而言，大家的表現已相當令人欣慰。』",
+        options: [
+          {
+            id: "A",
+            text: "差強人意",
+            isCorrect: true,
+            meaning: "差：甚、尚且；強：振奮。原指尚能振奮人心，後指大體上還能令人滿意。",
+            usage: "中性偏褒，用於形容事情雖不臻完美，但整體結果已令人滿意。",
+            example: "這部獨立製作電影特效雖有瑕疵，但演員真摯的演技仍算差強人意。",
+            reason: "主管肯定首次表現『雖不完美但大體令人滿意欣慰』，正是差強人意標準正用（切勿誤用為令人不滿意）。"
+          },
+          {
+            id: "B",
+            text: "差之毫釐",
+            isCorrect: false,
+            meaning: "形容極微小的差距，通常後接『失之千里』。",
+            usage: "多用於精密測量、科學計算或邏輯推導。",
+            example: "射箭比賽時差之毫釐，結果便與金牌擦身而過。",
+            reason: "非成語獨立評價表現詞彙，語義重心在極小誤差，與主管評語不符。"
+          },
+          {
+            id: "C",
+            text: "差強民意",
+            isCorrect: false,
+            meaning: "坊間常見之錯字誤造詞（誤將『人意』寫成『民意』）。",
+            usage: "非規範成語，教育部成語典未收錄。",
+            example: "此為混淆錯誤詞，正式寫作禁用。",
+            reason: "純屬生造混淆詞，絕非正解。"
+          },
+          {
+            id: "D",
+            text: "出人意料",
+            isCorrect: false,
+            meaning: "超出人們的意料之外。",
+            usage: "形容事情發生得非常突然或結果與原先預估迥然不同。",
+            example: "這名小將初出茅廬便奪冠，成績真是出人意料。",
+            reason: "情境著重在『大致滿意、尚能接受』的平實評價，而非『震驚出乎意料』。"
+          }
+        ],
+        classical_text: {
+          work: "《後漢書》",
+          chapter: "卷十七·吳漢傳",
+          author: "范曄（398-445）",
+          original: "帝時遣人觀大司馬何為，還言方脩戰具，乃歎曰：『吳公差彊人意，隱若一敵國矣。』",
+          vernacular: "光武帝派人探視大司馬吳漢在做什麼，回報說吳漢正整修兵器作戰。光武帝讚嘆說：『吳公還真能振奮人心，氣度足抵得上一座敵國！』",
+          citationUrl: "《後漢書·吳漢傳》"
+        },
+        source_reference: {
+          title: "教育部成語典審訂：差強人意",
+          source: "教育部《成語典》",
+          note: "常見易錯成語特選，具極高教學防誤導價值。"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-trans-01",
+        mode: "translation",
+        difficulty: "easy",
+        title: "《論語·學而》論君子修為",
+        scenario: "研讀儒家經典時，見孔子論述君子面對他人不理解時的心境修養：『人不知而不慍，不亦君子乎？』此句當如何確切翻譯？",
+        options: [
+          {
+            id: "A",
+            text: "別人不瞭解我，我卻不怨恨生氣，不也是一位君子嗎？",
+            isCorrect: true,
+            meaning: "慍（ㄩㄣˋ）：生氣、怨恨。不知：不了解我自己的德行才能。",
+            usage: "強調自得於己、不汲汲於外界名聲認可的高尚修養。",
+            example: "治學當如孔子所言，縱使人不知而不慍，方見學者風骨。",
+            reason: "完全忠實對應原文『不知』（他人不了解）與『慍』（心中怨恨憤懣）。"
+          },
+          {
+            id: "B",
+            text: "自己不知道的事情絕不發脾氣，這難道不是君子應有的智慧嗎？",
+            isCorrect: false,
+            meaning: "誤將主詞『人』解釋為自己，把『不知』誤解成自己缺乏知識。",
+            usage: "語義偏離原典修養脈絡。",
+            example: "無此用法。",
+            reason: "古漢語中『人』常指他人，『人不知』指他人不了解我，非自己無知。"
+          },
+          {
+            id: "C",
+            text: "別人沒有知識學問我也不鄙視他，這樣才是真正的君子之道。",
+            isCorrect: false,
+            meaning: "誤將『知』解為『知識』，把『慍』曲解為『鄙視輕蔑』。",
+            usage: "斷章取義之錯誤翻譯。",
+            example: "無此用法。",
+            reason: "『慍』特指心中怨忿怒氣，非看不起人。"
+          },
+          {
+            id: "D",
+            text: "不知道別人的優點也不隨便誇讚，這才符合君子的慎言謹行。",
+            isCorrect: false,
+            meaning: "完全主客顛倒，妄加『誇讚』之義。",
+            usage: "邏輯完全錯誤之翻譯。",
+            example: "無此用法。",
+            reason: "無中生有增添字面未有之涵義。"
+          }
+        ],
+        classical_text: {
+          work: "《論語》",
+          chapter: "學而篇第一",
+          author: "孔子弟子及其再傳弟子輯錄",
+          original: "子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」",
+          vernacular: "孔子說：「學習並按時溫習它，不也是很令人喜悅的嗎？有志同道合的朋友從遠方來交流，不也是很快樂的嗎？別人不了解我，我心中卻不埋怨憤怒，不也是個有德行的君子嗎？」",
+          citationUrl: "十三經注疏本《論語注疏》卷一"
+        },
+        source_reference: {
+          title: "十三經注疏《論語注疏·學而》",
+          source: "漢·何晏集解、宋·邢昺疏",
+          note: "初階經典正譯，字詞精準對應"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-trans-02",
+        mode: "translation",
+        difficulty: "medium",
+        title: "《孟子·告子上》大義抉擇解析",
+        scenario: "孟子在論及人生面臨根本價值衝突時提出：『生，亦我所欲也；義，亦我所欲也。二者不可得兼，舍生而取義者也。』何者為最精確之白話詮釋？",
+        options: [
+          {
+            id: "A",
+            text: "生命是我所渴望的；道義也是我所追求的。如果兩者無法同時保有，寧願犧牲生命也要保有道義。",
+            isCorrect: true,
+            meaning: "欲：渴望追求；得兼：同時獲得；舍：捨棄；取：選取執守。",
+            usage: "闡發捨生取義、堅持道德理想勝過肉體苟全的大丈夫氣節。",
+            example: "文天祥從容就義，體現了舍生取義的至高品格。",
+            reason: "忠實孟子性善論與道德主體性思想，字字對仗流暢無偏倚。"
+          },
+          {
+            id: "B",
+            text: "活著是我天生的慾望，正義則是後天的教化。兩者既然不能共存，就該拋下生計專心談論正義。",
+            isCorrect: false,
+            meaning: "誤將『生』解為生計，將『所欲』妄加先後天之區分。",
+            usage: "脫離原典之過度哲學投射。",
+            example: "無此用法。",
+            reason: "孟子並非說兩者天生無法並存，而是在極端衝突時的價值抉擇。"
+          },
+          {
+            id: "C",
+            text: "生活過得豐足是我想要的，名義聲譽也是我想要的；如果無法並列，寧可捨棄虛名換取生存。",
+            isCorrect: false,
+            meaning: "將『義』降格為『名聲/名義』，甚至結論導向與孟子完全相反的苟且偷生。",
+            usage: "嚴重扭曲儒家義利之辨。",
+            example: "無此用法。",
+            reason: "『義』為道德正義非虛名，且孟子主張取義非偷生。"
+          },
+          {
+            id: "D",
+            text: "生老病死是我追求的自然法則，江湖義氣是我追求的人情。兩者衝突時，自當為義氣捨身報仇。",
+            isCorrect: false,
+            meaning: "誤將『義』曲解為江湖幫派義氣，將『生』解為生老病死。",
+            usage: "通俗武俠觀念之誤植。",
+            example: "無此用法。",
+            reason: "孟子之『義』為天理與本心善性，非匹夫報仇之江湖義氣。"
+          }
+        ],
+        classical_text: {
+          work: "《孟子》",
+          chapter: "告子篇上·第十章",
+          author: "孟軻（約前372-前289）",
+          original: "魚，我所欲也；熊掌，亦我所欲也。二者不可得兼，舍魚而取熊掌者也。生，亦我所欲也；義，亦我所欲也。二者不可得兼，舍生而取義者也。",
+          vernacular: "魚是我喜愛的，熊掌也是我喜愛的。如果兩樣不能同時得到，我會捨棄魚而選取熊掌。生命是我珍惜的，道義也是我追求的。二者不能兼得時，我會捨棄生命而選取道義。",
+          citationUrl: "十三經注疏本《孟子注疏》卷十一上"
+        },
+        source_reference: {
+          title: "十三經注疏《孟子注疏·告子上》",
+          source: "漢·趙岐注、宋·孫奭疏",
+          note: "高中必修核心古文經典，核對原本無訛"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-dialogue-01",
+        mode: "dialogue",
+        difficulty: "easy",
+        title: "職場升遷落選後的豁達從容",
+        scenario: "多年好友在公司爭取升遷主管職位，因組織改組意外落選。下班後在茶館向你傾訴苦悶，你希望送他一句古名言，鼓勵他看淡一時的名利得失，保持心境寬厚坦然，下列何句最為貼切？",
+        options: [
+          {
+            id: "A",
+            text: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。",
+            isCorrect: true,
+            meaning: "受寵或蒙恥都不動心，閒看庭院繁花自開自落；去官或留任全不在意，漫隨天上浮雲舒卷變幻。",
+            usage: "寬慰失意者保持超然淡泊胸襟，不以物喜不以己悲。",
+            example: "面對商場起落，老董常以『寵辱不驚』自勉，泰然處之。",
+            reason: "『寵辱不驚、去留無意』精準對應職位得失與豁達心態，語氣溫潤且撫慰人心。"
+          },
+          {
+            id: "B",
+            text: "商女不知亡國恨，隔江猶唱後庭花。",
+            isCorrect: false,
+            meaning: "歌女不知道亡國的悲恨，隔著江水猶自唱著亡國靡靡之音。",
+            usage: "杜牧《泊秦淮》，諷刺達官貴人不顧國家安危醉生夢死。",
+            example: "國難當前若仍夜夜笙歌，正是商女不知亡國恨的真實寫照。",
+            reason: "純屬政治諷刺與世風感傷，用於安慰落選同事極其失禮且語境全非。"
+          },
+          {
+            id: "C",
+            text: "少壯不努力，老大徒傷悲。",
+            isCorrect: false,
+            meaning: "年輕時如果不努力奮發，到年邁衰老時只能徒然懊悔悲傷。",
+            usage: "《長歌行》，勸戒青年珍惜光陰、奮發向學。",
+            example: "青春一去不復返，莫待少壯不努力，老大徒傷悲。",
+            reason: "同事已竭盡全力爭取，此時指責其不努力無異於落井下石。"
+          },
+          {
+            id: "D",
+            text: "朱門酒肉臭，路有凍死骨。",
+            isCorrect: false,
+            meaning: "富貴人家門裡肉爛酒酸，路上卻有凍死窮苦人的骸骨。",
+            usage: "杜甫詩句，揭露社會貧富懸殊階級不公。",
+            example: "這部紀錄片揭露貧富對立，令人想起朱門酒肉臭之嘆。",
+            reason: "描寫極端社會貧富矛盾，與個人心態寬慰毫無關聯。"
+          }
+        ],
+        classical_text: {
+          work: "《菜根譚》/《幽窗小記》",
+          chapter: "修省篇",
+          author: "明·洪應明",
+          original: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。",
+          vernacular: "受到榮寵或屈辱都淡定不驚，靜看庭前花朵自開自落；無論去職或留任皆不放在心頭，悠然仰望天際白雲舒展消散。",
+          citationUrl: "明·洪應明《菜根譚》"
+        },
+        source_reference: {
+          title: "明代小品格言《菜根譚》",
+          source: "明萬曆刊本",
+          note: "古今對話室經典示範題，現代延伸義與原典一致"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-dialogue-02",
+        mode: "dialogue",
+        difficulty: "medium",
+        title: "軟體架構重構的務實積累",
+        scenario: "工程團隊著手重寫龐大的舊系統，有年輕工程師妄想在三天內靠熬夜一口氣全部推翻重寫完成，資深架構師告誡他：『宏大的系統是一行一行程式碼、一個一個單元測試扎實累積起來的，急功近利只會引發全面崩潰。』若用一句古文送給這位工程師，何者最為契合？",
+        options: [
+          {
+            id: "A",
+            text: "不積跬步，無以至千里；不積小流，無以成江海。",
+            isCorrect: true,
+            meaning: "不一步半步地累積，就無法到達千里遠方；不匯聚涓滴細流，就無法成其江河大海。",
+            usage: "荀子《勸學》，強調持之以恆、重視微小基礎積累才能成就長遠宏業。",
+            example: "學習專業沒有捷徑，必須每日下功夫，畢竟不積跬步無以至千里。",
+            reason: "精確切中『大工程必須由瑣細微小之處逐步扎實累積』的務實哲學。"
+          },
+          {
+            id: "B",
+            text: "同是天涯淪落人，相逢何必曾相識。",
+            isCorrect: false,
+            meaning: "大家同是在天涯飄泊淪落的苦命人，今日相遇何必在乎從前是否認識。",
+            usage: "白居易《琵琶行》，形容漂泊異鄉者彼此同病相憐的共鳴。",
+            example: "旅人異鄉相遇相互勉勵，正是同是天涯淪落人。",
+            reason: "抒發命運漂泊的同理心，與工程技術的積累工作哲學無涉。"
+          },
+          {
+            id: "C",
+            text: "兩情若是久長時，又豈在朝朝暮暮。",
+            isCorrect: false,
+            meaning: "男女相愛只要情深意長，又何必一定要朝夕相聚廝守。",
+            usage: "秦觀《鵲橋仙》，專論真摯恆久的男女愛情觀。",
+            example: "夫妻暫隔兩地工作，彼此互信，深知兩情若是久長時又豈在朝朝暮暮。",
+            reason: "純屬愛情名句，無法用於技術研發的積累告誡。"
+          },
+          {
+            id: "D",
+            text: "路漫漫其修遠兮，吾將上下而求索。",
+            isCorrect: false,
+            meaning: "前方的道路漫長悠遠，我將上天下地不懈地探索尋求理想。",
+            usage: "屈原《離騷》，表達追求政治理想百折不撓的精神。",
+            example: "科學家面對未知領域，懷抱路漫漫其修遠兮之決心前行。",
+            reason: "雖有追求理想之意，但荀子名句更具體針對『微小步驟積累以成大業』的反浮躁告誡。"
+          }
+        ],
+        classical_text: {
+          work: "《荀子》",
+          chapter: "勸學篇第一",
+          author: "荀況（約前313-前238）",
+          original: "積土成山，風雨興焉；積水成淵，蛟龍生焉……故不積跬步，無以至千里；不積小流，無以成江海。騏驥一躍，不能十步；駑馬十駕，功在不舍。",
+          vernacular: "堆積泥土成為高山，風雨就會興起；匯聚積水成為深潭，蛟龍就會滋生……所以不累積半步一步，就不能走到千里之遠；不匯集細小水流，就不能形成江河大海。駿馬一躍也不過十步；劣馬走十天也能到達，成功關鍵在於永不放棄。",
+          citationUrl: "《荀子·勸學》"
+        },
+        source_reference: {
+          title: "荀子《勸學》原典篇章",
+          source: "先秦諸子散文注疏",
+          note: "古今對話室示範題，論述積累哲學無疑義"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-hybrid-01",
+        mode: "hybrid",
+        difficulty: "medium",
+        title: "跨部門專案中的步調分歧",
+        scenario: "集團整合跨部門打造新型智慧商城，行銷組堅持採用激進的先鋒文案，技術組卻因資安稽核要求全面保守封測，雙方開會時彼此冷嘲熱諷，完全沒有協調折衷的誠意，各照各的算盤單打獨鬥。專案顧問評估：『若再這樣_________，這個案子必然難逃胎死腹中的命運。』請問橫線上填入何者語意最精準且符合語境？",
+        options: [
+          {
+            id: "A",
+            text: "各行其是",
+            isCorrect: true,
+            meaning: "是：認為正確的事。每個人都按照自己認為對的一套去做，互不協調配合。",
+            usage: "用於指責團隊缺乏共識、步調混亂、各搞各的。",
+            example: "組織內若各部主管各行其是，企業策略將徹底流於空談。",
+            reason: "完美貼合行銷與技術兩端互不溝通、按各自算盤單打獨鬥的情境。"
+          },
+          {
+            id: "B",
+            text: "貌合神離",
+            isCorrect: false,
+            meaning: "表面上關係親近融洽，內心世界卻各懷鬼胎、想法分歧。",
+            usage: "側重在『表面看起來團結友好』之偽裝。",
+            example: "這對政商聯盟表面握手言歡，實則貌合神離。",
+            reason: "題幹已述兩組『開會時彼此冷嘲熱諷』，表面根本連融洽都未維持，故『貌合』不符情境事實。"
+          },
+          {
+            id: "C",
+            text: "閉門造車",
+            isCorrect: false,
+            meaning: "關起門來造車子。比喻脫離實際客觀環境，只憑主觀想像辦事。",
+            usage: "強調缺乏市場考察或不看現實需求。",
+            example: "做產品不能只坐在辦公室閉門造車，必須深入市場。",
+            reason: "重點在脫離客觀現實，非團隊成員缺乏溝通各自為政。"
+          },
+          {
+            id: "D",
+            text: "孤芳自賞",
+            isCorrect: false,
+            meaning: "比喻自命清高、自我欣賞，不屑與世俗同流合污。",
+            usage: "通常用於形容文人文藝家清高自許之孤僻心態。",
+            example: "他才華出眾卻不愛交際，總喜歡在書房孤芳自賞。",
+            reason: "純屬個人性格與清高態度，不合跨部門步調衝突之情境。"
+          }
+        ],
+        classical_text: {
+          work: "《莊子》/《史記》語源互見",
+          chapter: "語義演化綜合典故",
+          author: "教育部成語典考訂",
+          original: "各行其私，各行其是。",
+          vernacular: "各自依憑私意行事，各自按照自以為是的標準行動。",
+          citationUrl: "教育部《成語典》「各行其是」條"
+        },
+        source_reference: {
+          title: "教育部成語典：各行其是",
+          source: "教育部《成語典》辨析：各行其是 vs 貌合神離",
+          note: "古今混合題：考驗細膩語境邏輯（表面友好與公開衝突之區隔）"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-idiom-03",
+        mode: "idiom",
+        difficulty: "hard",
+        title: "組織擴張後的中樞失靈危機",
+        scenario: "某大型跨國集團在全盛時期於全球成立近百家海外子公司，後來由於監管機制鬆散，許多區域分公司的資產與人事權限反過來超越母公司，甚至公然拒絕執行董事會的降本增效指令，導致總部調度失靈。管理學評論家以何成語形容此種『下級勢力強大難以駕馭』之弊病最恰切？",
+        options: [
+          {
+            id: "A",
+            text: "尾大不掉",
+            isCorrect: true,
+            meaning: "掉：擺動、搖晃。尾巴太大就無法自如擺動。比喻下級或附屬勢力過於龐大，以致上級指揮不靈難以牽制駕馭。",
+            usage: "常用於政治、軍事或大企業組織架構，指分支勢力擁兵自重。",
+            example: "分封諸侯如果土地過廣，往往釀成尾大不掉的割據局面。",
+            reason: "完全契合子公司權限膨脹、母公司中樞指揮失靈之經典政經情境。"
+          },
+          {
+            id: "B",
+            text: "尾生抱柱",
+            isCorrect: false,
+            meaning: "相傳尾生與女子約於橋下相會，洪水湧至仍不肯離去，終抱橋柱溺死。比喻堅守信約，亦諷刺不知變通之愚忠死板。",
+            usage: "《莊子·盜跖》，用於誠信或固執不知變通之典故。",
+            example: "講信用固然好，但若不知應變以致喪命，便成了尾生抱柱。",
+            reason: "雖有『尾』字，但意思為信守諾言至死不變，與組織權力結構毫無瓜葛。"
+          },
+          {
+            id: "C",
+            text: "虎頭蛇尾",
+            isCorrect: false,
+            meaning: "頭如老虎般威猛，尾巴卻如蛇一般細小。比喻做事起初聲勢浩大，後來無疾而終。",
+            usage: "批評做事態度有始無終。",
+            example: "這個專案當初宣傳得沸沸揚揚，最後卻虎頭蛇尾草草收場。",
+            reason: "強調前後貫徹程度不一，非上下級權力失衡。"
+          },
+          {
+            id: "D",
+            text: "尾燈相銜",
+            isCorrect: false,
+            meaning: "形容車輛接連不斷、交通極其擁塞繁忙。",
+            usage: "現代生活描述高速公路或街道車潮景象。",
+            example: "連假返鄉車潮洶湧，高速公路上只見車輛尾燈相銜延綿數里。",
+            reason: "僅為描繪交通擁擠之視覺詞彙，非指管理架構問題。"
+          }
+        ],
+        classical_text: {
+          work: "《左傳》",
+          chapter: "昭公十一年",
+          author: "左丘明（約前502-前422）",
+          original: "楚左尹子革曰：「……且臣聞之，雄鱉尾大，其生也難；大尾不掉，將自害也。今楚之尾大矣，得無害乎？」",
+          vernacular: "楚國左尹子革說：「……而且我聽說，雄鱉尾巴太粗大，活動就很困難；尾巴太大無法擺動，終將傷害到自己。如今楚國分封的城邑勢力太龐大了，難道不會招致危害嗎？」",
+          citationUrl: "阮元校刻十三經注疏本《春秋左傳正義》卷四十五"
+        },
+        source_reference: {
+          title: "十三經注疏《春秋左傳正義·昭公十一年》",
+          source: "唐·孔穎達疏",
+          note: "高階政論典故成語，審訂義項無多解疑義"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-trans-03",
+        mode: "translation",
+        difficulty: "hard",
+        title: "蘇軾《前赤壁賦》渺小生命的超然宇宙觀",
+        scenario: "蘇軾泛舟赤壁，客吹洞簫發出悲愴之音，感嘆人生苦短：『寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。』其中『寄蜉蝣於天地，渺滄海之一粟』確切之旨趣為何？",
+        options: [
+          {
+            id: "A",
+            text: "如同蜉蝣寄生在廣袤天地之間，渺小得就像大海裡的一顆小米粒。",
+            isCorrect: true,
+            meaning: "蜉蝣：朝生暮死之微小昆蟲；粟：穀子。極力形容人身在永恆宇宙中之極度渺小與短暫。",
+            usage: "蘇軾藉客之口抒發生命悲劇感，隨後在賦文中展開水月齊一之達觀化解。",
+            example: "登泰山而小天下，更覺個人寄蜉蝣於天地，渺滄海之一粟。",
+            reason: "字詞精準對應：蜉蝣（生命短促微物）、粟（一粒穀米），深刻表達形體與壽命之微。"
+          },
+          {
+            id: "B",
+            text: "把釣竿和魚餌寄放在天地之間，看著江海裡漂流的一包稻穀感慨萬千。",
+            isCorrect: false,
+            meaning: "誤將『蜉蝣』當成釣具，將『粟』誤解成整袋糧食，望文生義。",
+            usage: "嚴重偏離原意之錯誤理解。",
+            example: "無此用法。",
+            reason: "詞性與典故完全誤讀。"
+          },
+          {
+            id: "C",
+            text: "在天地間像水鳥一樣自由飛翔，即使身在大海也像穀粒般營養充足。",
+            isCorrect: false,
+            meaning: "將悲涼悲嘆強行解為樂觀自由，且誤認蜉蝣為鳥類。",
+            usage: "概念混淆。",
+            example: "無此用法。",
+            reason: "『蜉蝣』非水鳥，『渺』為渺小而非充足。"
+          },
+          {
+            id: "D",
+            text: "短暫寄居在凡夫俗子之間，心胸遠大能把整座滄海吸入一粒米中。",
+            isCorrect: false,
+            meaning: "附會佛教芥子納須彌之說，脫離蘇軾此處描寫主體渺小無助之原旨。",
+            usage: "過度引申之偏誤詮釋。",
+            example: "無此用法。",
+            reason: "此處在講客之哀傷與渺小，而非神通廣大的超能力。"
+          }
+        ],
+        classical_text: {
+          work: "《前赤壁賦》",
+          chapter: "全篇",
+          author: "蘇軾（1037-1101）",
+          original: "蘇子愀然，正襟危坐而問客曰：「何為其然也？」客曰：「……寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。」",
+          vernacular: "蘇先生神情悲傷，整理衣襟端正坐著問客人說：「為什麼會吹出這樣悲傷的曲子呢？」客人說：「……我們如同蜉蝣般短暫寄居在廣闊天地中，渺小得像汪洋大海中的一顆米粒。哀嘆我們生命的短暫，羨慕長江水流的無窮無盡。」",
+          citationUrl: "宋·蘇軾《東坡全集》卷二十二"
+        },
+        source_reference: {
+          title: "宋代散文經典《前赤壁賦》",
+          source: "教育部高中國文必讀核心古文篇目",
+          note: "經典高階古文示範題，核對蘇軾原本無訛"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-dialogue-03",
+        mode: "dialogue",
+        difficulty: "hard",
+        title: "演算法喧囂年代的清醒自處",
+        scenario: "在短影音與社群推播鋪天蓋地、資訊高度碎片化的數位時代，年輕學生常感到注意力渙散、心浮氣躁難以沉潛讀書。中文系講座教授在新生座談會上，引諸葛亮家書勉勵大家屏除浮躁、寧靜致遠。請問引述何句最能體現『拒絕外在紛擾、蓄積深邃志向』的核心教誨？",
+        options: [
+          {
+            id: "A",
+            text: "非淡泊無以明志，非寧靜無以致遠。",
+            isCorrect: true,
+            meaning: "不把名利名聲看淡，就不能明確堅定志向；內心不保持寧靜安詳，就不能成就長遠事業。",
+            usage: "諸葛亮《誡子書》，告誡後代培養專注內省、沉著有恆之品格。",
+            example: "創業者在市場狂熱時尤需謹記『非淡泊無以明志，非寧靜無以致遠』。",
+            reason: "直指當代年輕人對抗喧囂浮躁、重尋心智專注與長程目標之解方。"
+          },
+          {
+            id: "B",
+            text: "出師未捷身先死，長使英雄淚滿襟。",
+            isCorrect: false,
+            meaning: "大軍出師還沒取得勝利主帥就先病逝了，常使後世英雄豪傑感慨流淚沾濕衣襟。",
+            usage: "杜甫《蜀相》，哀悼諸葛亮六出祁山功業未竟之悲壯感傷。",
+            example: "那位科學家在疫苗發表前夕染疫病逝，真是出師未捷身先死。",
+            reason: "旨在感傷功業未竟與英雄凋零，非論述內在心靈修持。"
+          },
+          {
+            id: "C",
+            text: "親賢臣，遠小人，此先漢所以興隆也。",
+            isCorrect: false,
+            meaning: "親近賢德的臣子，疏遠品行不端的小人，這正是前漢王朝之所以繁榮興盛的原因。",
+            usage: "諸葛亮《前出師表》，治國理政與用人建言。",
+            example: "主管用人若能親賢臣遠小人，部門氣象自能煥然一新。",
+            reason: "屬於政治任用之告誡，非個人抵抗外在資訊干擾沉潛心性之道。"
+          },
+          {
+            id: "D",
+            text: "本是同根生，相煎何太急。",
+            isCorrect: false,
+            meaning: "大家本是同一個根莖長出來的，為何要如此急迫地互相煎熬逼迫呢？",
+            usage: "曹植《七步詩》，悲憤手足相殘、內部骨肉相爭。",
+            example: "兄弟為爭遺產對簿公堂，鄰居感嘆本是同根生相煎何太急。",
+            reason: "專指手足骨肉爭鬥，完全脫離專注讀書修身之語境。"
+          }
+        ],
+        classical_text: {
+          work: "《誡子書》",
+          chapter: "全文",
+          author: "三國·蜀漢·諸葛亮（181-234）",
+          original: "夫君子之行，靜以修身，儉以養德。非淡泊無以明志，非寧靜無以致遠。夫學須靜也，才須學也，非學無以廣才，非志無以成學。",
+          vernacular: "君子的德行，依靠內心寧靜來修養身心，依靠簡樸節儉來培養品德。不把名利得失看淡就無法堅定志向，內心不寂靜深思就無法達到遠大目標。做學問必須心靈寧靜，才華必須經過勤學，不學習就無法開展才能，沒有堅定志向就無法在學業上有所成就。",
+          citationUrl: "明·張溥編《漢魏六朝百三家集·諸葛亮集》"
+        },
+        source_reference: {
+          title: "諸葛亮《誡子書》家訓原典",
+          source: "《諸葛亮集·文集卷一》",
+          note: "古今對話室高階經典題，歷久彌新"
+        },
+        status: "approved"
+      },
+      {
+        id: "q-hybrid-02",
+        mode: "hybrid",
+        difficulty: "easy",
+        title: "工匠神技與專業精湛境界",
+        scenario: "故宮修復國寶古書的國寶級裱褙大師，面對破碎脆化如蟬翼的千年古畫，能以毫釐之差剝離七層古紙而不損及絲毫墨色。在場觀摩的青年學徒無不屏息讚嘆，紛紛形容大師的手藝已達到_________、令人嘆為觀止的超凡境界。請問何者形容最為確切？",
+        options: [
+          {
+            id: "A",
+            text: "目無全牛",
+            isCorrect: true,
+            meaning: "全牛：整隻牛。庖丁解牛三年之後，眼中所見已非整隻牛，而是牛的骨肉筋絡結構。比喻技藝熟練到了極點、洞悉本質得心應手。",
+            usage: "《莊子·養生主》，專門形容各專業領域技藝達到爐火純青出神入化。",
+            example: "老外科醫師動手術時目無全牛，下刀極其果決精準。",
+            reason: "裱褙大師洞悉紙纖維結構且手法神妙，正是目無全牛的最佳詮釋（注意：非貶義，常被誤解為目中無人）。"
+          },
+          {
+            id: "B",
+            text: "刻舟求劍",
+            isCorrect: false,
+            meaning: "在船上刻記號尋找落入水中的寶劍。比喻拘泥不知變通、食古不化。",
+            usage: "貶義詞，批評不知時空變遷而墨守成規之人。",
+            example: "時代在進步，若仍沿用三十年前的規章管理，無異於刻舟求劍。",
+            reason: "貶抑死板不化，絕非稱讚高超技藝。"
+          },
+          {
+            id: "C",
+            text: "井底之蛙",
+            isCorrect: false,
+            meaning: "住在井底的小青蛙，以為天只有井口那麼大。比喻見識狹窄短淺的人。",
+            usage: "諷刺眼界封閉、缺乏宏觀視野。",
+            example: "多出國看看世界，免得淪為井底之蛙而自鳴得意。",
+            reason: "批評見識狹隘，與技藝高超截然相反。"
+          },
+          {
+            id: "D",
+            text: "濫竽充數",
+            isCorrect: false,
+            meaning: "不會吹竽的人混在樂隊中冒充吹奏。比喻沒有真才實學卻混在同行中充數。",
+            usage: "自謙或批評假冒專業。",
+            example: "這份企劃案大家都是專家，我只是濫竽充數來見習罷了。",
+            reason: "形容不學無術冒充專家，與大師之神技語義完全顛倒。"
+          }
+        ],
+        classical_text: {
+          work: "《莊子》",
+          chapter: "養生主第三",
+          author: "莊周（約前369-前286）",
+          original: "始臣之解牛之時，所見無非牛者；三年之後，未嘗見全牛也。方今之時，臣以神遇而不以目視，官知止而神欲行。",
+          vernacular: "當初我剛開始解剖牛的時候，所看見的無非是整頭牛；三年之後，就未曾再看見整頭完整的牛了（只看到筋骨結構縫隙）。到了現在，我全憑心神直覺去體會而不用眼睛去看，視覺感官的作用停止了而心神的領會正在運行。",
+          citationUrl: "郭慶藩《莊子集釋·養生主》"
+        },
+        source_reference: {
+          title: "教育部成語典：目無全牛",
+          source: "教育部《成語典》正解辨析",
+          note: "高頻易混淆成語：民間常望文生義誤作目中無人，實為讚譽技藝神化"
+        },
+        status: "approved"
+      }
+    ];
+
+    // 待審核演示題目
+    const DEMO_PENDING_QUESTION = {
+      id: "q-pending-99",
+      mode: "idiom",
+      difficulty: "medium",
+      title: "待審核候選題：職場溝通障礙的形容",
+      scenario: "新舊團隊整合會議中，雙方針對軟體專案架構各說各話，完全不在同一個邏輯頻道上交流，會議整整耗費三小時卻沒有任何交集。",
+      options: [
+        {
+          id: "A",
+          text: "雞同鴨講",
+          isCorrect: true,
+          meaning: "比喻彼此語言不通，或雙方認知差距過大，各說各話無法溝通。",
+          usage: "口語或生活情境通用。",
+          example: "這場會議雙方專業領域差距太遠，簡直是雞同鴨講。",
+          reason: "雙方毫無交集各說各話，極具現代代表性。"
+        },
+        {
+          id: "B",
+          text: "南轅北轍",
+          isCorrect: false,
+          meaning: "心想往南走，車子卻向北行。比喻行動與目標完全相反。",
+          usage: "強調行動與原意背道而馳。",
+          example: "企圖藉由熬夜提高讀書效率，無疑是南轅北轍。",
+          reason: "本題焦點在雙方溝通對話缺乏交集，非行動與目標背馳。"
+        },
+        {
+          id: "C",
+          text: "對牛彈琴",
+          isCorrect: false,
+          meaning: "對著牛彈奏美妙琴樂。比喻對不懂道理的人講高深道理。",
+          usage: "通常是一方高深而另一方無知。",
+          example: "跟不懂電腦的人解釋演算法，簡直是對牛彈琴。",
+          reason: "題目強調雙方各說各話，非單方面聽眾水準不足。"
+        },
+        {
+          id: "D",
+          text: "風馬牛不相及",
+          isCorrect: false,
+          meaning: "比喻事物之間毫不相干或兩地相距遙遠。",
+          usage: "《左傳》典故，強調事物毫無牽連關聯。",
+          example: "這兩項研究的領域風馬牛不相及，無法直接類比。",
+          reason: "形容會議溝通現場時以雞同鴨講最為生動貼切。"
+        }
+      ],
+      classical_text: {
+        work: "民間俗諺語源考",
+        chapter: "語源考",
+        author: "無考",
+        original: "粵諺：雞同鴨講，眼碌碌。",
+        vernacular: "方言俗語，指語言不同無法溝通。",
+        citationUrl: "教育部台灣台語常用詞辭典"
+      },
+      source_reference: {
+        title: "民間語言典故考訂組",
+        source: "待進行多答案排除檢核",
+        note: "審核註記：南轅北轍是否可能造成雙答案疑義？待審核小組判定"
+      },
+      status: "pending"
+    };
+
+    // ----------------------------------------------------
+    // 2. 聲音引擎 (Web Audio API - 原生免外部資源，手機相容性極佳)
+    // ----------------------------------------------------
+    class AudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.15, gain = 0.08) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          g.gain.setValueAtTime(gain, this.ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(g);
+          g.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+      playCorrect() {
+        this.playTone(523.25, 'sine', 0.1, 0.07); // C5
+        setTimeout(() => this.playTone(659.25, 'sine', 0.14, 0.07), 90); // E5
+        setTimeout(() => this.playTone(783.99, 'sine', 0.22, 0.08), 180); // G5
+      }
+      playIncorrect() {
+        this.playTone(261.63, 'triangle', 0.18, 0.07); // C4
+        setTimeout(() => this.playTone(220.00, 'triangle', 0.25, 0.07), 110); // A3
+      }
+      playRankUp() {
+        // 宮商角徵羽五度晉爵慶賀樂音
+        this.playTone(523.25, 'sine', 0.12, 0.08); // C5
+        setTimeout(() => this.playTone(659.25, 'sine', 0.14, 0.08), 80); // E5
+        setTimeout(() => this.playTone(783.99, 'sine', 0.16, 0.09), 160); // G5
+        setTimeout(() => this.playTone(880.00, 'sine', 0.18, 0.09), 240); // A5
+        setTimeout(() => this.playTone(1046.50, 'sine', 0.35, 0.11), 320); // C6
+      }
+      playClick() {
+        this.playTone(440, 'sine', 0.04, 0.02);
+      }
+    }
+    const audio = new AudioEngine();
+
+    // ----------------------------------------------------
+    // 原典正音：Web Speech API 瀏覽器原生語音朗讀
+    // ----------------------------------------------------
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        showToast('目前瀏覽器環境未支援語音朗讀');
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        const cleanText = text.replace(/[「」『』、《》……——]/g, '，');
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = 'zh-TW';
+        utter.rate = 0.88; // 典雅沉著語速
+        window.speechSynthesis.speak(utter);
+        showToast('🔊 正在誦讀典籍名句...');
+      } catch (e) {
+        showToast('語音播放未啟動');
+      }
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    // ----------------------------------------------------
+    // 每日文人箋資料庫與日曆籤語邏輯
+    // ----------------------------------------------------
+    const DAILY_WISDOM_LIST = [
+      {
+        quote: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。",
+        author: "明·洪應明《菜根譚》",
+        context: "受寵或蒙恥都不動心，去留官職全不在意，保持超然淡泊胸襟。",
+        modern: "面對工作企劃或升遷挫折時，先深呼吸三次，不因一時得失亂了陣腳。",
+        action: "今日心法：面對不如意事，閒看雲卷雲舒，以長遠眼界化解當下焦慮。"
+      },
+      {
+        quote: "不積跬步，無以至千里；不積小流，無以成江海。",
+        author: "荀子《勸學》",
+        context: "不一步半步地累積就無法到達千里，強調持之以恆之扎實功夫。",
+        modern: "面對龐大專案或新技能，每天專注推進 1% 的細節，勝過衝動熬夜。",
+        action: "今日微行動：將待辦清單中最大的任務，拆分為立刻能完成的 15 分鐘小步。"
+      },
+      {
+        quote: "人不知而不慍，不亦君子乎？",
+        author: "《論語·學而》",
+        context: "別人不瞭解我的才能或德行，我心中卻不生怨恨生氣，此為君子之德。",
+        modern: "默默努力卻未第一時間被主管或同儕看見時，保有內在定力與自知之明。",
+        action: "今日心法：為自己的紮實付出鼓掌，不把自我價值寄託於外在掌聲。"
+      },
+      {
+        quote: "非淡泊無以明志，非寧靜無以致遠。",
+        author: "諸葛亮《誡子書》",
+        context: "不把名利看淡就無法明確志向，內心不寂靜深思就無法成就長遠事業。",
+        modern: "社群推播與短影音狂轟濫炸之時，適時離線沉澱，為真正重要的大事保留心力。",
+        action: "今日微行動：設定 30 分鐘無干擾專注時段，關閉所有社群通知。"
+      },
+      {
+        quote: "目無全牛，官知止而神欲行。",
+        author: "《莊子·養生主》",
+        context: "技藝純熟至極，眼中所見已非整隻牛，而是本質結構，全憑心神直覺運作。",
+        modern: "各領域專業達到爐火純青時，直擊問題核心本質，遊刃有餘。",
+        action: "今日心法：專注於事物底層邏輯與規律，抽絲剝繭，迎刃而解。"
+      }
+    ];
+
+    function getTodayWisdom() {
+      const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % DAILY_WISDOM_LIST.length;
+      return DAILY_WISDOM_LIST[dayIndex];
+    }
+
+    function openDailyWisdomModal() {
+      audio.playClick();
+      const wisdom = getTodayWisdom();
+      const container = document.getElementById('daily-wisdom-card-content');
+      if (container) {
+        container.innerHTML = `
+          <div class="p-4 rounded-2xl bg-gradient-to-b from-[#FFFDF9] to-[#F7EFE1] border border-amber-300 shadow-2xs space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] text-amber-900 font-bold">
+              <span>【今日典雅箋】</span>
+              <button onclick="speakText('${wisdom.quote.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 touch-btn">
+                <span>🔊 朗誦</span>
+              </button>
+            </div>
+            <div class="font-serif text-base md:text-lg font-black text-[#261A12] leading-snug">
+              「${wisdom.quote}」
+            </div>
+            <div class="text-[11px] text-stone-500 font-medium">出處：${wisdom.author}</div>
+          </div>
+
+          <div class="space-y-2 text-xs text-[#4F3E30] bg-[#FAF5EB] p-3.5 rounded-xl border border-[#E9DFCB]">
+            <div>
+              <strong class="text-amber-950">【語境本義】</strong>
+              <span>${wisdom.context}</span>
+            </div>
+            <div>
+              <strong class="text-amber-950">【生活化用】</strong>
+              <span>${wisdom.modern}</span>
+            </div>
+            <div class="pt-1.5 border-t border-[#DFD3BC] text-emerald-950 font-bold text-[11px]">
+              🎯 ${wisdom.action}
+            </div>
+          </div>
+        `;
+      }
+      const modal = document.getElementById('modal-daily-wisdom');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDailyWisdomModal() {
+      const modal = document.getElementById('modal-daily-wisdom');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copyDailyWisdom() {
+      const wisdom = getTodayWisdom();
+      const text = `【文言語境研究所 · 每日文人箋】\n「${wisdom.quote}」—— ${wisdom.author}\n\n生活化用：${wisdom.modern}\n今日心法：${wisdom.action}`;
+      
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('已複製每日箋文至剪貼簿！');
+      } catch (e) {
+        showToast('複製失敗，請手動選取');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // ----------------------------------------------------
+    // 3. 全域狀態管理與 LocalStorage 持久化
+    // ----------------------------------------------------
+    // 翰林雅號晉升體系（融入圖騰與專屬徽章印記）
+    const SCHOLAR_RANKS = [
+      { 
+        id: 'rank-1', 
+        title: '童生', 
+        subtitle: '蒙學初窺', 
+        icon: '🪶', 
+        tagColor: 'bg-amber-100 text-amber-900 border-amber-300',
+        emblemBorder: 'border-amber-400 bg-amber-50 text-amber-900',
+        desc: '初入文言語境研究所，探索字詞神韻。', 
+        reqText: '完成首回合研討 (10題)', 
+        check: s => s.roundsCompleted >= 1 
+      },
+      { 
+        id: 'rank-2', 
+        title: '秀才', 
+        subtitle: '尋章摘句', 
+        icon: '📜', 
+        tagColor: 'bg-blue-100 text-blue-900 border-blue-300',
+        emblemBorder: 'border-blue-400 bg-blue-50 text-blue-900',
+        desc: '勤勉向學，辨析語境漸入佳境。', 
+        reqText: '累計答對 10 題', 
+        check: s => s.totalCorrect >= 10 
+      },
+      { 
+        id: 'rank-3', 
+        title: '舉人', 
+        subtitle: '洞若觀火', 
+        icon: '🏮', 
+        tagColor: 'bg-orange-100 text-orange-900 border-orange-300',
+        emblemBorder: 'border-orange-400 bg-orange-50 text-orange-900',
+        desc: '敏銳察覺細微言外之意與混淆項。', 
+        reqText: '單回合取得 80 分以上', 
+        check: s => s.highScore >= 80 
+      },
+      { 
+        id: 'rank-4', 
+        title: '貢士', 
+        subtitle: '博通古今', 
+        icon: '🏛️', 
+        tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+        emblemBorder: 'border-emerald-400 bg-emerald-50 text-emerald-900',
+        desc: '通曉經傳詩文，融會現代生活語用。', 
+        reqText: '累計答對 25 題', 
+        check: s => s.totalCorrect >= 25 
+      },
+      { 
+        id: 'rank-5', 
+        title: '進士', 
+        subtitle: '杏苑傳臚', 
+        icon: '🌸', 
+        tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
+        emblemBorder: 'border-rose-400 bg-rose-50 text-rose-900',
+        desc: '十題考辨無懈可擊，文林聲名鵲起。', 
+        reqText: '單回合榮獲 100 分滿分', 
+        check: s => s.highScore >= 100 
+      },
+      { 
+        id: 'rank-6', 
+        title: '翰林學士', 
+        subtitle: '詞林宗匠', 
+        icon: '👑', 
+        tagColor: 'bg-yellow-100 text-amber-950 border-amber-400',
+        emblemBorder: 'border-amber-500 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-950 shadow-xs',
+        desc: '典雅博洽，深孚眾望，為文言語境之宗師。', 
+        reqText: '累計答對 50 題且獲滿分', 
+        check: s => s.totalCorrect >= 50 && s.highScore >= 100 
+      }
+    ];
+
+    const SPECIAL_BADGES = [
+      { id: 'badge-perfect', name: '秋水明眸', icon: '🎯', desc: '單回研討零失誤榮獲 100 分滿分', check: s => s.highScore >= 100 },
+      { id: 'badge-scholar', name: '好學敏求', icon: '📜', desc: '收藏簿累積珍藏超過 5 則名句', check: () => STATE.bookmarks.length >= 5 },
+      { id: 'badge-audit', name: '格物致知', icon: '⚖️', desc: '主動向審核組提出學術疑義申訴', check: () => STATE.disputes.length >= 1 },
+      { id: 'badge-perseverance', name: '溫故知新', icon: '💡', desc: '於錯題複習所主動攻克並消除錯題', check: s => s.hasClearedMistake },
+      { id: 'badge-zhuangyuan', name: '獨占鰲頭', icon: '👑', desc: '於科舉殿試中考獲 100 分榮登天子欽點狀元', check: s => s.kejuPassed && s.kejuPassed.includes('dianshi-100') }
+    ];
+
+    // 科舉四大考科詳細規範
+    const KEJU_STAGES = [
+      {
+        id: 'yuanshi',
+        title: '童試 · 提督院試',
+        season: '本府學政考舍',
+        qualification: '童生皆可赴考',
+        passScore: 80,
+        awardTitle: '秀才',
+        awardRankId: 'rank-2',
+        desc: '地方府縣選拔基層學子，合格者准入府州縣學讀書，免除徭役，受封「秀才」。',
+        reqStage: null
+      },
+      {
+        id: 'xiangshi',
+        title: '鄉試 · 鹿鳴秋闈',
+        season: '每逢子、午、卯、酉年八月省城大比',
+        qualification: '需具備「秀才」功名',
+        passScore: 80,
+        awardTitle: '舉人',
+        awardRankId: 'rank-3',
+        desc: '於省城貢院大比，中式者尊稱「老爺」，受封「舉人」，可赴京入宴鹿鳴之饗。',
+        reqStage: 'yuanshi'
+      },
+      {
+        id: 'huishi',
+        title: '會試 · 禮部春闈',
+        season: '逢丑、未、辰、戌年二月京師會試',
+        qualification: '需具備「舉人」功名',
+        passScore: 90,
+        awardTitle: '貢士',
+        awardRankId: 'rank-4',
+        desc: '全國舉人齊聚京師禮部貢院策試，合格者受封「貢士」，取得入保和殿殿試資格。',
+        reqStage: 'xiangshi'
+      },
+      {
+        id: 'dianshi',
+        title: '殿試 · 紫宸御策',
+        season: '春三月保和殿天子親策',
+        qualification: '需具備「貢士」功名',
+        passScore: 90,
+        awardTitle: '進士 / 鼎甲狀元',
+        awardRankId: 'rank-5',
+        desc: '天子親自命題策問，不黜落只定甲第。滿分特封「一甲第一名狀元及第」！',
+        reqStage: 'huishi'
+      }
+    ];
+
+    const STATE = {
+      view: 'home', // 'home' | 'select' | 'quiz' | 'explanation' | 'summary' | 'bookmarks' | 'mistakes' | 'admin'
+      selectedMode: 'all',
+      selectedDifficulty: 'all',
+      currentExamStage: null, // 科舉考試狀態：'yuanshi' | 'xiangshi' | 'huishi' | 'dianshi' | null
+      questionBank: [],
+      bookmarks: [],
+      mistakes: [],
+      disputes: [],
+      roundQuestions: [],
+      currentIndex: 0,
+      userAnswers: {},
+      lockedAnswers: {},
+      isAdminLoggedIn: false,
+      fontSize: 'normal', // 'normal' | 'large' | 'huge'
+      hintsRemaining: 2, // 每回合提供 2 次求索錦囊（剔除障眼法）
+      eliminatedOptions: {}, // { [qId]: ['B', ...] }
+      playerStats: {
+        roundsCompleted: 0,
+        totalCorrect: 0,
+        highScore: 0,
+        hasClearedMistake: false,
+        kejuPassed: [] // 通過之科舉考科 ID
+      }
+    };
+
+    function getCurrentRank() {
+      const stats = STATE.playerStats;
+      let highest = SCHOLAR_RANKS[0];
+      for (const r of SCHOLAR_RANKS) {
+        if (r.check(stats)) {
+          highest = r;
+        }
+      }
+      return highest;
+    }
+
+    function getNextRank() {
+      const cur = getCurrentRank();
+      const idx = SCHOLAR_RANKS.findIndex(r => r.id === cur.id);
+      return idx < SCHOLAR_RANKS.length - 1 ? SCHOLAR_RANKS[idx + 1] : null;
+    }
+
+    function updateRankBadge() {
+      const cur = getCurrentRank();
+      const titleEl = document.getElementById('nav-rank-title');
+      const iconEl = document.getElementById('nav-rank-icon');
+      if (titleEl) titleEl.innerText = `${cur.title}`;
+      if (iconEl) iconEl.innerText = cur.icon;
+    }
+
+    function openRanksModal() {
+      audio.playClick();
+      renderRanksModalContent();
+      const modal = document.getElementById('modal-ranks');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeRanksModal() {
+      const modal = document.getElementById('modal-ranks');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderRanksModalContent() {
+      const cur = getCurrentRank();
+      const next = getNextRank();
+      const stats = STATE.playerStats;
+
+      const card = document.getElementById('ranks-current-card');
+      if (card) {
+        card.innerHTML = `
+          <div>
+            <div class="text-[9px] text-amber-800 font-bold uppercase tracking-wider">當前授封文階</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-xl">${cur.icon}</span>
+              <span class="font-serif text-lg font-black text-[#261A12]">${cur.title}</span>
+              <span class="text-[10px] px-2 py-0.2 rounded font-bold ${cur.tagColor}">
+                ${cur.subtitle}
+              </span>
+            </div>
+            <div class="text-[11px] text-[#635345] mt-1">${cur.desc}</div>
+            ${next ? `
+              <div class="mt-1.5 text-[10px] text-[#786655]">
+                晉升下一階：<strong class="text-amber-900">${next.icon} ${next.title}</strong>
+                <span class="text-stone-400">（${next.reqText}）</span>
+              </div>
+            ` : `
+              <div class="mt-1.5 text-[10px] text-emerald-800 font-bold">
+                已登文林絕頂！當代詞林宗匠。
+              </div>
+            `}
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-amber-800 text-amber-100 flex flex-col items-center justify-center border-2 border-amber-600 shadow-xs shrink-0">
+            <span class="text-base">${cur.icon}</span>
+            <span class="font-serif text-[9px] font-black">${cur.title}</span>
+          </div>
+        `;
+      }
+
+      const list = document.getElementById('ranks-tier-list');
+      if (list) {
+        list.innerHTML = SCHOLAR_RANKS.map((r) => {
+          const isUnlocked = r.check(stats);
+          const isCurrent = r.id === cur.id;
+          return `
+            <div class="p-2.5 rounded-xl border transition-all ${isCurrent ? 'bg-amber-100/70 border-amber-500 shadow-2xs' : isUnlocked ? 'bg-emerald-50/50 border-emerald-300' : 'bg-stone-50 border-stone-200 opacity-60'} flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold border shrink-0 ${isCurrent ? 'bg-amber-700 text-white border-amber-800' : isUnlocked ? 'bg-white border-emerald-400 text-emerald-800' : 'bg-stone-200 border-stone-300 text-stone-400'}">
+                  ${r.icon}
+                </div>
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-serif font-black text-xs md:text-sm text-[#2C1E15]">${r.title} · ${r.subtitle}</span>
+                    ${isCurrent ? '<span class="text-[8px] px-1.5 py-0.2 bg-amber-700 text-white rounded font-bold">當前</span>' : ''}
+                  </div>
+                  <div class="text-[9px] text-[#756455]">要求：${r.reqText}</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold ${isUnlocked ? 'text-emerald-800' : 'text-stone-400'}">
+                ${isUnlocked ? '已授封' : '未達成'}
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const badgeGrid = document.getElementById('ranks-badges-grid');
+      if (badgeGrid) {
+        badgeGrid.innerHTML = SPECIAL_BADGES.map(b => {
+          const earned = b.check(stats);
+          return `
+            <div class="p-2 rounded-xl border ${earned ? 'bg-amber-50 border-amber-300' : 'bg-stone-50 border-stone-200 opacity-50'} flex items-start gap-1.5">
+              <span class="text-lg shrink-0">${b.icon}</span>
+              <div>
+                <div class="font-bold text-[11px] text-[#2A1D15] flex items-center gap-1">
+                  <span>${b.name}</span>
+                  ${earned ? '<span class="text-[8px] text-emerald-700 font-bold">已刻印</span>' : ''}
+                </div>
+                <div class="text-[9px] text-[#736252] leading-tight mt-0.5">${b.desc}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function loadSavedData() {
+      try {
+        const qb = localStorage.getItem('joan_lab_qbank');
+        STATE.questionBank = qb ? JSON.parse(qb) : [...OFFICIAL_INITIAL_BANK, DEMO_PENDING_QUESTION];
+        
+        const bm = localStorage.getItem('joan_lab_bookmarks');
+        STATE.bookmarks = bm ? JSON.parse(bm) : ["q-idiom-01"];
+        
+        const mis = localStorage.getItem('joan_lab_mistakes');
+        STATE.mistakes = mis ? JSON.parse(mis) : [];
+
+        const disp = localStorage.getItem('joan_lab_disputes');
+        STATE.disputes = disp ? JSON.parse(disp) : [];
+
+        const st = localStorage.getItem('joan_lab_stats');
+        if (st) {
+          STATE.playerStats = JSON.parse(st);
+          if (!STATE.playerStats.kejuPassed) STATE.playerStats.kejuPassed = [];
+        }
+      } catch (e) {
+        STATE.questionBank = [...OFFICIAL_INITIAL_BANK, DEMO_PENDING_QUESTION];
+        STATE.bookmarks = ["q-idiom-01"];
+        STATE.mistakes = [];
+        STATE.disputes = [];
+        STATE.playerStats = { roundsCompleted: 0, totalCorrect: 0, highScore: 0, hasClearedMistake: false, kejuPassed: [] };
+      }
+      updateNavBookmarks();
+      updateRankBadge();
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem('joan_lab_qbank', JSON.stringify(STATE.questionBank));
+        localStorage.setItem('joan_lab_bookmarks', JSON.stringify(STATE.bookmarks));
+        localStorage.setItem('joan_lab_mistakes', JSON.stringify(STATE.mistakes));
+        localStorage.setItem('joan_lab_disputes', JSON.stringify(STATE.disputes));
+        localStorage.setItem('joan_lab_stats', JSON.stringify(STATE.playerStats));
+      } catch (e) {}
+      updateNavBookmarks();
+      updateRankBadge();
+    }
+
+    function updateNavBookmarks() {
+      const el = document.getElementById('nav-bookmark-count');
+      if (el) el.innerText = STATE.bookmarks.length;
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      if (toast && toastText) {
+        toastText.innerText = text;
+        toast.classList.remove('hidden');
+        toast.classList.add('flex');
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => {
+          toast.classList.add('hidden');
+          toast.classList.remove('flex');
+        }, 2800);
+      }
+    }
+
+    function toggleSound() {
+      audio.enabled = !audio.enabled;
+      document.getElementById('icon-sound-on').classList.toggle('hidden', !audio.enabled);
+      document.getElementById('icon-sound-off').classList.toggle('hidden', audio.enabled);
+      if (audio.enabled) audio.playClick();
+      showToast(audio.enabled ? '音效已開啟' : '音效已靜音');
+    }
+
+    function setFontSize(mode) {
+      STATE.fontSize = mode;
+      const root = document.documentElement;
+      if (mode === 'normal') root.style.setProperty('--font-scale', '1rem');
+      if (mode === 'large') root.style.setProperty('--font-scale', '1.125rem');
+      if (mode === 'huge') root.style.setProperty('--font-scale', '1.25rem');
+
+      ['normal', 'large', 'huge'].forEach(m => {
+        const btn = document.getElementById(`btn-font-${m}`);
+        if (btn) {
+          if (m === mode) {
+            btn.className = "px-2 py-1 text-xs rounded font-bold bg-amber-700 text-white shadow-xs transition-all";
+          } else {
+            btn.className = "px-2 py-1 text-xs rounded font-bold text-[#6C5C4D] hover:text-amber-900 transition-all";
+          }
+        }
+      });
+      renderCurrentView();
+    }
+
+    // 隨機洗牌
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ----------------------------------------------------
+    // 科舉考試專屬操作邏輯
+    // ----------------------------------------------------
+    function openKejuModal() {
+      audio.playClick();
+      renderKejuModalContent();
+      const modal = document.getElementById('modal-keju');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeKejuModal() {
+      const modal = document.getElementById('modal-keju');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderKejuModalContent() {
+      const passedList = STATE.playerStats.kejuPassed || [];
+      const sumEl = document.getElementById('keju-passed-summary');
+      if (sumEl) {
+        const basePassedCount = ['yuanshi', 'xiangshi', 'huishi', 'dianshi'].filter(id => passedList.some(p => p.startsWith(id))).length;
+        sumEl.innerText = `已及第 ${basePassedCount} / 4 功名`;
+      }
+
+      const listContainer = document.getElementById('keju-stages-list');
+      if (!listContainer) return;
+
+      listContainer.innerHTML = KEJU_STAGES.map((stg) => {
+        const isPassed = passedList.some(p => p.startsWith(stg.id));
+        const isUnlocked = !stg.reqStage || passedList.some(p => p.startsWith(stg.reqStage));
+
+        return `
+          <div class="p-3.5 rounded-2xl border-2 transition-all ${isPassed ? 'bg-emerald-50/70 border-emerald-500 shadow-2xs' : isUnlocked ? 'bg-[#FFFDF9] border-amber-400/90 shadow-2xs' : 'bg-stone-50 border-stone-200 opacity-60'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center border ${isPassed ? 'bg-emerald-700 text-white border-emerald-800' : isUnlocked ? 'bg-amber-700 text-white border-amber-800' : 'bg-stone-200 text-stone-500 border-stone-300'}">
+                  ${isPassed ? '✓' : isUnlocked ? '闈' : '🔒'}
+                </span>
+                <span class="font-serif font-black text-sm md:text-base text-[#2A1D15]">${stg.title}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
+                  錄取線：${stg.passScore} 分
+                </span>
+              </div>
+              <p class="text-[11px] text-[#5C4A3C] leading-snug">${stg.desc}</p>
+              <div class="text-[10px] text-stone-500">
+                應試資格：${stg.qualification} · 及第授封：<strong class="text-amber-900">${stg.awardTitle}</strong>
+              </div>
+            </div>
+
+            <div class="shrink-0 self-end sm:self-center">
+              ${isPassed ? `
+                <button onclick="startKejuExam('${stg.id}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
+                  重溫及第闈
+                </button>
+              ` : isUnlocked ? `
+                <button onclick="startKejuExam('${stg.id}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white font-bold text-xs shadow-md touch-btn flex items-center gap-1">
+                  <span>正身赴試</span>
+                  <span>→</span>
+                </button>
+              ` : `
+                <span class="text-xs text-stone-400 font-bold px-2 py-1 bg-stone-100 rounded-lg">尚未開考</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function startKejuExam(stageId) {
+      audio.playClick();
+      closeKejuModal();
+      STATE.currentExamStage = stageId;
+
+      // 依考科難度篩選或洗牌題組
+      let diff = 'easy';
+      if (stageId === 'xiangshi') diff = 'medium';
+      else if (stageId === 'huishi' || stageId === 'dianshi') diff = 'hard';
+
+      startRound('all', diff);
+      showToast(`已步入【${KEJU_STAGES.find(s => s.id === stageId)?.title}】考舍！肅靜應對。`);
+    }
+
+    // ----------------------------------------------------
+    // 5. 回合流程與作答控制
+    // ----------------------------------------------------
+    function startRound(mode = STATE.selectedMode, difficulty = STATE.selectedDifficulty) {
+      audio.playClick();
+      let pool = STATE.questionBank.filter(q => q.status === 'approved');
+
+      if (mode === 'review') {
+        pool = pool.filter(q => STATE.mistakes.includes(q.id));
+        if (pool.length === 0) {
+          showToast('目前尚無錯題紀錄，已開啟綜合挑戰！');
+          pool = STATE.questionBank.filter(q => q.status === 'approved');
+        }
+      } else if (mode !== 'all') {
+        pool = pool.filter(q => q.mode === mode);
+      }
+
+      if (difficulty !== 'all') {
+        const diffPool = pool.filter(q => q.difficulty === difficulty);
+        if (diffPool.length >= 3) {
+          pool = diffPool;
+        }
+      }
+
+      let chosen = [];
+      if (mode === 'all' && pool.length >= 8) {
+        const idiomQ = shuffle(pool.filter(q => q.mode === 'idiom')).slice(0, 3);
+        const transQ = shuffle(pool.filter(q => q.mode === 'translation')).slice(0, 2);
+        const dialQ = shuffle(pool.filter(q => q.mode === 'dialogue')).slice(0, 2);
+        const hybQ = shuffle(pool.filter(q => q.mode === 'hybrid')).slice(0, 3);
+        chosen = [...idiomQ, ...transQ, ...dialQ, ...hybQ];
+        const remaining = pool.filter(q => !chosen.some(c => c.id === q.id));
+        while (chosen.length < 10 && remaining.length > 0) {
+          chosen.push(remaining.pop());
+        }
+      } else {
+        chosen = shuffle(pool).slice(0, 10);
+      }
+
+      // 若題庫不足 10 題，循環複習填滿 10 題
+      if (chosen.length > 0 && chosen.length < 10) {
+        const base = [...chosen];
+        while (chosen.length < 10) {
+          chosen.push(base[chosen.length % base.length]);
+        }
+      }
+
+      STATE.roundQuestions = chosen.map((q, idx) => {
+        const shuffledOptions = shuffle(q.options).map((opt, oIdx) => ({
+          ...opt,
+          displayLabel: ['A', 'B', 'C', 'D'][oIdx]
+        }));
+        return {
+          ...q,
+          roundKey: `${q.id}-${idx}`,
+          options: shuffledOptions
+        };
+      });
+
+      STATE.currentIndex = 0;
+      STATE.userAnswers = {};
+      STATE.lockedAnswers = {};
+      STATE.hintsRemaining = 2; // 重置錦囊次數
+      STATE.eliminatedOptions = {}; // 重置排除選項
+      STATE.view = 'quiz';
+      renderCurrentView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 求索錦囊（剔除障眼法 50/50）
+    function useHint() {
+      if (STATE.hintsRemaining <= 0) {
+        showToast('本回合求索錦囊已用盡');
+        return;
+      }
+      const q = STATE.roundQuestions[STATE.currentIndex];
+      if (!q || STATE.lockedAnswers[q.id]) return;
+
+      if (!STATE.eliminatedOptions[q.id]) {
+        STATE.eliminatedOptions[q.id] = [];
+      }
+
+      const availableWrongOpts = q.options.filter(o => !o.isCorrect && !STATE.eliminatedOptions[q.id].includes(o.displayLabel));
+      if (availableWrongOpts.length === 0) {
+        showToast('無法再排除更多干擾項');
+        return;
+      }
+
+      const chosenToEliminate = availableWrongOpts[Math.floor(Math.random() * availableWrongOpts.length)];
+      STATE.eliminatedOptions[q.id].push(chosenToEliminate.displayLabel);
+      STATE.hintsRemaining--;
+      audio.playTone(587.33, 'sine', 0.15, 0.08); // D5
+      showToast(`已施展錦囊：剔除障眼選項 [${chosenToEliminate.displayLabel}]！`);
+      renderCurrentView();
+    }
+
+    function handleOptionSelect(label) {
+      const q = STATE.roundQuestions[STATE.currentIndex];
+      if (!q || STATE.lockedAnswers[q.id]) return;
+
+      const opt = q.options.find(o => o.displayLabel === label);
+      if (!opt) return;
+
+      STATE.userAnswers[q.id] = label;
+      STATE.lockedAnswers[q.id] = true;
+
+      if (opt.isCorrect) {
+        audio.playCorrect();
+      } else {
+        audio.playIncorrect();
+        if (!STATE.mistakes.includes(q.id)) {
+          STATE.mistakes.unshift(q.id);
+        }
+      }
+      saveData();
+      renderCurrentView();
+    }
+
+    function toggleBookmarkCurrent(qId) {
+      audio.playClick();
+      if (STATE.bookmarks.includes(qId)) {
+        STATE.bookmarks = STATE.bookmarks.filter(id => id !== qId);
+        showToast('已自收藏簿移除');
+      } else {
+        STATE.bookmarks.push(qId);
+        showToast('已收藏至成語古文收藏簿！');
+      }
+      saveData();
+      renderCurrentView();
+    }
+
+    // 安全檢視單一題目（取代行內 JSON 序列化，防止語法跳脫錯誤）
+    function reviewSingleQuestion(qId, targetView = 'quiz') {
+      const q = STATE.questionBank.find(item => item.id === qId);
+      if (!q) return;
+
+      const shuffledOptions = shuffle(q.options).map((opt, idx) => ({
+        ...opt,
+        displayLabel: ['A', 'B', 'C', 'D'][idx]
+      }));
+
+      STATE.roundQuestions = [{ ...q, options: shuffledOptions }];
+      STATE.currentIndex = 0;
+      STATE.userAnswers = {};
+      STATE.lockedAnswers = {};
+
+      if (targetView === 'explanation') {
+        const correctOpt = shuffledOptions.find(o => o.isCorrect);
+        if (correctOpt) {
+          STATE.userAnswers[q.id] = correctOpt.displayLabel;
+          STATE.lockedAnswers[q.id] = true;
+        }
+      }
+
+      STATE.view = targetView;
+      renderCurrentView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ----------------------------------------------------
+    // 6. 各頁面 HTML 產生器（極致精簡頂部卡片，降低視覺佔比）
+    // ----------------------------------------------------
+    function getHomeHTML() {
+      const curRank = getCurrentRank();
+      const kejuPassedCount = ['yuanshi', 'xiangshi', 'huishi', 'dianshi'].filter(id => STATE.playerStats.kejuPassed && STATE.playerStats.kejuPassed.some(p => p.startsWith(id))).length;
+
+      return `
+        <div class="space-y-4 fade-in">
+          <!-- 輕巧書卷微橫幅（大幅壓低垂直高度，不遮擋視野） -->
+          <div class="rounded-2xl bg-gradient-to-r from-[#FFFDF9] via-[#FAF3E3] to-[#F5EEDC] p-3.5 md:p-5 border border-[#E3D7BD] shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 border border-emerald-300 text-[10px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                防誤導檢覈 · 教育部《成語典》與正統經傳注疏
+              </div>
+              <h1 class="font-serif text-lg md:text-2xl font-black text-[#2B1F17] leading-snug">
+                精準辨析語境 · 領略文字言外之意
+              </h1>
+              <p class="text-[11px] md:text-xs text-[#635345] leading-relaxed max-w-lg">
+                連結生活、職場與經典原典，四選項深入透析，拒絕模糊誤導。
+              </p>
+            </div>
+
+            <!-- 核心快捷操作 -->
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="openKejuModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-950 hover:from-emerald-900 hover:to-black text-amber-200 font-bold text-xs md:text-sm shadow-md touch-btn flex items-center gap-1.5 border border-amber-400/40">
+                <span>🏛️ 貢院赴考</span>
+                <span class="text-[10px] bg-emerald-700/80 text-white px-1.5 py-0.2 rounded-full">${kejuPassedCount}/4</span>
+              </button>
+              <button onclick="navigateTo('select')" class="px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs md:text-sm shadow-md touch-btn flex items-center gap-1.5">
+                <span>開啟 10 題</span>
+                <span>→</span>
+              </button>
+              <button onclick="startRound('review', 'all')" class="px-3 py-2.5 rounded-xl bg-[#EDE4CE] hover:bg-[#E4D9C0] text-[#4A3B2C] font-bold text-xs border border-[#DACBB0] touch-btn">
+                錯題 (${STATE.mistakes.length})
+              </button>
+            </div>
+          </div>
+
+          <!-- 五大模式選擇卡 -->
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <h2 class="font-serif text-sm md:text-base font-bold text-[#35271E] flex items-center gap-1.5">
+                <span class="w-1.5 h-3.5 bg-amber-700 rounded-full"></span>
+                五大語境探究所
+              </h2>
+              <button onclick="openRanksModal()" class="text-xs text-amber-900 hover:underline flex items-center gap-1 font-semibold">
+                <span>授封：${curRank.icon} ${curRank.title}</span>
+                <span class="text-[10px] text-stone-400">成就譜 →</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+              ${[
+                { id: 'idiom', title: '成語情境判斷所', desc: '辨析生活與職場高頻易混淆成語。', tag: '生活職場' },
+                { id: 'translation', title: '古文翻譯局', desc: '十三經與經典散文，字字對譯原文。', tag: '原典直譯' },
+                { id: 'dialogue', title: '古今對話室', desc: '現代處境困局，借古人智慧名句突破。', tag: '名句化用' },
+                { id: 'hybrid', title: '古今混合挑戰', desc: '跨越時空的綜合題型，深度考驗語感。', tag: '綜合考驗' },
+                { id: 'review', title: '錯題複習所', desc: '自動收錄失誤題目，精準強化盲點。', tag: '弱點突破' }
+              ].map(m => `
+                <div onclick="${m.id === 'review' ? "startRound('review', 'all')" : `STATE.currentExamStage=null; STATE.selectedMode='${m.id}'; navigateTo('select')`}" class="p-3.5 rounded-2xl bg-[#FFFDF9] border border-[#E8DFC9] hover:border-amber-600 transition-all cursor-pointer touch-btn flex flex-col justify-between">
+                  <div>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                      ${m.tag}
+                    </span>
+                    <h3 class="font-serif text-sm md:text-base font-bold text-[#2A1D15] mt-1.5">
+                      ${m.title}
+                    </h3>
+                    <p class="text-[11px] text-[#6F5F51] mt-0.5 leading-relaxed">
+                      ${m.desc}
+                    </p>
+                  </div>
+                  <div class="mt-2.5 pt-2 border-t border-[#F2EBDC] flex items-center justify-between text-[11px] text-amber-800 font-bold">
+                    <span>進入模式</span>
+                    <span>→</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSelectHTML() {
+      return `
+        <div class="max-w-xl mx-auto space-y-5 fade-in">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('home')" class="text-xs text-[#705E4E] hover:text-amber-900 font-semibold">
+              ← 返回首頁
+            </button>
+            <div class="text-xs text-stone-500">客製 10 題專項研討</div>
+          </div>
+
+          <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DBBF] shadow-xs space-y-5">
+            <div>
+              <label class="block text-xs font-bold text-[#2D2017] mb-2">步驟一：選擇研討模式</label>
+              <div class="grid grid-cols-1 gap-2">
+                ${[
+                  { id: 'all', title: '綜合混合挑戰（預設配比）', desc: '成語3 + 翻譯2 + 對話2 + 混合3 題' },
+                  { id: 'idiom', title: '成語情境判斷所', desc: '生活與職場易混淆成語專題' },
+                  { id: 'translation', title: '古文翻譯局', desc: '經典名篇逐字精準白話翻譯' },
+                  { id: 'dialogue', title: '古今對話室', desc: '現代情境與古人智慧名句融合' },
+                  { id: 'hybrid', title: '古今混合挑戰', desc: '語意、語氣與修辭深究' }
+                ].map(m => `
+                  <button onclick="STATE.selectedMode='${m.id}'; renderCurrentView();" class="w-full text-left p-3 rounded-xl border-2 transition-all ${STATE.selectedMode === m.id ? 'border-amber-700 bg-amber-50/70 text-amber-950 font-bold' : 'border-[#EAE1CB] bg-white text-[#4A3B2C]'}">
+                    <div class="text-xs md:text-sm font-bold">${m.title}</div>
+                    <div class="text-[10px] text-[#786655] mt-0.5">${m.desc}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#2D2017] mb-2">步驟二：選擇題目難度</label>
+              <div class="grid grid-cols-4 gap-2">
+                ${[
+                  { id: 'all', label: '隨機' },
+                  { id: 'easy', label: '初階' },
+                  { id: 'medium', label: '中階' },
+                  { id: 'hard', label: '高階' }
+                ].map(d => `
+                  <button onclick="STATE.selectedDifficulty='${d.id}'; renderCurrentView();" class="py-2.5 text-center rounded-xl border-2 text-xs font-bold transition-all ${STATE.selectedDifficulty === d.id ? 'border-amber-700 bg-amber-700 text-white' : 'border-[#EAE1CB] bg-white text-[#4A3B2C]'}">
+                    ${d.label}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-[#F0E6D0] flex items-center justify-between">
+              <div class="text-[11px] text-[#7B6856]">每回包含 <strong>10 題</strong>，不限答題時間。</div>
+              <button onclick="startRound()" class="px-7 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-sm shadow-md touch-btn">
+                開始作答 →
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getQuizHTML() {
+      const q = STATE.roundQuestions[STATE.currentIndex];
+      if (!q) return `<div class="text-center p-8">題目加載中...</div>`;
+
+      const isLocked = !!STATE.lockedAnswers[q.id];
+      const isBookmarked = STATE.bookmarks.includes(q.id);
+      const eliminated = STATE.eliminatedOptions[q.id] || [];
+      const currentExam = STATE.currentExamStage ? KEJU_STAGES.find(s => s.id === STATE.currentExamStage) : null;
+
+      return `
+        <div class="space-y-4 fade-in">
+          <!-- 科舉專屬橫幅（若在科舉試院中） -->
+          ${currentExam ? `
+            <div class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-stone-900 text-amber-100 border border-amber-400/40 shadow-xs flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm">🏛️</span>
+                <span class="font-serif font-bold">${currentExam.title}</span>
+                <span class="text-[10px] text-amber-300 font-sans">（錄取線：${currentExam.passScore} 分 · 考官監考中）</span>
+              </div>
+              <span class="text-[10px] bg-emerald-950/80 px-2 py-0.5 rounded text-emerald-200 border border-emerald-700">貢院號舍</span>
+            </div>
+          ` : ''}
+
+          <!-- 進度與工具欄 -->
+          <div class="bg-[#FFFDF9] rounded-2xl p-3 border border-[#E7DDCA] shadow-xs flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-serif text-sm md:text-base font-black text-amber-900">
+                第 ${STATE.currentIndex + 1} / ${STATE.roundQuestions.length} 題
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#EDE4CD] text-[#5A493B]">
+                ${q.mode === 'idiom' ? '成語情境' : q.mode === 'translation' ? '古文翻譯' : q.mode === 'dialogue' ? '古今對話' : '古今混合'}
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${q.difficulty === 'easy' ? 'bg-emerald-100 text-emerald-800' : q.difficulty === 'medium' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
+                ${q.difficulty === 'easy' ? '初階' : q.difficulty === 'medium' ? '中階' : '高階'}
+              </span>
+            </div>
+
+            <!-- 求索錦囊（剔除障眼法） -->
+            <button onclick="useHint()" ${STATE.hintsRemaining <= 0 || isLocked ? 'disabled' : ''} class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1 transition-all ${STATE.hintsRemaining > 0 && !isLocked ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900 touch-btn' : 'bg-stone-100 border-stone-200 text-stone-400 opacity-60'}" title="排除一個錯誤干擾選項">
+              <span>💡 錦囊 (${STATE.hintsRemaining})</span>
+            </button>
+
+            <!-- 收藏按鈕 -->
+            <button onclick="toggleBookmarkCurrent('${q.id}')" class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1 ${isBookmarked ? 'bg-amber-100 border-amber-400 text-amber-800' : 'bg-white border-stone-200 text-stone-500'}">
+              <svg class="w-3.5 h-3.5 ${isBookmarked ? 'fill-current text-amber-700' : 'fill-none'}" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+              <span class="hidden sm:inline">${isBookmarked ? '已珍藏' : '珍藏'}</span>
+            </button>
+          </div>
+
+          <!-- 題目主內容卡片 -->
+          <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DAC0] shadow-sm space-y-4">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <h2 class="font-serif font-bold text-lg md:text-xl text-[#2A1D15]">
+                  ${q.title}
+                </h2>
+                ${q.classical_text && q.classical_text.original ? `
+                  <button onclick="speakText('${q.classical_text.original.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 shrink-0 touch-btn" title="朗誦原典">
+                    <span>🔊 聽誦讀</span>
+                  </button>
+                ` : ''}
+              </div>
+
+              <!-- 情境框 -->
+              <div class="p-4 md:p-5 rounded-2xl bg-[#F6EFE0] border-l-4 border-amber-700 text-[#423326] shadow-xs text-dynamic">
+                <div class="text-[10px] uppercase tracking-wider text-[#7C6957] font-bold mb-1">語境題幹描述</div>
+                <div class="font-serif leading-relaxed whitespace-pre-line">${q.scenario}</div>
+              </div>
+
+              ${q.classical_text && q.classical_text.original ? `
+                <div class="mt-2.5 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-[11px] flex flex-wrap items-center justify-between gap-1">
+                  <span>典籍名篇：<strong>${q.classical_text.work}</strong> · ${q.classical_text.chapter}</span>
+                  <span class="text-emerald-700">作者：${q.classical_text.author}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- 選項列表 -->
+            <div class="space-y-2.5 pt-1">
+              <div class="text-[11px] text-[#877564] font-bold">請點擊選擇經審核之唯一最佳選項：</div>
+              <div class="grid grid-cols-1 gap-2.5">
+                ${q.options.map(opt => {
+                  const isSelected = STATE.userAnswers[q.id] === opt.displayLabel;
+                  const isOptEliminated = eliminated.includes(opt.displayLabel);
+
+                  let btnStyle = "bg-white border-[#E7DDC8] text-[#3A2B1F]";
+                  if (isOptEliminated) {
+                    btnStyle = "bg-stone-100 border-stone-200 text-stone-400 opacity-40 line-through cursor-not-allowed";
+                  } else if (isLocked) {
+                    if (opt.isCorrect) {
+                      btnStyle = "bg-emerald-50 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500/20";
+                    } else if (isSelected && !opt.isCorrect) {
+                      btnStyle = "bg-rose-50 border-rose-500 text-rose-950 font-medium";
+                    } else {
+                      btnStyle = "bg-stone-50 border-stone-200 text-stone-400 opacity-60";
+                    }
+                  } else {
+                    btnStyle += " hover:border-amber-400 hover:bg-amber-50/40 touch-btn";
+                  }
+
+                  return `
+                    <button onclick="handleOptionSelect('${opt.displayLabel}')" ${isLocked || isOptEliminated ? 'disabled' : ''} class="w-full text-left p-3.5 md:p-4 rounded-2xl border-2 transition-all flex items-start gap-3 ${btnStyle}">
+                      <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 border ${isLocked && opt.isCorrect ? 'bg-emerald-700 text-white border-emerald-800' : isLocked && isSelected && !opt.isCorrect ? 'bg-rose-600 text-white border-rose-700' : isOptEliminated ? 'bg-stone-200 text-stone-400 border-stone-300' : 'bg-[#EAE0CA] text-[#4A3B2C] border-[#DFD5BD]'}">
+                        ${opt.displayLabel}
+                      </span>
+                      <div class="flex-1 pt-0.5">
+                        <div class="font-serif leading-snug text-dynamic ${isOptEliminated ? 'line-through' : ''}">${opt.text}</div>
+                        ${isOptEliminated ? `<span class="inline-block mt-1 text-[10px] text-stone-500 font-bold">已由錦囊排除</span>` : ''}
+                        ${isLocked && opt.isCorrect ? `<span class="inline-block mt-1 text-[11px] text-emerald-800 font-bold">✓ 經查核最佳正解</span>` : ''}
+                        ${isLocked && isSelected && !opt.isCorrect ? `<span class="inline-block mt-1 text-[11px] text-rose-700 font-bold">✕ 此選項語境不符</span>` : ''}
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- 答題鎖定跳轉 -->
+            ${isLocked ? `
+              <div class="pt-3 border-t border-[#F0E6D0] flex flex-col sm:flex-row items-center justify-between gap-3 fade-in">
+                <div class="text-[11px] text-[#7A6755]">已鎖定答案（每題10分）。查看詳細四選項剖析：</div>
+                <button onclick="navigateTo('explanation')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs shadow-md touch-btn flex items-center justify-center gap-1.5">
+                  <span>閱讀四選項全解析</span>
+                  <span>→</span>
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function getExplanationHTML() {
+      const q = STATE.roundQuestions[STATE.currentIndex];
+      if (!q) return '';
+      const isBookmarked = STATE.bookmarks.includes(q.id);
+
+      return `
+        <div class="space-y-4 fade-in">
+          <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DAC0] shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-3">
+              <div>
+                <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">
+                  四解全析 · 第 ${STATE.currentIndex + 1} 題
+                </span>
+                <h2 class="font-serif font-black text-lg md:text-xl text-[#291C14]">
+                  ${q.title}
+                </h2>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="toggleBookmarkCurrent('${q.id}')" class="px-2.5 py-1.5 rounded-lg bg-[#EDE4CD] hover:bg-[#E2D8BF] text-[#4A392B] text-xs font-bold touch-btn">
+                  ${isBookmarked ? '已珍藏' : '珍藏'}
+                </button>
+                <button onclick="openDisputeModal('${q.id}')" class="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-300 touch-btn">
+                  申訴疑義
+                </button>
+              </div>
+            </div>
+
+            <!-- 典籍名篇考據與語音朗讀 -->
+            ${q.classical_text ? `
+              <div class="p-4 rounded-2xl bg-[#F4EDE0] border border-[#E3D6BE] space-y-2.5">
+                <div class="flex items-center justify-between text-xs font-bold text-[#6D5B4B]">
+                  <span class="flex items-center gap-1">📜 經典文本出處與句讀</span>
+                  <button onclick="speakText('${q.classical_text.original.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 touch-btn" title="朗讀原典句讀">
+                    <span>🔊 聆聽正音</span>
+                  </button>
+                </div>
+                <div class="font-serif text-xs md:text-sm text-[#2E2016] bg-white/70 p-3 rounded-xl border border-[#DFD3BA] leading-relaxed">
+                  <strong>原文：</strong>${q.classical_text.original}
+                </div>
+                <div class="text-[11px] md:text-xs text-[#4F3E30] leading-relaxed">
+                  <strong>白話譯文：</strong>${q.classical_text.vernacular}
+                </div>
+                <div class="text-[10px] text-[#7A6959] pt-1.5 border-t border-[#DFD3BA] flex flex-wrap items-center justify-between gap-1">
+                  <span>篇章：${q.classical_text.work} · ${q.classical_text.chapter}（${q.classical_text.author}）</span>
+                  <span>版本查核：${q.source_reference?.note || '經審定無多解'}</span>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- 四個選項完整診斷 -->
+            <div class="space-y-3">
+              <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-700"></span>
+                <span>四個選項深入辨析與診斷（防誤導標準）</span>
+              </div>
+
+              ${q.options.map(opt => `
+                <div class="p-4 rounded-2xl border-2 transition-all ${opt.isCorrect ? 'bg-emerald-50/60 border-emerald-500 shadow-xs' : 'bg-[#FFFDF9] border-[#E8DEC7]'}">
+                  <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${opt.isCorrect ? 'bg-emerald-700 text-white' : 'bg-[#EDE4CE] text-[#524132]'}">
+                        ${opt.displayLabel}
+                      </span>
+                      <span class="font-serif text-base font-bold text-[#261A12]">${opt.text}</span>
+                    </div>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${opt.isCorrect ? 'bg-emerald-200 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-600 border border-stone-200'}">
+                      ${opt.isCorrect ? '✓ 符合本題情境正解' : '✕ 未選此項之理由'}
+                    </span>
+                  </div>
+
+                  <div class="space-y-1.5 text-xs text-[#473629] mt-2">
+                    <p><strong class="text-amber-950">【詞義釋析】</strong>${opt.meaning}</p>
+                    <p><strong class="text-amber-950">【適用場合】</strong>${opt.usage}</p>
+                    <p><strong class="text-amber-950">【原創例句】</strong><span class="italic">${opt.example}</span></p>
+                    <div class="mt-1.5 p-2 rounded-xl text-[11px] font-medium ${opt.isCorrect ? 'bg-emerald-100/60 text-emerald-900 border border-emerald-200' : 'bg-[#F5EEDC] text-[#554536] border border-[#E7DBBF]'}">
+                      <strong>【為何${opt.isCorrect ? '適合' : '不適合'}本題】</strong>${opt.reason}
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- 下一題控制 -->
+            <div class="pt-4 border-t border-[#F0E6D0] flex items-center justify-between">
+              <button onclick="navigateTo('quiz')" class="px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-xs font-bold">
+                ← 返回題目
+              </button>
+              ${STATE.currentIndex < STATE.roundQuestions.length - 1 ? `
+                <button onclick="STATE.currentIndex++; navigateTo('quiz');" class="px-6 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-md touch-btn">
+                  邁向第 ${STATE.currentIndex + 2} 題 →
+                </button>
+              ` : `
+                <button onclick="navigateTo('summary')" class="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md touch-btn">
+                  完成 10 題 · 查看結算報告 🏆
+                </button>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSummaryHTML() {
+      let correctCount = 0;
+      const incorrectList = [];
+
+      STATE.roundQuestions.forEach(q => {
+        const userLabel = STATE.userAnswers[q.id];
+        const opt = q.options.find(o => o.displayLabel === userLabel);
+        if (opt && opt.isCorrect) correctCount++;
+        else incorrectList.push(q);
+      });
+
+      const score = correctCount * 10;
+      const vocabCount = STATE.roundQuestions.length * 4;
+
+      // 結算累計數據並判定是否晉階
+      const prevRank = getCurrentRank();
+      STATE.playerStats.roundsCompleted += 1;
+      STATE.playerStats.totalCorrect += correctCount;
+      STATE.playerStats.highScore = Math.max(STATE.playerStats.highScore, score);
+
+      // 科舉考試判定邏輯
+      let kejuResult = null;
+      if (STATE.currentExamStage) {
+        const exam = KEJU_STAGES.find(s => s.id === STATE.currentExamStage);
+        if (exam) {
+          const isPassed = score >= exam.passScore;
+          if (isPassed) {
+            let passRecordKey = exam.id;
+            if (exam.id === 'dianshi') {
+              if (score === 100) passRecordKey = 'dianshi-100'; // 狀元
+              else if (score >= 90) passRecordKey = 'dianshi-90'; // 榜眼/探花
+            }
+            if (!STATE.playerStats.kejuPassed.includes(passRecordKey)) {
+              STATE.playerStats.kejuPassed.push(passRecordKey);
+            }
+          }
+          kejuResult = {
+            exam,
+            isPassed,
+            score,
+            isZhuangyuan: exam.id === 'dianshi' && score === 100,
+            isBangyan: exam.id === 'dianshi' && score === 90,
+            isTanhua: exam.id === 'dianshi' && score === 80
+          };
+        }
+      }
+
+      saveData();
+
+      const newRank = getCurrentRank();
+      const didRankUp = newRank.id !== prevRank.id;
+      if (didRankUp || (kejuResult && kejuResult.isPassed)) {
+        audio.playRankUp();
+      }
+
+      return `
+        <div class="max-w-xl mx-auto space-y-5 fade-in">
+          <!-- 科舉放榜聖旨橫幅（若參加科舉考試） -->
+          ${kejuResult ? `
+            <div class="rounded-3xl p-5 md:p-6 border-2 ${kejuResult.isPassed ? 'bg-gradient-to-br from-amber-100 via-amber-50 to-emerald-50 border-amber-500 text-[#291B13] shadow-lg' : 'bg-[#FAF5EB] border-stone-300 text-stone-700'} space-y-3">
+              <div class="flex items-center justify-between border-b ${kejuResult.isPassed ? 'border-amber-300' : 'border-stone-200'} pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">${kejuResult.isPassed ? '📜' : '🍂'}</span>
+                  <div>
+                    <span class="text-[10px] uppercase font-bold tracking-wider ${kejuResult.isPassed ? 'text-amber-900' : 'text-stone-500'}">貢院科舉大試 · 揭曉放榜</span>
+                    <h3 class="font-serif text-lg font-black">${kejuResult.exam.title}</h3>
+                  </div>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full font-bold ${kejuResult.isPassed ? 'bg-emerald-700 text-white shadow-xs' : 'bg-stone-200 text-stone-700'}">
+                  ${kejuResult.isPassed ? '金榜題名 · 及第' : '名落孫山 · 尚祈磨礪'}
+                </span>
+              </div>
+
+              ${kejuResult.isPassed ? `
+                <div class="font-serif leading-relaxed text-xs md:text-sm text-[#3E2B1E] bg-white/70 p-3.5 rounded-2xl border border-amber-300/80 shadow-2xs">
+                  ${kejuResult.isZhuangyuan ? `
+                    <div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 欽點狀元及第】</div>
+                    奉天承運，皇帝詔曰：士子才高八斗，十題辨析無一失誤，字字珠璣。特敕封為「一甲第一名狀元及第」，名列文苑絕頂，冠帶榮身！
+                  ` : kejuResult.isBangyan ? `
+                    <div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 榜眼及第】</div>
+                    經殿試親策，學富五車，十得其九。特授「一甲第二名榜眼及第」，晉登進士門閥！
+                  ` : `
+                    <div class="text-emerald-900 font-black text-sm mb-1">【禮闈中式 · 賜封功名】</div>
+                    主考官具題：應試士子答對 ${correctCount} 題，已達 ${kejuResult.exam.passScore} 分之錄取規程。准予錄取，特賜「${kejuResult.exam.awardTitle}」功名，准入下一試！
+                  `}
+                </div>
+              ` : `
+                <div class="text-xs text-[#6F5E4E] leading-relaxed bg-white/50 p-3 rounded-xl border border-stone-200">
+                  本次考獲 ${score} 分，未達本科規程之 ${kejuResult.exam.passScore} 分錄取線。考官賜勉：「十年磨一劍，文字之學貴在含英咀華，切莫氣餒，重整旗鼓再來！」
+                </div>
+              `}
+
+              <div class="flex justify-end gap-2 pt-1">
+                <button onclick="openKejuModal()" class="px-4 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
+                  查看科舉功名譜 →
+                </button>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 晉爵雅號提示橫幅 -->
+          ${didRankUp && !kejuResult ? `
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-800 text-white shadow-lg border-2 border-amber-300 animate-bounce flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl">🎉</span>
+                <div>
+                  <div class="text-[10px] text-amber-200 font-bold uppercase tracking-wider">翰林雅號晉階受封</div>
+                  <div class="font-serif text-base font-black">恭喜榮晉【${newRank.title} · ${newRank.subtitle}】！</div>
+                </div>
+              </div>
+              <button onclick="openRanksModal()" class="px-3 py-1 bg-white text-amber-900 rounded-lg text-xs font-bold shrink-0">
+                查看雅號
+              </button>
+            </div>
+          ` : ''}
+
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#FFFDF9] via-[#FAF4E6] to-[#F1E5CC] p-6 md:p-8 border-2 border-[#E0D2B4] shadow-md text-center space-y-4">
+            <div class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold">
+              CLASSICAL CHINESE LAB · 回合研討結算
+            </div>
+
+            <!-- 當前雅號標記 -->
+            <div onclick="openRanksModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-amber-300 cursor-pointer text-xs font-serif text-[#2C1E15] mx-auto">
+              <span>📜 授封雅號：</span>
+              <strong class="text-amber-900">${newRank.title} · ${newRank.subtitle}</strong>
+            </div>
+
+            <h2 class="font-serif text-2xl md:text-3xl font-black text-[#261A12]">
+              ${score === 100 ? "文林泰斗 · 字字珠璣" : score >= 80 ? "博學鴻儒 · 妙筆生花" : score >= 60 ? "勤學雅士 · 漸入佳境" : "璞玉待雕 · 沉潛蓄勢"}
+            </h2>
+
+            <div class="inline-flex items-baseline justify-center gap-1.5 px-6 py-3 rounded-2xl bg-white/90 border border-amber-300/80 shadow-xs">
+              <span class="font-serif text-5xl font-black text-amber-900">${score}</span>
+              <span class="text-base font-bold text-stone-500">/ 100 分</span>
+            </div>
+
+            <p class="text-xs text-[#614F40]">
+              本次研討共完成 10 題情境辨析，總共吸收了 <strong>${vocabCount}</strong> 個不同成語與古典名句的深度字義剖析！
+            </p>
+
+            <div class="grid grid-cols-3 gap-2 pt-3 border-t border-[#E5D7BE]">
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
+                <div class="text-[10px] text-[#786655]">答對題數</div>
+                <div class="font-serif text-lg font-black text-emerald-800">${correctCount} / 10</div>
+              </div>
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
+                <div class="text-[10px] text-[#786655]">正確率</div>
+                <div class="font-serif text-lg font-black text-amber-900">${score}%</div>
+              </div>
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
+                <div class="text-[10px] text-[#786655]">本次錯題</div>
+                <div class="font-serif text-lg font-black text-rose-800">${incorrectList.length}</div>
+              </div>
+            </div>
+          </div>
+
+          ${incorrectList.length > 0 ? `
+            <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E7DDC8] space-y-3">
+              <div class="text-xs font-bold text-[#2E1F16] flex items-center justify-between">
+                <span>本回失誤題目分析</span>
+                <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">已自動收錄至錯題所</span>
+              </div>
+              <div class="space-y-2">
+                ${incorrectList.map((q, idx) => `
+                  <div class="p-3 rounded-xl bg-[#FAF5EA] border border-[#EADBBD] flex items-center justify-between text-xs gap-2">
+                    <div class="truncate">
+                      <strong>${idx + 1}. ${q.title}</strong>
+                      <div class="text-[10px] text-[#6D5A4A] truncate">正解：${q.options.find(o => o.isCorrect)?.text}</div>
+                    </div>
+                    <button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="px-2.5 py-1 bg-amber-700 text-white rounded font-bold text-[10px] shrink-0">
+                      看解析
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <button onclick="startRound()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-700 text-white font-bold text-xs touch-btn">
+              再來一回 (10 題) 🔄
+            </button>
+            <button onclick="openKejuModal()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
+              進京赴考 · 科舉試院 🏛️
+            </button>
+            <button onclick="startRound('review', 'all')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#EDE4CD] text-[#4A3B2C] font-bold text-xs border border-[#D8C7A9]">
+              錯題專項突破
+            </button>
+            <button onclick="navigateTo('home')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-stone-600 text-xs font-semibold">
+              返回首頁
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getBookmarksHTML() {
+      return `
+        <div class="space-y-4 fade-in">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">
+              ← 返回首頁
+            </button>
+            <span class="text-xs text-stone-500">珍藏 ${STATE.bookmarks.length} 則名句</span>
+          </div>
+          <h2 class="font-serif text-xl font-black text-[#2B1D15]">成語與古典名篇珍藏簿</h2>
+
+          ${STATE.bookmarks.length === 0 ? `
+            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2">
+              <div class="text-3xl">📚</div>
+              <div class="font-serif text-sm font-bold text-[#443325]">尚無珍藏詞句</div>
+              <p class="text-[11px] text-[#776655]">作答或檢視解析時點擊「珍藏」，即可將名句記錄於此。</p>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              ${STATE.bookmarks.map(bmId => {
+                const q = STATE.questionBank.find(item => item.id === bmId);
+                if (!q) return '';
+                const correctOpt = q.options.find(o => o.isCorrect);
+                return `
+                  <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E6DCBE] shadow-xs flex flex-col justify-between space-y-2">
+                    <div>
+                      <div class="flex items-start justify-between gap-1">
+                        <span class="font-serif text-base font-black text-amber-950">${correctOpt ? correctOpt.text : q.title}</span>
+                        <button onclick="toggleBookmarkCurrent('${q.id}')" class="text-rose-600 p-1 text-xs">✕</button>
+                      </div>
+                      <div class="text-xs text-[#5D4A3C] mt-1">${correctOpt?.meaning}</div>
+                      ${q.classical_text ? `
+                        <div class="mt-2 p-2 rounded-lg bg-[#F5EDE0] text-[10px] text-[#4F3E30] font-serif">
+                          <div><strong>出處：</strong>${q.classical_text.work} · ${q.classical_text.chapter}</div>
+                          <div class="italic truncate mt-0.5">「${q.classical_text.original}」</div>
+                        </div>
+                      ` : ''}
+                    </div>
+                    <div class="pt-2 border-t border-[#F2E8D5] flex items-center justify-between text-[10px]">
+                      <span class="text-stone-400">模式：${q.mode}</span>
+                      <button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="font-bold text-amber-800">
+                        查看四解 →
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function getMistakesHTML() {
+      return `
+        <div class="space-y-4 fade-in">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">
+              ← 返回首頁
+            </button>
+            ${STATE.mistakes.length > 0 ? `
+              <button onclick="startRound('review', 'all')" class="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-bold text-xs">
+                錯題立即特訓
+              </button>
+            ` : ''}
+          </div>
+          <h2 class="font-serif text-xl font-black text-[#2B1D15]">錯題複習所</h2>
+
+          ${STATE.mistakes.length === 0 ? `
+            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2">
+              <div class="text-3xl">✨</div>
+              <div class="font-serif text-sm font-bold text-[#3B2C1F]">目前無積累錯題！</div>
+              <p class="text-[11px] text-[#736252]">作答失誤時系統會自動收錄於此供隨時重練。</p>
+            </div>
+          ` : `
+            <div class="space-y-2.5">
+              ${STATE.mistakes.map(mId => {
+                const q = STATE.questionBank.find(item => item.id === mId);
+                if (!q) return '';
+                const correctOpt = q.options.find(o => o.isCorrect);
+                return `
+                  <div class="bg-[#FFFDF9] rounded-xl p-4 border border-rose-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-1 max-w-md">
+                      <div class="font-serif font-bold text-[#2A1D15] text-sm">${q.title}</div>
+                      <div class="text-xs text-emerald-800 font-bold">正解：${correctOpt?.text} —— ${correctOpt?.meaning}</div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button onclick="STATE.mistakes=STATE.mistakes.filter(id=>id!=='${q.id}'); STATE.playerStats.hasClearedMistake=true; saveData(); renderCurrentView(); showToast('已自錯題清單移除！');" class="px-2.5 py-1 text-xs border border-stone-200 rounded text-stone-500">
+                        掌握移除
+                      </button>
+                      <button onclick="reviewSingleQuestion('${q.id}', 'quiz')" class="px-3 py-1 bg-amber-700 text-white text-xs font-bold rounded">
+                        單題重測
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function getAdminHTML() {
+      return `
+        <div class="space-y-5 fade-in">
+          <div class="flex items-center justify-between border-b border-[#E3D7BF] pb-3">
+            <div>
+              <span class="text-[10px] font-bold text-emerald-800 tracking-wider">AUDIT DESK · 審核組工作台</span>
+              <h2 class="font-serif text-xl font-black text-[#261A12]">題庫防誤導審查中心</h2>
+            </div>
+            <button onclick="STATE.isAdminLoggedIn=false; navigateTo('home'); showToast('已登出管理審核端');" class="text-xs text-stone-500 underline">
+              登出
+            </button>
+          </div>
+
+          <!-- 申訴隊列 -->
+          <div class="bg-[#FFFDF9] rounded-2xl p-4 border-2 border-amber-300 shadow-xs space-y-3">
+            <h3 class="font-serif text-sm font-bold text-[#2D1F16] flex items-center gap-1.5">
+              <span>⚖️</span>
+              <span>使用者學術申訴紀錄 (${STATE.disputes.filter(d => d.status === 'pending').length} 待辦)</span>
+            </h3>
+
+            ${STATE.disputes.length === 0 ? `
+              <div class="p-3 bg-amber-50/50 rounded-xl text-center text-xs text-[#7F6F5E]">
+                目前尚無使用者申訴紀錄，題庫運作良好。
+              </div>
+            ` : `
+              <div class="space-y-2">
+                ${STATE.disputes.map(disp => `
+                  <div class="p-3 rounded-xl bg-[#FAF5EB] border border-[#E5DAC0] text-xs space-y-1.5">
+                    <div class="flex justify-between font-bold">
+                      <span>題目：${disp.questionTitle}</span>
+                      <span class="${disp.status === 'pending' ? 'text-amber-800' : 'text-emerald-800'}">${disp.status === 'pending' ? '待查' : '已處置'}</span>
+                    </div>
+                    <div>主張成立選項：<strong>${disp.suggestedOption}</strong></div>
+                    <div class="text-[#554335]">理由：${disp.userReason}</div>
+                    ${disp.status === 'pending' ? `
+                      <div class="flex justify-end gap-2 pt-1 border-t border-[#DFD3BB]">
+                        <button onclick="disableQuestion('${disp.questionId}', '${disp.disputeId}')" class="px-2.5 py-1 bg-rose-700 text-white rounded text-[10px] font-bold">
+                          認定爭議 · 下架停用該題
+                        </button>
+                        <button onclick="resolveDispute('${disp.disputeId}')" class="px-2.5 py-1 bg-stone-200 text-stone-700 rounded text-[10px] font-bold">
+                          維持原判結案
+                        </button>
+                      </div>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- 題庫清單管理 -->
+          <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E7DDC8] space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-serif text-sm font-bold text-[#2D1F16]">
+                題庫全清單（共 ${STATE.questionBank.length} 題）
+              </h3>
+              <span class="text-[10px] text-stone-500">經審核方可發布上線</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-[#E5DAC0] bg-[#FAF5EB] text-[#635142]">
+                    <th class="p-2">ID</th>
+                    <th class="p-2">題型</th>
+                    <th class="p-2">難度</th>
+                    <th class="p-2">標題</th>
+                    <th class="p-2">審查狀態</th>
+                    <th class="p-2 text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#F1E8D5]">
+                  ${STATE.questionBank.map(q => `
+                    <tr>
+                      <td class="p-2 font-mono text-[10px] text-stone-500">${q.id}</td>
+                      <td class="p-2">${q.mode}</td>
+                      <td class="p-2">${q.difficulty}</td>
+                      <td class="p-2 font-bold truncate max-w-[120px]">${q.title}</td>
+                      <td class="p-2">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${q.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : q.status === 'pending' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-800'}">
+                          ${q.status === 'approved' ? '已核准' : q.status === 'pending' ? '待審核' : '已停用'}
+                        </span>
+                      </td>
+                      <td class="p-2 text-right">
+                        ${q.status === 'pending' ? `
+                          <button onclick="approveQuestion('${q.id}')" class="px-2 py-0.5 bg-emerald-700 text-white rounded text-[10px] font-bold">
+                            核准上架
+                          </button>
+                        ` : q.status === 'approved' ? `
+                          <button onclick="toggleDisableQuestion('${q.id}', true)" class="px-2 py-0.5 bg-stone-200 text-stone-700 rounded text-[10px]">
+                            下架
+                          </button>
+                        ` : `
+                          <button onclick="toggleDisableQuestion('${q.id}', false)" class="px-2 py-0.5 bg-blue-700 text-white rounded text-[10px]">
+                            重新上架
+                          </button>
+                        `}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 匯出與重置 -->
+          <div class="flex items-center justify-between p-3 rounded-xl bg-[#EDE4CD] text-xs">
+            <span class="text-[#5B493A]">題庫管理作業</span>
+            <div class="flex gap-2">
+              <button onclick="exportBankJSON()" class="px-3 py-1 bg-white border border-stone-300 rounded font-bold">
+                匯出題庫 JSON
+              </button>
+              <button onclick="resetBank()" class="px-3 py-1 bg-rose-700 text-white rounded font-bold">
+                重設為官方預設
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // 7. 申訴與管理作業
+    // ----------------------------------------------------
+    let currentDisputeTargetQId = null;
+
+    function openDisputeModal(qId) {
+      currentDisputeTargetQId = qId;
+      const q = STATE.questionBank.find(item => item.id === qId);
+      if (!q) return;
+
+      const select = document.getElementById('dispute-option-select');
+      select.innerHTML = q.options.map(opt => `
+        <option value="${opt.displayLabel}">選項 ${opt.displayLabel}：${opt.text}</option>
+      `).join('');
+
+      document.getElementById('dispute-reason-input').value = '';
+      const modal = document.getElementById('modal-dispute');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDisputeModal() {
+      const modal = document.getElementById('modal-dispute');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitDispute() {
+      const reason = document.getElementById('dispute-reason-input').value.trim();
+      const option = document.getElementById('dispute-option-select').value;
+      if (!reason) {
+        showToast('請填寫具體申訴疑義或理由');
+        return;
+      }
+
+      const q = STATE.questionBank.find(item => item.id === currentDisputeTargetQId);
+      STATE.disputes.unshift({
+        disputeId: `disp-${Date.now()}`,
+        questionId: currentDisputeTargetQId,
+        questionTitle: q ? q.title : '未知題目',
+        suggestedOption: option,
+        userReason: reason,
+        timestamp: new Date().toLocaleTimeString('zh-TW'),
+        status: 'pending'
+      });
+      saveData();
+      closeDisputeModal();
+      showToast('申訴已送交審核小組！感謝您協助防誤導查核。');
+    }
+
+    function openAdmin() {
+      audio.playClick();
+      if (STATE.isAdminLoggedIn) {
+        navigateTo('admin');
+      } else {
+        const modal = document.getElementById('modal-admin-login');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAdminLoginModal() {
+      const modal = document.getElementById('modal-admin-login');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleAdminLogin() {
+      const val = document.getElementById('admin-pass-input').value;
+      if (val === 'joan2026' || val === 'admin') {
+        STATE.isAdminLoggedIn = true;
+        closeAdminLoginModal();
+        document.getElementById('admin-pass-input').value = '';
+        navigateTo('admin');
+        showToast('審核員驗證成功！');
+      } else {
+        showToast('通行碼錯誤，請輸入 joan2026');
+      }
+    }
+
+    function approveQuestion(qId) {
+      STATE.questionBank = STATE.questionBank.map(q => q.id === qId ? { ...q, status: 'approved' } : q);
+      saveData();
+      renderCurrentView();
+      showToast(`題目 ${qId} 已核准並同步至測驗池！`);
+    }
+
+    function toggleDisableQuestion(qId, disable) {
+      STATE.questionBank = STATE.questionBank.map(q => q.id === qId ? { ...q, status: disable ? 'disabled' : 'approved' } : q);
+      saveData();
+      renderCurrentView();
+      showToast(disable ? `題目 ${qId} 已下架` : `題目 ${qId} 重新上架！`);
+    }
+
+    function disableQuestion(qId, dispId) {
+      STATE.questionBank = STATE.questionBank.map(q => q.id === qId ? { ...q, status: 'disabled' } : q);
+      STATE.disputes = STATE.disputes.map(d => d.disputeId === dispId ? { ...d, status: 'resolved' } : d);
+      saveData();
+      renderCurrentView();
+      showToast('已確認疑義！該題已立即自正式測驗下架停用以防誤導。');
+    }
+
+    function resolveDispute(dispId) {
+      STATE.disputes = STATE.disputes.map(d => d.disputeId === dispId ? { ...d, status: 'resolved' } : d);
+      saveData();
+      renderCurrentView();
+      showToast('已維持單一正解並結案。');
+    }
+
+    function exportBankJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(STATE.questionBank, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `classical_lab_bank_${Date.now()}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('題庫 JSON 匯出備份完成！');
+    }
+
+    function resetBank() {
+      localStorage.clear();
+      STATE.questionBank = [...OFFICIAL_INITIAL_BANK, DEMO_PENDING_QUESTION];
+      STATE.bookmarks = ["q-idiom-01"];
+      STATE.mistakes = [];
+      STATE.disputes = [];
+      STATE.playerStats = { roundsCompleted: 0, totalCorrect: 0, highScore: 0, hasClearedMistake: false };
+      saveData();
+      renderCurrentView();
+      showToast('已重設為官方初始狀態！');
+    }
+
+    // ----------------------------------------------------
+    // 8. 核心路由與視圖動態渲染 (修復白畫面關鍵)
+    // ----------------------------------------------------
+    function navigateTo(view) {
+      STATE.view = view;
+      renderCurrentView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderCurrentView() {
+      const container = document.getElementById('app-container');
+      if (!container) return;
+
+      let htmlContent = '';
+      switch (STATE.view) {
+        case 'home': htmlContent = getHomeHTML(); break;
+        case 'select': htmlContent = getSelectHTML(); break;
+        case 'quiz': htmlContent = getQuizHTML(); break;
+        case 'explanation': htmlContent = getExplanationHTML(); break;
+        case 'summary': htmlContent = getSummaryHTML(); break;
+        case 'bookmarks': htmlContent = getBookmarksHTML(); break;
+        case 'mistakes': htmlContent = getMistakesHTML(); break;
+        case 'admin': htmlContent = getAdminHTML(); break;
+        default: htmlContent = getHomeHTML(); break;
+      }
+      
+      container.innerHTML = htmlContent;
+      updateRankBadge(); // 確保每次切換畫面時，頂部的雅號都會同步更新
+    }
+
+    // ----------------------------------------------------
+    // 9. 鍵盤快速鍵支援
+    // ----------------------------------------------------
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      const map = { '1': 'A', '2': 'B', '3': 'C', '4': 'D', 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D' };
+      if (STATE.view === 'quiz' && map[key]) {
+        handleOptionSelect(map[key]);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        if (STATE.view === 'quiz') {
+          const q = STATE.roundQuestions[STATE.currentIndex];
+          if (q && STATE.lockedAnswers[q.id]) navigateTo('explanation');
+        } else if (STATE.view === 'explanation') {
+          if (STATE.currentIndex < STATE.roundQuestions.length - 1) {
+            STATE.currentIndex++;
+            navigateTo('quiz');
+          } else {
+            navigateTo('summary');
+          }
+        }
+      }
+    });
+
+    // 啟動入口
+    window.onload = function() {
+      loadSavedData();
+      renderCurrentView();
+      updateRankBadge();
+    };
   </script>
 </body>
 </html>
