@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>文言語境研究所 CLASSICAL CHINESE LAB V1.1</title>
+  <title>文言語境研究所 CLASSICAL CHINESE LAB V1.3</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google 字體：思源宋體與黑體 -->
@@ -78,36 +78,30 @@
           文
         </div>
         <div class="flex items-baseline gap-1.5">
-          <span class="font-serif text-sm md:text-base font-black tracking-wide text-amber-950">
-            文言語境研究所
-          </span>
-          <span class="hidden sm:inline text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-300">
-            V1.1
-          </span>
-        </div>
+        <span class="font-serif text-sm md:text-base font-black tracking-wide text-amber-950">
+          文言語境研究所
+        </span>
+        <span class="hidden sm:inline text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-300">
+          V1.3 科舉版
+        </span>
       </div>
+    </div>
 
-      <!-- 右側輔助控制項（極致精簡、無壓迫排版） -->
-      <div class="flex items-center gap-1 md:gap-1.5 shrink-0">
-        <!-- 每日文人箋 · 晨讀語境籤 -->
-        <button onclick="openDailyWisdomModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="每日文人箋 · 晨讀語境籤">
-          <span>🎋</span>
-          <span class="hidden sm:inline font-serif text-[11px]">每日籤</span>
-        </button>
+    <!-- 右側輔助控制項 -->
+    <div class="flex items-center gap-1 md:gap-1.5 shrink-0">
+      <!-- 每日文人箋 -->
+      <button onclick="openDailyWisdomModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="每日文人箋 · 晨讀語境籤">
+        <span>🎋</span>
+        <span class="hidden sm:inline font-serif text-[11px]">每日籤</span>
+      </button>
 
-        <!-- 貢院科舉大試入口 -->
-        <button onclick="openKejuModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold touch-btn shadow-2xs" title="進京赴考 · 科舉試院">
-          <span>🏛️</span>
-          <span class="font-serif text-[11px] md:text-xs">科舉</span>
-        </button>
-
-        <!-- 翰林雅號圖騰膠囊 -->
-        <button onclick="openRanksModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="查看翰林雅號與成就譜">
+      <!-- 翰林雅號圖騰膠囊 -->
+      <button onclick="openRanksModal()" class="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-bold touch-btn shadow-2xs" title="查看翰林雅號與成就譜">
           <span id="nav-rank-icon" class="text-xs">🪶</span>
           <span id="nav-rank-title" class="font-serif text-[11px] md:text-xs">童生</span>
         </button>
 
-        <!-- 字級切換（迷你緊湊型） -->
+        <!-- 字級切換 -->
         <div class="flex items-center bg-[#EDE6D4] rounded-lg p-0.5 border border-[#DFD5BF]">
           <button onclick="setFontSize('normal')" id="btn-font-normal" class="px-1.5 py-0.5 text-[11px] rounded font-bold bg-amber-700 text-white transition-all">中</button>
           <button onclick="setFontSize('large')" id="btn-font-large" class="px-1.5 py-0.5 text-[11px] rounded font-bold text-[#6C5C4D] transition-all">大</button>
@@ -124,7 +118,7 @@
           </svg>
         </button>
 
-        <!-- 收藏簿（圖示徽標化） -->
+        <!-- 收藏簿 -->
         <button onclick="navigateTo('bookmarks')" class="relative p-1.5 rounded-lg bg-[#EDE6D4] text-[#554335] border border-[#DFD5BF] text-xs font-bold touch-btn" title="成語名句收藏簿">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
@@ -219,12 +213,10 @@
         <button onclick="closeRanksModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-2">✕</button>
       </div>
 
-      <!-- 當前雅號展示框（傳統朱文印鑑徽章風格） -->
       <div id="ranks-current-card" class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-[#F5EEDC] border border-amber-300 shadow-xs flex items-center justify-between gap-3">
         <!-- 動態渲染當前雅號資訊 -->
       </div>
 
-      <!-- 翰林六階品級列表 -->
       <div class="space-y-1.5">
         <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
           <span class="w-1.5 h-3 bg-amber-700 rounded-full"></span>
@@ -235,7 +227,6 @@
         </div>
       </div>
 
-      <!-- 特殊文墨成就勳章 -->
       <div class="space-y-1.5 pt-2 border-t border-[#F0E6D0]">
         <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
           <span class="w-1.5 h-3 bg-emerald-700 rounded-full"></span>
@@ -285,46 +276,6 @@
     </div>
   </div>
 
-  <!-- ==================== 貢院科舉大試 Modal ==================== -->
-  <div id="modal-keju" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-[#FFFDF9] rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 md:p-6 border-2 border-emerald-600 shadow-2xl space-y-4 fade-in">
-      <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-2.5">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-emerald-800 text-amber-100 flex items-center justify-center font-serif text-lg font-bold shadow-xs">
-            闈
-          </div>
-          <div>
-            <h3 class="font-serif text-base font-black text-[#2A1D15]">貢院科舉試院 · 進京赴考</h3>
-            <p class="text-[10px] text-[#786655]">十年寒窗 · 院試・鄉試・會試・殿試金榜題名</p>
-          </div>
-        </div>
-        <button onclick="closeKejuModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold px-2">✕</button>
-      </div>
-
-      <!-- 科舉總覽提示 -->
-      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 via-[#F3EFE3] to-amber-50 border border-emerald-300 text-xs text-[#3E2E22] space-y-1">
-        <div class="flex items-center justify-between font-bold text-emerald-950">
-          <span>📜 科舉考律告示</span>
-          <span id="keju-passed-summary" class="text-[10px] bg-emerald-200/80 text-emerald-950 px-2 py-0.5 rounded-full">已考取 0 / 4 功名</span>
-        </div>
-        <p class="text-[11px] leading-relaxed text-[#5F4E40]">
-          每試十道精選語境策問，唯有達到錄取門檻方得授受功名並准予報考下一闈。殿試更將依成績親策「狀元、榜眼、探花」三鼎甲！
-        </p>
-      </div>
-
-      <!-- 四大考科列表 -->
-      <div id="keju-stages-list" class="space-y-2.5">
-        <!-- 動態渲染四大考科 -->
-      </div>
-
-      <div class="pt-2 border-t border-[#F0E6D0] flex justify-end">
-        <button onclick="closeKejuModal()" class="px-5 py-2 rounded-xl bg-[#EDE4CE] hover:bg-[#E2D8BF] text-[#4A3B2C] font-bold text-xs touch-btn">
-          返回試院外
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- ==================== Toast 提示通知 ==================== -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#291B13] text-amber-50 px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border border-amber-600/40 hidden items-center gap-2 fade-in">
     <span>🔔</span>
@@ -335,7 +286,7 @@
   <footer class="mt-8 border-t border-[#E6DDC8] bg-[#F4EDE0] py-5 px-4 text-center text-xs text-[#7B6A5A]">
     <div class="max-w-4xl mx-auto space-y-1.5">
       <div class="font-serif font-bold text-stone-800 text-xs md:text-sm">
-        文言語境研究所 CLASSICAL CHINESE LAB · V1.1
+        文言語境研究所 CLASSICAL CHINESE LAB · V1.3 (科舉擴充終極版)
       </div>
       <p class="text-[10px] md:text-[11px] text-[#8C7A68]">
         品牌歸屬：JOAN PLAYGROUND → JOAN ARCADE 小遊戲館 · 繁體中文教育專案
@@ -356,654 +307,430 @@
     // 1. 嚴謹審核題庫（經教育部成語典與正統注疏核考，確保單一正解無雙答案）
     // ----------------------------------------------------
     const OFFICIAL_INITIAL_BANK = [
+      // --- 原有 17 題精選 ---
       {
-        id: "q-idiom-01",
-        mode: "idiom",
-        difficulty: "easy",
-        title: "高檔手機包裝的取捨抉擇",
+        id: "q-idiom-01", mode: "idiom", difficulty: "easy", title: "高檔手機包裝的取捨抉擇",
         scenario: "科技公司發表旗艦新機，簡報花了半小時大讚以頂級絲絨與黑檀木雕刻而成的精裝外盒，結果實機測試時處理器頻頻過熱當機。消費者紛紛諷刺廠商把心思全花在外裝，卻丟棄了手機的核心實用性。",
         options: [
-          {
-            id: "A",
-            text: "買櫝還珠",
-            isCorrect: true,
-            meaning: "櫝：木盒；珠：珍珠。比喻取捨不當，看重外表裝飾而捨棄實質內涵。",
-            usage: "用於因看重精美包裝外表而忽視、放棄實質貴重核心之場合。",
-            example: "買書只看封面裝幀卻不問內容好壞，豈不成了買櫝還珠？",
-            reason: "廠商極度講究木盒包裝（櫝）而手機本體效能低劣（珠），完全切合買櫝還珠之典故本意。"
-          },
-          {
-            id: "B",
-            text: "舍本逐末",
-            isCorrect: false,
-            meaning: "拋棄根本而追求枝微末節。",
-            usage: "形容處事抓不住重點，執著於瑣碎次要環節。",
-            example: "讀書不求理解思想，只死記字數，未免舍本逐末。",
-            reason: "雖有輕重顛倒之意，但缺乏『外表奢華包裝與實質價值』的具象對照，本題買櫝還珠更為精準神韻。"
-          },
-          {
-            id: "C",
-            text: "喧賓奪主",
-            isCorrect: false,
-            meaning: "客人的聲勢反壓過主人。比喻次要事物搶奪主要事物的地位。",
-            usage: "指配角鋒芒壓倒主角，或客體過度搶戲。",
-            example: "主持人的話講得比得獎者還多，未免有些喧賓奪主。",
-            reason: "著重在主客地位顛倒，非『因愛外盒而忽視本體品質』之取捨情境。"
-          },
-          {
-            id: "D",
-            text: "畫蛇添足",
-            isCorrect: false,
-            meaning: "畫蛇時添上腳。比喻做了多餘的事，反而把事情弄糟。",
-            usage: "形容多此一舉、自惹麻煩。",
-            example: "結尾已很完整，再加這句只是畫蛇添足。",
-            reason: "包裝設計本身並非完全多餘之舉，重點在於本末失衡，故非最佳用詞。"
-          }
+          { id: "A", text: "買櫝還珠", isCorrect: true, meaning: "比喻取捨不當，看重外表裝飾而捨棄實質內涵。", usage: "用於因看重精美外表而忽視、放棄實質核心之場合。", example: "買書只看封面卻不問內容，豈不成了買櫝還珠？", reason: "極度講究木盒包裝而手機本體效能低劣，切合買櫝還珠典故本意。" },
+          { id: "B", text: "舍本逐末", isCorrect: false, meaning: "拋棄根本而追求枝微末節。", usage: "形容處事抓不住重點，執著於瑣碎次要環節。", example: "讀書不求理解思想，只死記字數，未免舍本逐末。", reason: "雖有輕重顛倒之意，但缺乏『外表奢華包裝與實質價值』的具象對照。" },
+          { id: "C", text: "喧賓奪主", isCorrect: false, meaning: "客人的聲勢反壓過主人。比喻次要事物搶奪主要事物的地位。", usage: "指配角鋒芒壓倒主角，或客體過度搶戲。", example: "主持人的話講得比得獎者還多，未免喧賓奪主。", reason: "著重在主客地位顛倒，非『因愛外盒而忽視本體品質』。" },
+          { id: "D", text: "畫蛇添足", isCorrect: false, meaning: "畫蛇時添上腳。比喻做了多餘的事反而弄糟。", usage: "形容多此一舉、自惹麻煩。", example: "結尾已很完整，再加這句只是畫蛇添足。", reason: "包裝設計本身並非完全多餘之舉，重點在於本末失衡。" }
         ],
-        classical_text: {
-          work: "《韓非子》",
-          chapter: "外儲說左上",
-          author: "韓非（約前280-前233）",
-          original: "楚人有賣其珠於鄭者，為木蘭之櫃，薰以桂椒，綴以珠玉，飾以玫瑰，輯以羽翠。鄭人買其櫝而還其珠。此可謂善賣櫝矣，未可謂善鬻珠也。",
-          vernacular: "楚國有人在鄭國賣珍珠，做了名貴木蘭盒子，用香料薰染，飾以珠玉翡翠。鄭國人買了精緻木盒，卻把珍珠退還給他。這可說是善於賣木盒，不能說是善於賣珍珠。",
-          citationUrl: "教育部《成語典》「買櫝還珠」"
-        },
-        source_reference: {
-          title: "教育部成語典檢索：0048",
-          source: "中華民國教育部成語典",
-          note: "經審核單一正解無疑義"
-        },
-        status: "approved"
+        classical_text: { work: "《韓非子》", chapter: "外儲說左上", author: "韓非", original: "楚人有賣其珠於鄭者，為木蘭之櫃...鄭人買其櫝而還其珠。", vernacular: "楚國人在鄭國賣珍珠，做了名貴木蘭盒子...鄭國人買了精緻木盒，卻把珍珠退還給他。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索", source: "中華民國教育部成語典", note: "經審核單一正解無疑義" }, status: "approved"
       },
       {
-        id: "q-idiom-02",
-        mode: "idiom",
-        difficulty: "medium",
-        title: "專案初試身手的成效評估",
+        id: "q-idiom-02", mode: "idiom", difficulty: "medium", title: "專案初試身手的成效評估",
         scenario: "新創團隊初次承辦全縣大型藝文展演，雖然因氣候驟變導致部分戶外演出略微延誤，但整體動線順暢、口碑極佳，主管在檢討會上總結：『雖然尚有進步空間，但以首次操刀而言，大家的表現已相當令人欣慰。』",
         options: [
-          {
-            id: "A",
-            text: "差強人意",
-            isCorrect: true,
-            meaning: "差：甚、尚且；強：振奮。原指尚能振奮人心，後指大體上還能令人滿意。",
-            usage: "中性偏褒，用於形容事情雖不臻完美，但整體結果已令人滿意。",
-            example: "這部獨立製作電影特效雖有瑕疵，但演員真摯的演技仍算差強人意。",
-            reason: "主管肯定首次表現『雖不完美但大體令人滿意欣慰』，正是差強人意標準正用（切勿誤用為令人不滿意）。"
-          },
-          {
-            id: "B",
-            text: "差之毫釐",
-            isCorrect: false,
-            meaning: "形容極微小的差距，通常後接『失之千里』。",
-            usage: "多用於精密測量、科學計算或邏輯推導。",
-            example: "射箭比賽時差之毫釐，結果便與金牌擦身而過。",
-            reason: "非成語獨立評價表現詞彙，語義重心在極小誤差，與主管評語不符。"
-          },
-          {
-            id: "C",
-            text: "差強民意",
-            isCorrect: false,
-            meaning: "坊間常見之錯字誤造詞（誤將『人意』寫成『民意』）。",
-            usage: "非規範成語，教育部成語典未收錄。",
-            example: "此為混淆錯誤詞，正式寫作禁用。",
-            reason: "純屬生造混淆詞，絕非正解。"
-          },
-          {
-            id: "D",
-            text: "出人意料",
-            isCorrect: false,
-            meaning: "超出人們的意料之外。",
-            usage: "形容事情發生得非常突然或結果與原先預估迥然不同。",
-            example: "這名小將初出茅廬便奪冠，成績真是出人意料。",
-            reason: "情境著重在『大致滿意、尚能接受』的平實評價，而非『震驚出乎意料』。"
-          }
+          { id: "A", text: "差強人意", isCorrect: true, meaning: "原指尚能振奮人心，後指大體上還能令人滿意。", usage: "中性偏褒，用於形容事情雖不臻完美，但整體結果已令人滿意。", example: "特效雖有瑕疵，但演員真摯的演技仍算差強人意。", reason: "主管肯定首次表現『雖不完美但大體令人滿意欣慰』，正是差強人意標準正用。" },
+          { id: "B", text: "差之毫釐", isCorrect: false, meaning: "形容極微小的差距，通常後接『失之千里』。", usage: "多用於精密測量或邏輯推導。", example: "射箭比賽時差之毫釐，便與金牌擦身而過。", reason: "非成語獨立評價表現詞彙，語義重心在極小誤差。" },
+          { id: "C", text: "差強民意", isCorrect: false, meaning: "坊間常見之錯字誤造詞。", usage: "非規範成語，教育部成語典未收錄。", example: "此為混淆錯誤詞，正式寫作禁用。", reason: "純屬生造混淆詞，絕非正解。" },
+          { id: "D", text: "出人意料", isCorrect: false, meaning: "超出人們的意料之外。", usage: "形容事情發生得非常突然或結果與預估迥然不同。", example: "這名小將初出茅廬便奪冠，成績出人意料。", reason: "情境著重在『大致滿意、尚能接受』的平實評價，而非震驚出乎意料。" }
         ],
-        classical_text: {
-          work: "《後漢書》",
-          chapter: "卷十七·吳漢傳",
-          author: "范曄（398-445）",
-          original: "帝時遣人觀大司馬何為，還言方脩戰具，乃歎曰：『吳公差彊人意，隱若一敵國矣。』",
-          vernacular: "光武帝派人探視大司馬吳漢在做什麼，回報說吳漢正整修兵器作戰。光武帝讚嘆說：『吳公還真能振奮人心，氣度足抵得上一座敵國！』",
-          citationUrl: "《後漢書·吳漢傳》"
-        },
-        source_reference: {
-          title: "教育部成語典審訂：差強人意",
-          source: "教育部《成語典》",
-          note: "常見易錯成語特選，具極高教學防誤導價值。"
-        },
-        status: "approved"
+        classical_text: { work: "《後漢書》", chapter: "吳漢傳", author: "范曄", original: "帝乃歎曰：『吳公差彊人意，隱若一敵國矣。』", vernacular: "光武帝讚嘆說：『吳公還真能振奮人心，氣度足抵得上一座敵國！』", citationUrl: "《後漢書·吳漢傳》" },
+        source_reference: { title: "教育部成語典審訂", source: "教育部《成語典》", note: "常見易錯成語特選" }, status: "approved"
       },
       {
-        id: "q-trans-01",
-        mode: "translation",
-        difficulty: "easy",
-        title: "《論語·學而》論君子修為",
+        id: "q-trans-01", mode: "translation", difficulty: "easy", title: "《論語·學而》論君子修為",
         scenario: "研讀儒家經典時，見孔子論述君子面對他人不理解時的心境修養：『人不知而不慍，不亦君子乎？』此句當如何確切翻譯？",
         options: [
-          {
-            id: "A",
-            text: "別人不瞭解我，我卻不怨恨生氣，不也是一位君子嗎？",
-            isCorrect: true,
-            meaning: "慍（ㄩㄣˋ）：生氣、怨恨。不知：不了解我自己的德行才能。",
-            usage: "強調自得於己、不汲汲於外界名聲認可的高尚修養。",
-            example: "治學當如孔子所言，縱使人不知而不慍，方見學者風骨。",
-            reason: "完全忠實對應原文『不知』（他人不了解）與『慍』（心中怨恨憤懣）。"
-          },
-          {
-            id: "B",
-            text: "自己不知道的事情絕不發脾氣，這難道不是君子應有的智慧嗎？",
-            isCorrect: false,
-            meaning: "誤將主詞『人』解釋為自己，把『不知』誤解成自己缺乏知識。",
-            usage: "語義偏離原典修養脈絡。",
-            example: "無此用法。",
-            reason: "古漢語中『人』常指他人，『人不知』指他人不了解我，非自己無知。"
-          },
-          {
-            id: "C",
-            text: "別人沒有知識學問我也不鄙視他，這樣才是真正的君子之道。",
-            isCorrect: false,
-            meaning: "誤將『知』解為『知識』，把『慍』曲解為『鄙視輕蔑』。",
-            usage: "斷章取義之錯誤翻譯。",
-            example: "無此用法。",
-            reason: "『慍』特指心中怨忿怒氣，非看不起人。"
-          },
-          {
-            id: "D",
-            text: "不知道別人的優點也不隨便誇讚，這才符合君子的慎言謹行。",
-            isCorrect: false,
-            meaning: "完全主客顛倒，妄加『誇讚』之義。",
-            usage: "邏輯完全錯誤之翻譯。",
-            example: "無此用法。",
-            reason: "無中生有增添字面未有之涵義。"
-          }
+          { id: "A", text: "別人不瞭解我，我卻不怨恨生氣，不也是一位君子嗎？", isCorrect: true, meaning: "慍：生氣、怨恨。不知：不了解我自己的德行才能。", usage: "強調自得於己、不汲汲於外界名聲認可的高尚修養。", example: "治學當如孔子所言，縱使人不知而不慍，方見學者風骨。", reason: "完全忠實對應原文『不知』（他人不了解）與『慍』（心中怨恨憤懣）。" },
+          { id: "B", text: "自己不知道的事情絕不發脾氣，這難道不是君子應有的智慧嗎？", isCorrect: false, meaning: "誤將主詞『人』解釋為自己，把『不知』誤解成自己缺乏知識。", usage: "語義偏離原典修養脈絡。", example: "無此用法。", reason: "古漢語中『人』常指他人，『人不知』指他人不了解我。" },
+          { id: "C", text: "別人沒有知識學問我也不鄙視他，這樣才是真正的君子之道。", isCorrect: false, meaning: "誤將『知』解為『知識』，把『慍』曲解為鄙視。", usage: "斷章取義之錯誤翻譯。", example: "無此用法。", reason: "『慍』特指心中怨忿怒氣，非看不起人。" },
+          { id: "D", text: "不知道別人的優點也不隨便誇讚，這才符合君子的慎言謹行。", isCorrect: false, meaning: "完全主客顛倒，妄加誇讚之義。", usage: "邏輯完全錯誤之翻譯。", example: "無此用法。", reason: "無中生有增添字面未有之涵義。" }
         ],
-        classical_text: {
-          work: "《論語》",
-          chapter: "學而篇第一",
-          author: "孔子弟子及其再傳弟子輯錄",
-          original: "子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」",
-          vernacular: "孔子說：「學習並按時溫習它，不也是很令人喜悅的嗎？有志同道合的朋友從遠方來交流，不也是很快樂的嗎？別人不了解我，我心中卻不埋怨憤怒，不也是個有德行的君子嗎？」",
-          citationUrl: "十三經注疏本《論語注疏》卷一"
-        },
-        source_reference: {
-          title: "十三經注疏《論語注疏·學而》",
-          source: "漢·何晏集解、宋·邢昺疏",
-          note: "初階經典正譯，字詞精準對應"
-        },
-        status: "approved"
+        classical_text: { work: "《論語》", chapter: "學而篇第一", author: "孔子弟子", original: "人不知而不慍，不亦君子乎？", vernacular: "別人不了解我，我心中卻不埋怨憤怒，不也是個有德行的君子嗎？", citationUrl: "十三經注疏本" },
+        source_reference: { title: "十三經注疏《論語注疏》", source: "漢·何晏集解", note: "初階經典正譯" }, status: "approved"
       },
       {
-        id: "q-trans-02",
-        mode: "translation",
-        difficulty: "medium",
-        title: "《孟子·告子上》大義抉擇解析",
+        id: "q-trans-02", mode: "translation", difficulty: "medium", title: "《孟子·告子上》大義抉擇",
         scenario: "孟子在論及人生面臨根本價值衝突時提出：『生，亦我所欲也；義，亦我所欲也。二者不可得兼，舍生而取義者也。』何者為最精確之白話詮釋？",
         options: [
-          {
-            id: "A",
-            text: "生命是我所渴望的；道義也是我所追求的。如果兩者無法同時保有，寧願犧牲生命也要保有道義。",
-            isCorrect: true,
-            meaning: "欲：渴望追求；得兼：同時獲得；舍：捨棄；取：選取執守。",
-            usage: "闡發捨生取義、堅持道德理想勝過肉體苟全的大丈夫氣節。",
-            example: "文天祥從容就義，體現了舍生取義的至高品格。",
-            reason: "忠實孟子性善論與道德主體性思想，字字對仗流暢無偏倚。"
-          },
-          {
-            id: "B",
-            text: "活著是我天生的慾望，正義則是後天的教化。兩者既然不能共存，就該拋下生計專心談論正義。",
-            isCorrect: false,
-            meaning: "誤將『生』解為生計，將『所欲』妄加先後天之區分。",
-            usage: "脫離原典之過度哲學投射。",
-            example: "無此用法。",
-            reason: "孟子並非說兩者天生無法並存，而是在極端衝突時的價值抉擇。"
-          },
-          {
-            id: "C",
-            text: "生活過得豐足是我想要的，名義聲譽也是我想要的；如果無法並列，寧可捨棄虛名換取生存。",
-            isCorrect: false,
-            meaning: "將『義』降格為『名聲/名義』，甚至結論導向與孟子完全相反的苟且偷生。",
-            usage: "嚴重扭曲儒家義利之辨。",
-            example: "無此用法。",
-            reason: "『義』為道德正義非虛名，且孟子主張取義非偷生。"
-          },
-          {
-            id: "D",
-            text: "生老病死是我追求的自然法則，江湖義氣是我追求的人情。兩者衝突時，自當為義氣捨身報仇。",
-            isCorrect: false,
-            meaning: "誤將『義』曲解為江湖幫派義氣，將『生』解為生老病死。",
-            usage: "通俗武俠觀念之誤植。",
-            example: "無此用法。",
-            reason: "孟子之『義』為天理與本心善性，非匹夫報仇之江湖義氣。"
-          }
+          { id: "A", text: "生命是我渴望的；道義也是我追求的。若兩者無法同時保有，寧願犧牲生命也要保有道義。", isCorrect: true, meaning: "欲：渴望；得兼：同時獲得；舍：捨棄；取：選取執守。", usage: "闡發捨生取義、堅持道德理想勝過肉體苟全的大丈夫氣節。", example: "文天祥從容就義，體現了舍生取義的至高品格。", reason: "忠實孟子性善論與道德主體性思想，字字對仗流暢無偏倚。" },
+          { id: "B", text: "活著是我天生的慾望，正義則是後天的教化。兩者既不能共存，就該拋下生計專心談論正義。", isCorrect: false, meaning: "誤將『生』解為生計，將『所欲』妄加先後天之區分。", usage: "脫離原典之過度哲學投射。", example: "無此用法。", reason: "孟子並非說兩者天生無法並存，而是在極端衝突時的抉擇。" },
+          { id: "C", text: "生活過得豐足是我想要的，名義聲譽也是我想要的；如果無法並列，寧可捨棄虛名換取生存。", isCorrect: false, meaning: "將『義』降格為『名聲/名義』，並導向苟且偷生。", usage: "嚴重扭曲儒家義利之辨。", example: "無此用法。", reason: "『義』為道德正義非虛名，且孟子主張取義非偷生。" },
+          { id: "D", text: "生老病死是我追求的自然法則，江湖義氣是我追求的人情。兩者衝突時自當為義氣捨身。", isCorrect: false, meaning: "誤將『義』曲解為江湖幫派義氣。", usage: "通俗武俠觀念之誤植。", example: "無此用法。", reason: "孟子之『義』為天理與本心善性，非匹夫報仇之義氣。" }
         ],
-        classical_text: {
-          work: "《孟子》",
-          chapter: "告子篇上·第十章",
-          author: "孟軻（約前372-前289）",
-          original: "魚，我所欲也；熊掌，亦我所欲也。二者不可得兼，舍魚而取熊掌者也。生，亦我所欲也；義，亦我所欲也。二者不可得兼，舍生而取義者也。",
-          vernacular: "魚是我喜愛的，熊掌也是我喜愛的。如果兩樣不能同時得到，我會捨棄魚而選取熊掌。生命是我珍惜的，道義也是我追求的。二者不能兼得時，我會捨棄生命而選取道義。",
-          citationUrl: "十三經注疏本《孟子注疏》卷十一上"
-        },
-        source_reference: {
-          title: "十三經注疏《孟子注疏·告子上》",
-          source: "漢·趙岐注、宋·孫奭疏",
-          note: "高中必修核心古文經典，核對原本無訛"
-        },
-        status: "approved"
+        classical_text: { work: "《孟子》", chapter: "告子上", author: "孟軻", original: "生，亦我所欲也；義，亦我所欲也。二者不可得兼，舍生而取義者也。", vernacular: "生命是我珍惜的，道義也是我追求的。二者不能兼得時，我會捨棄生命而選取道義。", citationUrl: "十三經注疏本" },
+        source_reference: { title: "十三經注疏《孟子注疏》", source: "漢·趙岐注", note: "高中必修核心古文經典" }, status: "approved"
       },
       {
-        id: "q-dialogue-01",
-        mode: "dialogue",
-        difficulty: "easy",
-        title: "職場升遷落選後的豁達從容",
-        scenario: "多年好友在公司爭取升遷主管職位，因組織改組意外落選。下班後在茶館向你傾訴苦悶，你希望送他一句古名言，鼓勵他看淡一時的名利得失，保持心境寬厚坦然，下列何句最為貼切？",
+        id: "q-dialogue-01", mode: "dialogue", difficulty: "easy", title: "職場升遷落選後的豁達從容",
+        scenario: "多年好友在公司爭取主管職意外落選，在茶館向你傾訴苦悶。你希望送他一句古名言，鼓勵他看淡一時的名利得失，保持心境寬厚坦然，下列何句最為貼切？",
         options: [
-          {
-            id: "A",
-            text: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。",
-            isCorrect: true,
-            meaning: "受寵或蒙恥都不動心，閒看庭院繁花自開自落；去官或留任全不在意，漫隨天上浮雲舒卷變幻。",
-            usage: "寬慰失意者保持超然淡泊胸襟，不以物喜不以己悲。",
-            example: "面對商場起落，老董常以『寵辱不驚』自勉，泰然處之。",
-            reason: "『寵辱不驚、去留無意』精準對應職位得失與豁達心態，語氣溫潤且撫慰人心。"
-          },
-          {
-            id: "B",
-            text: "商女不知亡國恨，隔江猶唱後庭花。",
-            isCorrect: false,
-            meaning: "歌女不知道亡國的悲恨，隔著江水猶自唱著亡國靡靡之音。",
-            usage: "杜牧《泊秦淮》，諷刺達官貴人不顧國家安危醉生夢死。",
-            example: "國難當前若仍夜夜笙歌，正是商女不知亡國恨的真實寫照。",
-            reason: "純屬政治諷刺與世風感傷，用於安慰落選同事極其失禮且語境全非。"
-          },
-          {
-            id: "C",
-            text: "少壯不努力，老大徒傷悲。",
-            isCorrect: false,
-            meaning: "年輕時如果不努力奮發，到年邁衰老時只能徒然懊悔悲傷。",
-            usage: "《長歌行》，勸戒青年珍惜光陰、奮發向學。",
-            example: "青春一去不復返，莫待少壯不努力，老大徒傷悲。",
-            reason: "同事已竭盡全力爭取，此時指責其不努力無異於落井下石。"
-          },
-          {
-            id: "D",
-            text: "朱門酒肉臭，路有凍死骨。",
-            isCorrect: false,
-            meaning: "富貴人家門裡肉爛酒酸，路上卻有凍死窮苦人的骸骨。",
-            usage: "杜甫詩句，揭露社會貧富懸殊階級不公。",
-            example: "這部紀錄片揭露貧富對立，令人想起朱門酒肉臭之嘆。",
-            reason: "描寫極端社會貧富矛盾，與個人心態寬慰毫無關聯。"
-          }
+          { id: "A", text: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。", isCorrect: true, meaning: "受寵或蒙恥都不動心，去官或留任全不在意。", usage: "寬慰失意者保持超然淡泊胸襟，不以物喜不以己悲。", example: "面對商場起落，老董常以『寵辱不驚』自勉。", reason: "精準對應職位得失與豁達心態，語氣溫潤撫慰人心。" },
+          { id: "B", text: "商女不知亡國恨，隔江猶唱後庭花。", isCorrect: false, meaning: "歌女不知道亡國的悲恨，猶自唱著亡國靡靡之音。", usage: "諷刺達官貴人不顧國家安危醉生夢死。", example: "國難當前若仍夜夜笙歌，正是商女不知亡國恨。", reason: "純屬政治諷刺與世風感傷，用於安慰落選同事極其失禮。" },
+          { id: "C", text: "少壯不努力，老大徒傷悲。", isCorrect: false, meaning: "年輕時如果不努力奮發，到年邁衰老時只能徒然悲傷。", usage: "勸戒青年珍惜光陰、奮發向學。", example: "青春一去不復返，莫待少壯不努力，老大徒傷悲。", reason: "同事已竭盡全力爭取，此時指責其不努力無異於落井下石。" },
+          { id: "D", text: "朱門酒肉臭，路有凍死骨。", isCorrect: false, meaning: "富貴人家門裡肉爛酒酸，路上卻有凍死窮苦人的骸骨。", usage: "揭露社會貧富懸殊階級不公。", example: "這部紀錄片揭露貧富對立，令人想起朱門酒肉臭之嘆。", reason: "描寫極端社會貧富矛盾，與個人心態寬慰毫無關聯。" }
         ],
-        classical_text: {
-          work: "《菜根譚》/《幽窗小記》",
-          chapter: "修省篇",
-          author: "明·洪應明",
-          original: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。",
-          vernacular: "受到榮寵或屈辱都淡定不驚，靜看庭前花朵自開自落；無論去職或留任皆不放在心頭，悠然仰望天際白雲舒展消散。",
-          citationUrl: "明·洪應明《菜根譚》"
-        },
-        source_reference: {
-          title: "明代小品格言《菜根譚》",
-          source: "明萬曆刊本",
-          note: "古今對話室經典示範題，現代延伸義與原典一致"
-        },
-        status: "approved"
+        classical_text: { work: "《菜根譚》", chapter: "修省篇", author: "明·洪應明", original: "寵辱不驚，看庭前花開花落；去留無意，望天上雲卷雲舒。", vernacular: "受到榮寵或屈辱都淡定不驚，靜看庭前花朵自開自落；無論去職或留任皆不放在心頭。", citationUrl: "明·洪應明《菜根譚》" },
+        source_reference: { title: "明代小品格言《菜根譚》", source: "明萬曆刊本", note: "古今對話室經典示範題" }, status: "approved"
       },
       {
-        id: "q-dialogue-02",
-        mode: "dialogue",
-        difficulty: "medium",
-        title: "軟體架構重構的務實積累",
-        scenario: "工程團隊著手重寫龐大的舊系統，有年輕工程師妄想在三天內靠熬夜一口氣全部推翻重寫完成，資深架構師告誡他：『宏大的系統是一行一行程式碼、一個一個單元測試扎實累積起來的，急功近利只會引發全面崩潰。』若用一句古文送給這位工程師，何者最為契合？",
+        id: "q-dialogue-02", mode: "dialogue", difficulty: "medium", title: "軟體架構重構的務實積累",
+        scenario: "工程團隊著手重寫龐大舊系統，有年輕工程師妄想在三天內靠熬夜一口氣推翻重寫，資深架構師告誡他：『宏大的系統是一行一行程式碼、一個一個單元測試扎實累積起來的，急功近利只會引發全面崩潰。』若用一句古文送給這位工程師，何者最為契合？",
         options: [
-          {
-            id: "A",
-            text: "不積跬步，無以至千里；不積小流，無以成江海。",
-            isCorrect: true,
-            meaning: "不一步半步地累積，就無法到達千里遠方；不匯聚涓滴細流，就無法成其江河大海。",
-            usage: "荀子《勸學》，強調持之以恆、重視微小基礎積累才能成就長遠宏業。",
-            example: "學習專業沒有捷徑，必須每日下功夫，畢竟不積跬步無以至千里。",
-            reason: "精確切中『大工程必須由瑣細微小之處逐步扎實累積』的務實哲學。"
-          },
-          {
-            id: "B",
-            text: "同是天涯淪落人，相逢何必曾相識。",
-            isCorrect: false,
-            meaning: "大家同是在天涯飄泊淪落的苦命人，今日相遇何必在乎從前是否認識。",
-            usage: "白居易《琵琶行》，形容漂泊異鄉者彼此同病相憐的共鳴。",
-            example: "旅人異鄉相遇相互勉勵，正是同是天涯淪落人。",
-            reason: "抒發命運漂泊的同理心，與工程技術的積累工作哲學無涉。"
-          },
-          {
-            id: "C",
-            text: "兩情若是久長時，又豈在朝朝暮暮。",
-            isCorrect: false,
-            meaning: "男女相愛只要情深意長，又何必一定要朝夕相聚廝守。",
-            usage: "秦觀《鵲橋仙》，專論真摯恆久的男女愛情觀。",
-            example: "夫妻暫隔兩地工作，彼此互信，深知兩情若是久長時又豈在朝朝暮暮。",
-            reason: "純屬愛情名句，無法用於技術研發的積累告誡。"
-          },
-          {
-            id: "D",
-            text: "路漫漫其修遠兮，吾將上下而求索。",
-            isCorrect: false,
-            meaning: "前方的道路漫長悠遠，我將上天下地不懈地探索尋求理想。",
-            usage: "屈原《離騷》，表達追求政治理想百折不撓的精神。",
-            example: "科學家面對未知領域，懷抱路漫漫其修遠兮之決心前行。",
-            reason: "雖有追求理想之意，但荀子名句更具體針對『微小步驟積累以成大業』的反浮躁告誡。"
-          }
+          { id: "A", text: "不積跬步，無以至千里；不積小流，無以成江海。", isCorrect: true, meaning: "不一步半步地累積，就無法到達千里遠方。", usage: "強調持之以恆、重視微小基礎積累才能成就長遠宏業。", example: "學習專業沒有捷徑，必須每日下功夫，畢竟不積跬步無以至千里。", reason: "精確切中『大工程必須由瑣細微小之處逐步扎實累積』的務實哲學。" },
+          { id: "B", text: "同是天涯淪落人，相逢何必曾相識。", isCorrect: false, meaning: "大家同是在天涯飄泊淪落的苦命人，今日相遇何必在乎從前認識與否。", usage: "形容漂泊異鄉者彼此同病相憐的共鳴。", example: "旅人異鄉相遇相互勉勵，正是同是天涯淪落人。", reason: "抒發命運漂泊的同理心，與技術的積累工作哲學無涉。" },
+          { id: "C", text: "兩情若是久長時，又豈在朝朝暮暮。", isCorrect: false, meaning: "男女相愛只要情深意長，又何必一定要朝夕相聚廝守。", usage: "專論真摯恆久的男女愛情觀。", example: "夫妻暫隔兩地工作，深知兩情若是久長時又豈在朝朝暮暮。", reason: "純屬愛情名句，無法用於技術研發的積累告誡。" },
+          { id: "D", text: "路漫漫其修遠兮，吾將上下而求索。", isCorrect: false, meaning: "前方的道路漫長悠遠，我將上天下地不懈地探索尋求理想。", usage: "表達追求政治理想百折不撓的精神。", example: "科學家面對未知領域，懷抱路漫漫其修遠兮之決心前行。", reason: "雖有追求理想之意，但荀子名句更具體針對『微小步驟積累以成大業』的反浮躁告誡。" }
         ],
-        classical_text: {
-          work: "《荀子》",
-          chapter: "勸學篇第一",
-          author: "荀況（約前313-前238）",
-          original: "積土成山，風雨興焉；積水成淵，蛟龍生焉……故不積跬步，無以至千里；不積小流，無以成江海。騏驥一躍，不能十步；駑馬十駕，功在不舍。",
-          vernacular: "堆積泥土成為高山，風雨就會興起；匯聚積水成為深潭，蛟龍就會滋生……所以不累積半步一步，就不能走到千里之遠；不匯集細小水流，就不能形成江河大海。駿馬一躍也不過十步；劣馬走十天也能到達，成功關鍵在於永不放棄。",
-          citationUrl: "《荀子·勸學》"
-        },
-        source_reference: {
-          title: "荀子《勸學》原典篇章",
-          source: "先秦諸子散文注疏",
-          note: "古今對話室示範題，論述積累哲學無疑義"
-        },
-        status: "approved"
+        classical_text: { work: "《荀子》", chapter: "勸學篇第一", author: "荀況", original: "不積跬步，無以至千里；不積小流，無以成江海。", vernacular: "不累積半步一步，就不能走到千里之遠；不匯集細小水流，就不能形成江河大海。", citationUrl: "《荀子·勸學》" },
+        source_reference: { title: "荀子《勸學》原典", source: "先秦諸子散文注疏", note: "論述積累哲學無疑義" }, status: "approved"
       },
       {
-        id: "q-hybrid-01",
-        mode: "hybrid",
-        difficulty: "medium",
-        title: "跨部門專案中的步調分歧",
-        scenario: "集團整合跨部門打造新型智慧商城，行銷組堅持採用激進的先鋒文案，技術組卻因資安稽核要求全面保守封測，雙方開會時彼此冷嘲熱諷，完全沒有協調折衷的誠意，各照各的算盤單打獨鬥。專案顧問評估：『若再這樣_________，這個案子必然難逃胎死腹中的命運。』請問橫線上填入何者語意最精準且符合語境？",
+        id: "q-hybrid-01", mode: "hybrid", difficulty: "medium", title: "跨部門專案中的步調分歧",
+        scenario: "集團開發新型智慧商城，行銷組堅持激進文案，技術組卻因資安要求全面保守封測。雙方開會時彼此冷嘲熱諷，完全沒有協調折衷的誠意，各照各的算盤單打獨鬥。顧問評估：『若再這樣_________，案子必然難逃胎死腹中。』橫線上填入何者語意最精準？",
         options: [
-          {
-            id: "A",
-            text: "各行其是",
-            isCorrect: true,
-            meaning: "是：認為正確的事。每個人都按照自己認為對的一套去做，互不協調配合。",
-            usage: "用於指責團隊缺乏共識、步調混亂、各搞各的。",
-            example: "組織內若各部主管各行其是，企業策略將徹底流於空談。",
-            reason: "完美貼合行銷與技術兩端互不溝通、按各自算盤單打獨鬥的情境。"
-          },
-          {
-            id: "B",
-            text: "貌合神離",
-            isCorrect: false,
-            meaning: "表面上關係親近融洽，內心世界卻各懷鬼胎、想法分歧。",
-            usage: "側重在『表面看起來團結友好』之偽裝。",
-            example: "這對政商聯盟表面握手言歡，實則貌合神離。",
-            reason: "題幹已述兩組『開會時彼此冷嘲熱諷』，表面根本連融洽都未維持，故『貌合』不符情境事實。"
-          },
-          {
-            id: "C",
-            text: "閉門造車",
-            isCorrect: false,
-            meaning: "關起門來造車子。比喻脫離實際客觀環境，只憑主觀想像辦事。",
-            usage: "強調缺乏市場考察或不看現實需求。",
-            example: "做產品不能只坐在辦公室閉門造車，必須深入市場。",
-            reason: "重點在脫離客觀現實，非團隊成員缺乏溝通各自為政。"
-          },
-          {
-            id: "D",
-            text: "孤芳自賞",
-            isCorrect: false,
-            meaning: "比喻自命清高、自我欣賞，不屑與世俗同流合污。",
-            usage: "通常用於形容文人文藝家清高自許之孤僻心態。",
-            example: "他才華出眾卻不愛交際，總喜歡在書房孤芳自賞。",
-            reason: "純屬個人性格與清高態度，不合跨部門步調衝突之情境。"
-          }
+          { id: "A", text: "各行其是", isCorrect: true, meaning: "是：認為正確的事。每個人都按照自己認為對的一套去做，互不協調配合。", usage: "用於指責團隊缺乏共識、步調混亂、各搞各的。", example: "組織內若各部主管各行其是，企業策略將流於空談。", reason: "完美貼合行銷與技術兩端互不溝通、按各自算盤單打獨鬥的情境。" },
+          { id: "B", text: "貌合神離", isCorrect: false, meaning: "表面上關係親近融洽，內心世界卻各懷鬼胎、想法分歧。", usage: "側重在『表面看起來團結友好』之偽裝。", example: "這對政商聯盟表面握手言歡，實則貌合神離。", reason: "題幹已述兩組『開會時彼此冷嘲熱諷』，表面根本連融洽都未維持，故不符事實。" },
+          { id: "C", text: "閉門造車", isCorrect: false, meaning: "比喻脫離實際客觀環境，只憑主觀想像辦事。", usage: "強調缺乏市場考察或不看現實需求。", example: "做產品不能坐在辦公室閉門造車，必須深入市場。", reason: "重點在脫離客觀現實，非團隊成員缺乏溝通各自為政。" },
+          { id: "D", text: "孤芳自賞", isCorrect: false, meaning: "比喻自命清高、自我欣賞，不屑與世俗同流合污。", usage: "通常用於形容文人文藝家清高自許之孤僻心態。", example: "他才華出眾卻不愛交際，總喜歡在書房孤芳自賞。", reason: "純屬個人性格與清高態度，不合跨部門步調衝突之情境。" }
         ],
-        classical_text: {
-          work: "《莊子》/《史記》語源互見",
-          chapter: "語義演化綜合典故",
-          author: "教育部成語典考訂",
-          original: "各行其私，各行其是。",
-          vernacular: "各自依憑私意行事，各自按照自以為是的標準行動。",
-          citationUrl: "教育部《成語典》「各行其是」條"
-        },
-        source_reference: {
-          title: "教育部成語典：各行其是",
-          source: "教育部《成語典》辨析：各行其是 vs 貌合神離",
-          note: "古今混合題：考驗細膩語境邏輯（表面友好與公開衝突之區隔）"
-        },
-        status: "approved"
+        classical_text: { work: "成語典故", chapter: "語義演化", author: "無考", original: "各行其私，各行其是。", vernacular: "各自依憑私意行事，各自按照自以為是的標準行動。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典", source: "《成語典》辨析", note: "考驗細膩語境邏輯" }, status: "approved"
       },
       {
-        id: "q-idiom-03",
-        mode: "idiom",
-        difficulty: "hard",
-        title: "組織擴張後的中樞失靈危機",
-        scenario: "某大型跨國集團在全盛時期於全球成立近百家海外子公司，後來由於監管機制鬆散，許多區域分公司的資產與人事權限反過來超越母公司，甚至公然拒絕執行董事會的降本增效指令，導致總部調度失靈。管理學評論家以何成語形容此種『下級勢力強大難以駕馭』之弊病最恰切？",
+        id: "q-idiom-03", mode: "idiom", difficulty: "hard", title: "組織擴張後的中樞失靈危機",
+        scenario: "某大型集團於全球成立近百家子公司，後來由於監管鬆散，許多分公司的資產與人事權限反過來超越母公司，甚至公然拒絕執行董事會的降本增效指令，導致總部調度失靈。管理學評論家以何成語形容此種『下級勢力強大難以駕馭』之弊病最恰切？",
         options: [
-          {
-            id: "A",
-            text: "尾大不掉",
-            isCorrect: true,
-            meaning: "掉：擺動、搖晃。尾巴太大就無法自如擺動。比喻下級或附屬勢力過於龐大，以致上級指揮不靈難以牽制駕馭。",
-            usage: "常用於政治、軍事或大企業組織架構，指分支勢力擁兵自重。",
-            example: "分封諸侯如果土地過廣，往往釀成尾大不掉的割據局面。",
-            reason: "完全契合子公司權限膨脹、母公司中樞指揮失靈之經典政經情境。"
-          },
-          {
-            id: "B",
-            text: "尾生抱柱",
-            isCorrect: false,
-            meaning: "相傳尾生與女子約於橋下相會，洪水湧至仍不肯離去，終抱橋柱溺死。比喻堅守信約，亦諷刺不知變通之愚忠死板。",
-            usage: "《莊子·盜跖》，用於誠信或固執不知變通之典故。",
-            example: "講信用固然好，但若不知應變以致喪命，便成了尾生抱柱。",
-            reason: "雖有『尾』字，但意思為信守諾言至死不變，與組織權力結構毫無瓜葛。"
-          },
-          {
-            id: "C",
-            text: "虎頭蛇尾",
-            isCorrect: false,
-            meaning: "頭如老虎般威猛，尾巴卻如蛇一般細小。比喻做事起初聲勢浩大，後來無疾而終。",
-            usage: "批評做事態度有始無終。",
-            example: "這個專案當初宣傳得沸沸揚揚，最後卻虎頭蛇尾草草收場。",
-            reason: "強調前後貫徹程度不一，非上下級權力失衡。"
-          },
-          {
-            id: "D",
-            text: "尾燈相銜",
-            isCorrect: false,
-            meaning: "形容車輛接連不斷、交通極其擁塞繁忙。",
-            usage: "現代生活描述高速公路或街道車潮景象。",
-            example: "連假返鄉車潮洶湧，高速公路上只見車輛尾燈相銜延綿數里。",
-            reason: "僅為描繪交通擁擠之視覺詞彙，非指管理架構問題。"
-          }
+          { id: "A", text: "尾大不掉", isCorrect: true, meaning: "掉：擺動。尾巴太大就無法自如擺動。比喻下級或附屬勢力過於龐大，以致上級指揮不靈難以駕馭。", usage: "用於政治、軍事或大企業組織，指分支勢力擁兵自重。", example: "分封諸侯如果土地過廣，往往釀成尾大不掉的局面。", reason: "完全契合子公司權限膨脹、母公司中樞指揮失靈之政經情境。" },
+          { id: "B", text: "尾生抱柱", isCorrect: false, meaning: "相傳尾生與女子約於橋下，洪水湧至仍不肯離去終溺死。比喻堅守信約或固執不知變通。", usage: "用於誠信或固執死板之典故。", example: "若不知應變以致喪命，便成了尾生抱柱。", reason: "雖有『尾』字，但意思為信守諾言至死不變，與權力結構無關。" },
+          { id: "C", text: "虎頭蛇尾", isCorrect: false, meaning: "頭威猛尾細小。比喻做事起初聲勢浩大，後來無疾而終。", usage: "批評做事態度有始無終。", example: "專案當初宣傳沸沸揚揚，最後卻虎頭蛇尾草草收場。", reason: "強調前後貫徹程度不一，非上下級權力失衡。" },
+          { id: "D", text: "尾燈相銜", isCorrect: false, meaning: "形容車輛接連不斷、交通極其擁塞繁忙。", usage: "描述高速公路或街道車潮景象。", example: "連假返鄉車潮洶湧，高速公路上只見車輛尾燈相銜。", reason: "僅為描繪交通擁擠之視覺詞彙，非指管理架構問題。" }
         ],
-        classical_text: {
-          work: "《左傳》",
-          chapter: "昭公十一年",
-          author: "左丘明（約前502-前422）",
-          original: "楚左尹子革曰：「……且臣聞之，雄鱉尾大，其生也難；大尾不掉，將自害也。今楚之尾大矣，得無害乎？」",
-          vernacular: "楚國左尹子革說：「……而且我聽說，雄鱉尾巴太粗大，活動就很困難；尾巴太大無法擺動，終將傷害到自己。如今楚國分封的城邑勢力太龐大了，難道不會招致危害嗎？」",
-          citationUrl: "阮元校刻十三經注疏本《春秋左傳正義》卷四十五"
-        },
-        source_reference: {
-          title: "十三經注疏《春秋左傳正義·昭公十一年》",
-          source: "唐·孔穎達疏",
-          note: "高階政論典故成語，審訂義項無多解疑義"
-        },
-        status: "approved"
+        classical_text: { work: "《左傳》", chapter: "昭公十一年", author: "左丘明", original: "雄鱉尾大，其生也難；大尾不掉，將自害也。今楚之尾大矣，得無害乎？", vernacular: "雄鱉尾巴太粗大，活動就很困難...如今楚國分封的城邑勢力太龐大了，難道不會招致危害嗎？", citationUrl: "十三經注疏本" },
+        source_reference: { title: "《春秋左傳正義》", source: "唐·孔穎達疏", note: "高階政論典故成語" }, status: "approved"
       },
       {
-        id: "q-trans-03",
-        mode: "translation",
-        difficulty: "hard",
-        title: "蘇軾《前赤壁賦》渺小生命的超然宇宙觀",
-        scenario: "蘇軾泛舟赤壁，客吹洞簫發出悲愴之音，感嘆人生苦短：『寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。』其中『寄蜉蝣於天地，渺滄海之一粟』確切之旨趣為何？",
+        id: "q-idiom-04", mode: "idiom", difficulty: "medium", title: "面臨絕境的背水一戰",
+        scenario: "這家科技新創公司已經連續虧損兩年，資金即將見底。執行長在董事會上宣布，將賣掉所有周邊業務與辦公大樓，把最後一筆資金全數投入研發那款最具潛力的核心AI產品，表明『如果這次再不成功，公司就直接解散』。這種斬斷一切退路的決心，用哪個成語形容最貼切？",
         options: [
-          {
-            id: "A",
-            text: "如同蜉蝣寄生在廣袤天地之間，渺小得就像大海裡的一顆小米粒。",
-            isCorrect: true,
-            meaning: "蜉蝣：朝生暮死之微小昆蟲；粟：穀子。極力形容人身在永恆宇宙中之極度渺小與短暫。",
-            usage: "蘇軾藉客之口抒發生命悲劇感，隨後在賦文中展開水月齊一之達觀化解。",
-            example: "登泰山而小天下，更覺個人寄蜉蝣於天地，渺滄海之一粟。",
-            reason: "字詞精準對應：蜉蝣（生命短促微物）、粟（一粒穀米），深刻表達形體與壽命之微。"
-          },
-          {
-            id: "B",
-            text: "把釣竿和魚餌寄放在天地之間，看著江海裡漂流的一包稻穀感慨萬千。",
-            isCorrect: false,
-            meaning: "誤將『蜉蝣』當成釣具，將『粟』誤解成整袋糧食，望文生義。",
-            usage: "嚴重偏離原意之錯誤理解。",
-            example: "無此用法。",
-            reason: "詞性與典故完全誤讀。"
-          },
-          {
-            id: "C",
-            text: "在天地間像水鳥一樣自由飛翔，即使身在大海也像穀粒般營養充足。",
-            isCorrect: false,
-            meaning: "將悲涼悲嘆強行解為樂觀自由，且誤認蜉蝣為鳥類。",
-            usage: "概念混淆。",
-            example: "無此用法。",
-            reason: "『蜉蝣』非水鳥，『渺』為渺小而非充足。"
-          },
-          {
-            id: "D",
-            text: "短暫寄居在凡夫俗子之間，心胸遠大能把整座滄海吸入一粒米中。",
-            isCorrect: false,
-            meaning: "附會佛教芥子納須彌之說，脫離蘇軾此處描寫主體渺小無助之原旨。",
-            usage: "過度引申之偏誤詮釋。",
-            example: "無此用法。",
-            reason: "此處在講客之哀傷與渺小，而非神通廣大的超能力。"
-          }
+          { id: "A", text: "破釜沉舟", isCorrect: true, meaning: "打破煮飯的鍋子，鑿沉渡河的船隻。比喻下定決心，不顧一切幹到底。", usage: "形容面臨重大抉擇時，主動切斷所有退路以示必勝決心。", example: "為了考上國考，他辭去高薪工作破釜沉舟，專心準備。", reason: "執行長賣掉大樓與周邊業務（砸鍋沉船），將資源全押在單一產品上，完美對應破釜沉舟。" },
+          { id: "B", text: "釜底抽薪", isCorrect: false, meaning: "從鍋底抽掉柴火。比喻從根本上解決問題。", usage: "強調解決問題要從源頭下手，而非治標。", example: "與其不斷借錢還債，不如釜底抽薪，徹底改變消費習慣。", reason: "重點在於『從根本解決問題』，而非『斬斷退路拼死一搏』。" },
+          { id: "C", text: "困獸猶鬥", isCorrect: false, meaning: "被圍困的野獸還要作最後的掙扎。比喻人在絕境中仍奮力抵抗。", usage: "多含貶義或悲壯色彩，指處於劣勢面臨敗局時的垂死掙扎。", example: "敵軍雖然被包圍，但仍困獸猶鬥，不可掉以輕心。", reason: "雖然都是處於絕境，但破釜沉舟強調的是『主動』展現決心，困獸猶鬥偏向『被動』的掙扎抵抗。" },
+          { id: "D", text: "孤注一擲", isCorrect: false, meaning: "把所有的錢全部押上，決一勝負。比喻在危急時投入全部力量作最後的冒險。", usage: "偏向賭博心態，有時帶有貶義的盲目冒險。", example: "他將退休金孤注一擲投入股市，結果血本無歸。", reason: "雖然語境相近，但『孤注一擲』偏重賭徒心態，『破釜沉舟』更具壯烈決心與砸毀資產的動作對應。" }
         ],
-        classical_text: {
-          work: "《前赤壁賦》",
-          chapter: "全篇",
-          author: "蘇軾（1037-1101）",
-          original: "蘇子愀然，正襟危坐而問客曰：「何為其然也？」客曰：「……寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。」",
-          vernacular: "蘇先生神情悲傷，整理衣襟端正坐著問客人說：「為什麼會吹出這樣悲傷的曲子呢？」客人說：「……我們如同蜉蝣般短暫寄居在廣闊天地中，渺小得像汪洋大海中的一顆米粒。哀嘆我們生命的短暫，羨慕長江水流的無窮無盡。」",
-          citationUrl: "宋·蘇軾《東坡全集》卷二十二"
-        },
-        source_reference: {
-          title: "宋代散文經典《前赤壁賦》",
-          source: "教育部高中國文必讀核心古文篇目",
-          note: "經典高階古文示範題，核對蘇軾原本無訛"
-        },
-        status: "approved"
+        classical_text: { work: "《史記》", chapter: "項羽本紀", author: "司馬遷", original: "項羽乃悉引兵渡河，皆沉船，破釜甑，燒廬舍，持三日糧，以示士卒必死，無一還心。", vernacular: "項羽於是帶領全軍渡過漳河，把船隻全部鑿沉，把作飯的鍋子砸碎，燒毀營帳，只帶三天乾糧，來向士卒表示必死的決心，沒有一點退縮生還的念頭。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "《史記·項羽本紀》", source: "中華民國教育部成語典", note: "戰略決心類成語" }, status: "approved"
       },
       {
-        id: "q-dialogue-03",
-        mode: "dialogue",
-        difficulty: "hard",
-        title: "演算法喧囂年代的清醒自處",
-        scenario: "在短影音與社群推播鋪天蓋地、資訊高度碎片化的數位時代，年輕學生常感到注意力渙散、心浮氣躁難以沉潛讀書。中文系講座教授在新生座談會上，引諸葛亮家書勉勵大家屏除浮躁、寧靜致遠。請問引述何句最能體現『拒絕外在紛擾、蓄積深邃志向』的核心教誨？",
+        id: "q-idiom-05", mode: "idiom", difficulty: "hard", title: "盲目抄襲導致喪失自我",
+        scenario: "某傳統茶飲品牌看到市面上主打年輕人的『網美氣泡飲』大受歡迎，便立刻捨棄了自己經營三十年、引以為傲的傳統焙茶工藝，全面改賣色彩鮮豔的化學調和飲品。結果不僅沒吸引到年輕人，連原本死忠的老主顧也覺得味道走鐘而拒絕買單，品牌面臨倒閉危機。此種行徑最適合用哪個成語來警惕？",
         options: [
-          {
-            id: "A",
-            text: "非淡泊無以明志，非寧靜無以致遠。",
-            isCorrect: true,
-            meaning: "不把名利名聲看淡，就不能明確堅定志向；內心不保持寧靜安詳，就不能成就長遠事業。",
-            usage: "諸葛亮《誡子書》，告誡後代培養專注內省、沉著有恆之品格。",
-            example: "創業者在市場狂熱時尤需謹記『非淡泊無以明志，非寧靜無以致遠』。",
-            reason: "直指當代年輕人對抗喧囂浮躁、重尋心智專注與長程目標之解方。"
-          },
-          {
-            id: "B",
-            text: "出師未捷身先死，長使英雄淚滿襟。",
-            isCorrect: false,
-            meaning: "大軍出師還沒取得勝利主帥就先病逝了，常使後世英雄豪傑感慨流淚沾濕衣襟。",
-            usage: "杜甫《蜀相》，哀悼諸葛亮六出祁山功業未竟之悲壯感傷。",
-            example: "那位科學家在疫苗發表前夕染疫病逝，真是出師未捷身先死。",
-            reason: "旨在感傷功業未竟與英雄凋零，非論述內在心靈修持。"
-          },
-          {
-            id: "C",
-            text: "親賢臣，遠小人，此先漢所以興隆也。",
-            isCorrect: false,
-            meaning: "親近賢德的臣子，疏遠品行不端的小人，這正是前漢王朝之所以繁榮興盛的原因。",
-            usage: "諸葛亮《前出師表》，治國理政與用人建言。",
-            example: "主管用人若能親賢臣遠小人，部門氣象自能煥然一新。",
-            reason: "屬於政治任用之告誡，非個人抵抗外在資訊干擾沉潛心性之道。"
-          },
-          {
-            id: "D",
-            text: "本是同根生，相煎何太急。",
-            isCorrect: false,
-            meaning: "大家本是同一個根莖長出來的，為何要如此急迫地互相煎熬逼迫呢？",
-            usage: "曹植《七步詩》，悲憤手足相殘、內部骨肉相爭。",
-            example: "兄弟為爭遺產對簿公堂，鄰居感嘆本是同根生相煎何太急。",
-            reason: "專指手足骨肉爭鬥，完全脫離專注讀書修身之語境。"
-          }
+          { id: "A", text: "邯鄲學步", isCorrect: true, meaning: "戰國時燕國人到趙國國都邯鄲去學習當地人走路的優美姿態，結果不但沒學會，連自己原來的走法也忘了。比喻模仿不成，反而失去自己原有的長處。", usage: "強烈批評盲目模仿他人而喪失自身核心競爭力的行為。", example: "企業轉型若不顧自身優勢只知邯鄲學步，遲早會被市場淘汰。", reason: "茶飲店盲目模仿網美飲品（學步），卻丟失了傳統工藝老主顧（忘記本來走法），完全契合典故。" },
+          { id: "B", text: "東施效顰", isCorrect: false, meaning: "東施模仿西施捧心皺眉的姿態，結果反而顯得更醜。比喻盲目胡亂模仿，效果適得其反。", usage: "多用於形容模仿別人『外在缺點或姿態』而顯得可笑。", example: "他沒有那種文人氣質，硬要吟詩作對，簡直是東施效顰。", reason: "東施效顰強調模仿後『顯著醜陋』，而邯鄲學步更強調『連自己原本的長處都喪失了』，在此商業情境中後者更深刻。" },
+          { id: "C", text: "畫虎類犬", isCorrect: false, meaning: "畫老虎不成，反倒畫得像一隻狗。比喻模仿不到家，反而弄得不倫不類。", usage: "指好高騖遠，模仿不成反鬧笑話。", example: "這部電影想模仿好萊塢大片，結果畫虎類犬，毫無邏輯。", reason: "畫虎類犬著重於『成果四不像』，沒有包含『喪失自己原有本領』這層涵義。" },
+          { id: "D", text: "削足適履", isCorrect: false, meaning: "把腳削去一塊來穿進鞋子裡。比喻勉強遷就，不知變通，或不顧具體條件生搬硬套。", usage: "批評為了符合某種死板規定或框架而損害根本。", example: "教育制度應該適應學生，而不是讓學生削足適履去迎合死板考試。", reason: "茶飲店是主動拋棄傳統去追逐新潮流，並非為了穿進不合腳的規定鞋子而損害自己。" }
         ],
-        classical_text: {
-          work: "《誡子書》",
-          chapter: "全文",
-          author: "三國·蜀漢·諸葛亮（181-234）",
-          original: "夫君子之行，靜以修身，儉以養德。非淡泊無以明志，非寧靜無以致遠。夫學須靜也，才須學也，非學無以廣才，非志無以成學。",
-          vernacular: "君子的德行，依靠內心寧靜來修養身心，依靠簡樸節儉來培養品德。不把名利得失看淡就無法堅定志向，內心不寂靜深思就無法達到遠大目標。做學問必須心靈寧靜，才華必須經過勤學，不學習就無法開展才能，沒有堅定志向就無法在學業上有所成就。",
-          citationUrl: "明·張溥編《漢魏六朝百三家集·諸葛亮集》"
-        },
-        source_reference: {
-          title: "諸葛亮《誡子書》家訓原典",
-          source: "《諸葛亮集·文集卷一》",
-          note: "古今對話室高階經典題，歷久彌新"
-        },
-        status: "approved"
+        classical_text: { work: "《莊子》", chapter: "秋水", author: "莊周", original: "且子獨不聞夫壽陵餘子之學行於邯鄲與？未得國能，又失其故行矣，直匍匐而歸耳。", vernacular: "況且你難道沒聽說過壽陵的年輕人去邯鄲學習走路的事嗎？還沒學會趙國人走路的姿態，又忘記了他原本走路的方法，最後只好爬著回去了。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：0267", source: "中華民國教育部成語典", note: "深度商業經營教訓" }, status: "approved"
       },
       {
-        id: "q-hybrid-02",
-        mode: "hybrid",
-        difficulty: "easy",
-        title: "工匠神技與專業精湛境界",
-        scenario: "故宮修復國寶古書的國寶級裱褙大師，面對破碎脆化如蟬翼的千年古畫，能以毫釐之差剝離七層古紙而不損及絲毫墨色。在場觀摩的青年學徒無不屏息讚嘆，紛紛形容大師的手藝已達到_________、令人嘆為觀止的超凡境界。請問何者形容最為確切？",
+        id: "q-trans-04", mode: "translation", difficulty: "easy", title: "《愛蓮說》君子高潔之志",
+        scenario: "北宋周敦頤以蓮花自況，留下一篇傳頌千古的短文，其中最著名的核心金句：『予獨愛蓮之出淤泥而不染，濯清漣而不妖。』請問『出淤泥而不染』所蘊含的君子修為最精確的解釋為何？",
         options: [
-          {
-            id: "A",
-            text: "目無全牛",
-            isCorrect: true,
-            meaning: "全牛：整隻牛。庖丁解牛三年之後，眼中所見已非整隻牛，而是牛的骨肉筋絡結構。比喻技藝熟練到了極點、洞悉本質得心應手。",
-            usage: "《莊子·養生主》，專門形容各專業領域技藝達到爐火純青出神入化。",
-            example: "老外科醫師動手術時目無全牛，下刀極其果決精準。",
-            reason: "裱褙大師洞悉紙纖維結構且手法神妙，正是目無全牛的最佳詮釋（注意：非貶義，常被誤解為目中無人）。"
-          },
-          {
-            id: "B",
-            text: "刻舟求劍",
-            isCorrect: false,
-            meaning: "在船上刻記號尋找落入水中的寶劍。比喻拘泥不知變通、食古不化。",
-            usage: "貶義詞，批評不知時空變遷而墨守成規之人。",
-            example: "時代在進步，若仍沿用三十年前的規章管理，無異於刻舟求劍。",
-            reason: "貶抑死板不化，絕非稱讚高超技藝。"
-          },
-          {
-            id: "C",
-            text: "井底之蛙",
-            isCorrect: false,
-            meaning: "住在井底的小青蛙，以為天只有井口那麼大。比喻見識狹窄短淺的人。",
-            usage: "諷刺眼界封閉、缺乏宏觀視野。",
-            example: "多出國看看世界，免得淪為井底之蛙而自鳴得意。",
-            reason: "批評見識狹隘，與技藝高超截然相反。"
-          },
-          {
-            id: "D",
-            text: "濫竽充數",
-            isCorrect: false,
-            meaning: "不會吹竽的人混在樂隊中冒充吹奏。比喻沒有真才實學卻混在同行中充數。",
-            usage: "自謙或批評假冒專業。",
-            example: "這份企劃案大家都是專家，我只是濫竽充數來見習罷了。",
-            reason: "形容不學無術冒充專家，與大師之神技語義完全顛倒。"
-          }
+          { id: "A", text: "從污濁的爛泥中生長出來，卻不被爛泥的污穢所沾染污染。", isCorrect: true, meaning: "淤泥：水底污濁的爛泥；染：沾染、污染。", usage: "比喻人在混濁、敗壞的環境中，仍能保持高尚純潔的品格，不與世俗同流合污。", example: "他在官場打滾多年，卻能不收賄賂，真正做到了出淤泥而不染。", reason: "精準對譯原文，並完美詮釋儒家君子處於惡劣環境仍堅守道德底線的核心象徵。" },
+          { id: "B", text: "即使跌進骯髒的爛泥裡，也能很快洗乾淨而不留下污漬。", isCorrect: false, meaning: "誤解了『出』（生長於）的涵義，變成不小心跌倒。", usage: "將哲理名句庸俗化為洗衣服的物理現象。", example: "無此用法。", reason: "蓮花是從泥中生長出來的（本性），而非跌進去再洗乾淨。" },
+          { id: "C", text: "遠離了世俗的污泥，獨自在乾淨的水池中綻放高雅的花朵。", isCorrect: false, meaning: "完全顛倒了『淤泥』的所在，蓮花正是長在淤泥中，並非遠離。", usage: "這是隱士思想（如陶淵明愛菊），而非周敦頤愛蓮之積極入世卻不染的哲學。", example: "無此用法。", reason: "忽略了『出淤泥』的『出』字，君子並未逃避污濁環境，而是在其中保持清白。" },
+          { id: "D", text: "從泥巴裡挖出來的蓮藕雖然有泥土，但不會傳染疾病。", isCorrect: false, meaning: "將文學比喻當作農業衛生常識來解讀。", usage: "毫無文學常識的搞笑誤讀。", example: "無此用法。", reason: "把『染』（道德污染）誤解為傳染病。" }
         ],
-        classical_text: {
-          work: "《莊子》",
-          chapter: "養生主第三",
-          author: "莊周（約前369-前286）",
-          original: "始臣之解牛之時，所見無非牛者；三年之後，未嘗見全牛也。方今之時，臣以神遇而不以目視，官知止而神欲行。",
-          vernacular: "當初我剛開始解剖牛的時候，所看見的無非是整頭牛；三年之後，就未曾再看見整頭完整的牛了（只看到筋骨結構縫隙）。到了現在，我全憑心神直覺去體會而不用眼睛去看，視覺感官的作用停止了而心神的領會正在運行。",
-          citationUrl: "郭慶藩《莊子集釋·養生主》"
-        },
-        source_reference: {
-          title: "教育部成語典：目無全牛",
-          source: "教育部《成語典》正解辨析",
-          note: "高頻易混淆成語：民間常望文生義誤作目中無人，實為讚譽技藝神化"
-        },
-        status: "approved"
+        classical_text: { work: "《愛蓮說》", chapter: "全文", author: "北宋·周敦頤", original: "予獨愛蓮之出淤泥而不染，濯清漣而不妖，中通外直，不蔓不枝，香遠益清，亭亭淨植，可遠觀而不可褻玩焉。", vernacular: "我唯獨喜愛蓮花從污濁的爛泥中生長出來，卻不被污染；在清水中洗滌過，卻不顯得妖媚。", citationUrl: "國中基礎古文" },
+        source_reference: { title: "宋·周敦頤《愛蓮說》", source: "國民中學國文教材", note: "品格教養基礎核心" }, status: "approved"
+      },
+      {
+        id: "q-dialogue-04", mode: "dialogue", difficulty: "easy", title: "同理心與職場任務指派",
+        scenario: "在辦公室裡，某位資深前輩總是把自己不想做的繁瑣報表、會惹人生氣的客訴電話，假借『磨練新人』的名義，全部丟給剛到職的實習生處理。如果你想用一句儒家經典名言委婉勸戒這位前輩要有同理心，哪一句最適合？",
+        options: [
+          { id: "A", text: "己所不欲，勿施於人。", isCorrect: true, meaning: "自己所不喜歡、不願承受的事情，就不要強加在別人身上。", usage: "用於提醒他人具備同理心、換位思考，不將痛苦或麻煩轉嫁他人。", example: "既然你也不喜歡加班，就別在下班前五分鐘交辦任務，己所不欲，勿施於人啊。", reason: "前輩把『自己不想做的繁瑣任務』丟給別人，完全違背了『己所不欲勿施於人』的恕道精神。" },
+          { id: "B", text: "天將降大任於斯人也，必先苦其心志。", isCorrect: false, meaning: "上天要把重任降臨在某人身上，一定會先讓他遭受心智上的痛苦與磨練。", usage: "孟子名言，用來勉勵遭遇挫折的人是在為未來的成功做準備。", example: "考試落榜別氣餒，天將降大任於斯人也，必先苦其心志。", reason: "這是前輩用來『合理化』自己推卸責任的藉口，若用來勸戒前輩反而變成支持他的歪理。" },
+          { id: "C", text: "不患寡而患不均，不患貧而患不安。", isCorrect: false, meaning: "不擔憂財富不多，只擔憂財富分配不均；不擔憂人民貧窮，只擔憂社會不安定。", usage: "孔子談論治國理政與財富分配的原則。", example: "這筆獎金發放必須公平，否則員工不患寡而患不均，會引發抗議。", reason: "前輩的行為是『推卸討厭的責任』，而非『獎金或利益分配不均』，語境不符。" },
+          { id: "D", text: "海納百川，有容乃大。", isCorrect: false, meaning: "大海因為能夠接納無數條河流，所以才能如此廣大。比喻人的心胸要寬廣包容。", usage: "勉勵人要有廣大的胸襟去接納不同的意見或犯錯的人。", example: "身為主管必須海納百川，有容乃大，才能聽到基層真實的聲音。", reason: "要實習生『包容』前輩的推諉塞責是不健康的職場觀，且與勸戒目的不合。" }
+        ],
+        classical_text: { work: "《論語》", chapter: "顏淵篇第十二 / 衛靈公篇", author: "孔子弟子", original: "仲弓問仁。子曰：「出門如見大賓，使民如承大祭。己所不欲，勿施於人。在邦無怨，在家無怨。」", vernacular: "孔子說：「出門做事要像接待貴賓一樣恭敬，差遣人民要像承辦重大祭典一樣慎重。自己所不喜歡的事物，不要強加在別人身上。」", citationUrl: "十三經注疏本" },
+        source_reference: { title: "《論語·衛靈公/顏淵》", source: "孔子論恕道", note: "生活品德核心常識" }, status: "approved"
+      },
+      {
+        id: "q-idiom-06", mode: "idiom", difficulty: "easy", title: "違反規律的急功近利",
+        scenario: "某位家長為了讓五歲的女兒早日成為音樂神童，每天逼迫她練習鋼琴長達六個小時，完全剝奪了孩童玩耍與睡眠的時間。結果一個月後，女兒不僅沒有進步，反而看到鋼琴就大哭崩潰，徹底產生了抗拒心理。這位家長的教育方式，用哪個成語形容最貼切？",
+        options: [
+          { id: "A", text: "揠苗助長", isCorrect: true, meaning: "揠：拔起。把禾苗拔高一點，幫助它成長。比喻為求速成而未循序漸進，反而有害於事。", usage: "強烈批評違反事物客觀發展規律、急於求成反壞了大事的行為。", example: "給幼稚園學童填鴨微積分，完全是揠苗助長，只會毀了孩子的學習興趣。", reason: "家長無視五歲孩童的生理與心理發展規律，強行施加超量訓練導致崩潰，正是揠苗助長的最典型情境。" },
+          { id: "B", text: "因材施教", isCorrect: false, meaning: "依據受教者不同的資材、資質，而給予不同的教導。", usage: "讚美教育者能根據學生的天賦個性制定適合的教學方法。", example: "好的老師懂得因材施教，讓每個孩子都能發揮所長。", reason: "家長的行為完全相反，是強迫硬塞而非順應天賦，用此成語是嚴重的反諷或誤用。" },
+          { id: "C", text: "亡羊補牢", isCorrect: false, meaning: "羊逃跑了，才趕快修補羊圈。比喻犯錯後及時更正，尚能補救。", usage: "勸勉人遇到挫折或失誤後要立刻採取補救措施，為時不晚。", example: "這次段考雖然不及格，但只要亡羊補牢，弄懂錯題，期末考還有機會。", reason: "重點在於『事後的補救』，而題幹是在描述『造成悲劇的錯誤方法本身』。" },
+          { id: "D", text: "按部就班", isCorrect: false, meaning: "原指寫文章時結構安排得當，選詞造句合乎規範。後指做事依照一定的層次、步驟進行。", usage: "稱讚或要求做事有條理、循序漸進，不急躁。", example: "只要按部就班地執行計畫，這個專案一定能順利完成。", reason: "家長的行為是急躁冒進，完全沒有按部就班。" }
+        ],
+        classical_text: { work: "《孟子》", chapter: "公孫丑上", author: "孟軻", original: "宋人有閔其苗之不長而揠之者，芒芒然歸，謂其人曰：『今日病矣！予助苗長矣！』其子趨而往視之，苗則槁矣。", vernacular: "宋國有個人擔憂他的禾苗長不高，就把禾苗一棵棵往上拔，疲憊不堪地回家說：『今天累壞了！我幫助禾苗長高了！』他兒子趕緊跑去田裡看，禾苗卻全都枯死了。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "《孟子·公孫丑上》", source: "中華民國教育部成語典", note: "初階教育類經典成語（又作拔苗助長）" }, status: "approved"
+      },
+      {
+        id: "q-idiom-07", mode: "idiom", difficulty: "medium", title: "演唱會盛況的空巷現象",
+        scenario: "某知名國際巨星來台舉辦免費戶外演唱會，整個城市的粉絲都瘋狂湧入廣場周邊，導致附近的幾條主要街道都被擠得水洩不通。新聞主播在報導時，用哪個成語形容「大家都跑出來參加活動，導致街巷空空蕩蕩」的盛況最為標準？",
+        options: [
+          { id: "A", text: "萬人空巷", isCorrect: true, meaning: "形容成千上萬的人聚在一起，致使街巷都空了。多用以形容群眾踴躍參加某種盛況。", usage: "用於形容慶典、迎神或巨星造訪時，民眾傾巢而出，非常熱鬧的景象。", example: "媽祖繞境隊伍經過時，當地可以說是萬人空巷，熱鬧非凡。", reason: "現代人常望文生義以為是『街上空無一人很冷清』，實則是『人都擠到會場去了，所以家裡跟巷子空了』的極度熱鬧盛況。此題為防誤導測驗首選。" },
+          { id: "B", text: "萬籟俱寂", isCorrect: false, meaning: "萬籟：各種聲音。形容萬物無聲，十分寂靜。", usage: "用來描繪夜晚或特定環境下極度安靜的氣氛。", example: "夜深人靜，萬籟俱寂，只剩下時鐘滴答作響。", reason: "演唱會現場水洩不通、非常吵雜熱鬧，與十分寂靜完全相反。" },
+          { id: "C", text: "門可羅雀", isCorrect: false, meaning: "門前冷清，可以張網捕雀。形容賓客稀少，門庭冷清。", usage: "多用於形容商店生意清淡或達官貴人失勢後無人拜訪。", example: "這家餐廳自從爆發食安危機後，生意一落千丈，門可羅雀。", reason: "形容冷清沒人氣，與巨星演唱會的狂熱人潮完全相反。" },
+          { id: "D", text: "萬人塚巷", isCorrect: false, meaning: "坊間常見之錯字誤造詞。", usage: "非規範成語，為混淆視聽的錯誤寫法。", example: "此為混淆錯誤詞，無此用法。", reason: "純屬生造混淆詞，絕非正解。" }
+        ],
+        classical_text: { work: "《東坡七集》", chapter: "八月十七日復登望海堂", author: "宋·蘇軾", original: "賴有明朝看潮在，萬人空巷鬥新妝。", vernacular: "幸好明天還有觀賞錢塘江大潮的活動，成千上萬的人傾巢而出，爭相展現新打扮。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：萬人空巷", source: "中華民國教育部成語典", note: "高頻易錯：常被誤用為冷清無人。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-08", mode: "idiom", difficulty: "hard", title: "企業內賊的私下勾結",
+        scenario: "公司的採購部經理與外部供應商私下勾結，故意抬高進貨價格，然後從中平分回扣，聯手掏空公司資產。調查局在報告中，最適合用哪個成語形容這種「臭味相投、互相勾結做壞事」的關係？",
+        options: [
+          { id: "A", text: "沆瀣一氣", isCorrect: true, meaning: "沆瀣（ㄏㄤˋ ㄒㄧㄝˋ）：夜間的水氣。原指兩人的氣味相投（本為褒義），後多轉喻為臭味相投，勾結作惡。", usage: "強烈貶義，專門用來形容壞人互相勾結，狼狽為奸。", example: "這些黑心建商與貪官污吏沆瀣一氣，嚴重損害市民權益。", reason: "採購經理與供應商私下勾結貪污回扣，正是沆瀣一氣（勾結作惡）的標準情境。" },
+          { id: "B", text: "同心協力", isCorrect: false, meaning: "團結一致，共同努力。", usage: "褒義詞，形容大家為了共同的正面目標一起奮鬥。", example: "只要大家同心協力，一定能度過這次的難關。", reason: "這是褒義詞，用來形容貪污勾結極度不妥，語意矛盾。" },
+          { id: "C", text: "貌合神離", isCorrect: false, meaning: "表面上關係親近融洽，內心世界卻各懷鬼胎。", usage: "形容表面友好實則不合。", example: "這對政商聯盟表面握手言歡，實則貌合神離。", reason: "採購與供應商是實質在私下聯手圖利（真勾結），並非表面友好內心分歧，故不適用。" },
+          { id: "D", text: "惺惺相惜", isCorrect: false, meaning: "聰明才智相當的人彼此同情、憐惜或敬重。", usage: "褒義詞，多用於英雄之間互相敬重欣賞。", example: "兩位頂尖高手在決戰後惺惺相惜，成為了好友。", reason: "用來形容貪污犯互相敬重完全是錯置褒貶。" }
+        ],
+        classical_text: { work: "《南部新書》", chapter: "卷戊", author: "宋·錢易", original: "又乾符三年，崔沆放榜，考官叫崔瀣，時人嘲之曰：『座主門生，沆瀣一氣。』", vernacular: "唐僖宗乾符三年，主考官崔沆錄取了崔瀣，當時的人開玩笑說：『考官與門生，真是氣味相投的一氣啊。』", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：沆瀣一氣", source: "中華民國教育部成語典", note: "語意演變（褒轉貶）經典成語，需注意注音（ㄏㄤˋ ㄒㄧㄝˋ）。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-09", mode: "idiom", difficulty: "medium", title: "資安修復的無效決策",
+        scenario: "針對近期頻發的系統資安漏洞，資訊部門沒有去修復底層的伺服器防火牆，反而只是發公告要求所有員工『把個人密碼改得更長』。專家批評這種作法根本沒有觸及問題核心，毫無實質防護效果。這種作法稱為什麼？",
+        options: [
+          { id: "A", text: "隔靴搔癢", isCorrect: true, meaning: "隔著靴子抓癢。比喻做事未抓到痛處，沒有切中要害，無法解決根本問題。", usage: "批評解決方案沒有針對真正的原因對症下藥，徒勞無功。", example: "這項補助政策對解決高房價問題而言，根本是隔靴搔癢，毫無作用。", reason: "不修防火牆只叫人改密碼，完全沒有碰觸到真正的漏洞核心，猶如隔靴搔癢。" },
+          { id: "B", text: "隔岸觀火", isCorrect: false, meaning: "隔著河看對岸的火災。比喻對別人的危難不加援手，只在一旁看熱鬧。", usage: "批評冷眼旁觀、袖手旁觀的態度。", example: "鄰國發生內戰，我們不能隔岸觀火，應提供人道救援。", reason: "資訊部門確實有採取行動（發公告改密碼），只是無效，並非在一旁看戲不理會。" },
+          { id: "C", text: "對症下藥", isCorrect: false, meaning: "針對病症開藥方。比喻針對事物的缺失、問題所在，採取有效的措施。", usage: "褒義詞，稱讚解決問題精準有效。", example: "醫生診斷出病因後對症下藥，病人很快就康復了。", reason: "與情境中『沒有觸及問題核心』的意思完全相反。" },
+          { id: "D", text: "畫餅充飢", isCorrect: false, meaning: "畫個餅來解除飢餓。比喻徒具虛名而無益於實際，或以空想來安慰自己。", usage: "多用於指空頭支票或無法實現的幻想。", example: "老闆承諾的明年加薪，在公司虧損的情況下只是畫餅充飢。", reason: "『畫餅』強調的是空想與虛幻的承諾；而『改密碼』是實際行動，只是沒抓到痛處（隔靴搔癢更精準）。" }
+        ],
+        classical_text: { work: "《景德傳燈錄》", chapter: "卷八", author: "宋·道原", original: "師曰：『不唯不知，亦乃隔靴搔癢。』", vernacular: "禪師說：『你不僅是不懂，而且你的回答就像隔著靴子抓癢一樣，根本沒抓到痛處。』", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：隔靴搔癢", source: "中華民國教育部成語典", note: "解決問題無效之精準譬喻。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-10", mode: "idiom", difficulty: "easy", title: "假行家的樂團混水摸魚",
+        scenario: "國家交響樂團招募吹奏樂手，完全不會吹笛子的老王為了領取高額車馬費，竟然混在龐大的樂隊裡，裝模作樣地跟著大家按孔，其實根本沒吹出半點聲音。這種沒有真本事卻混在行家裡面湊數的行為，叫做什麼？",
+        options: [
+          { id: "A", text: "濫竽充數", isCorrect: true, meaning: "不會吹竽的人混在樂隊中冒充吹奏。比喻沒有真才實學卻混在同行中充數。", usage: "常用來批評假冒專業的人，或作為自謙之詞（說自己是來湊數的）。", example: "這份企劃案大家都是專家，我只是來濫竽充數見習罷了。", reason: "老王不會吹奏卻混在樂隊中裝模作樣，這正是『濫竽充數』典故的完全翻版。" },
+          { id: "B", text: "魚目混珠", isCorrect: false, meaning: "拿魚眼睛冒充珍珠。比喻以假亂真，以劣充優。", usage: "通常用於形容『物品或商品』的造假，不常用於形容『人』混在團體裡。", example: "不良商家在純金中摻雜銅合金，企圖魚目混珠欺騙消費者。", reason: "魚目混珠多指『以假貨冒充真貨』，而濫竽充數專指『沒有本事的人混在行家裡』，後者更符合語境。" },
+          { id: "C", text: "掩耳盜鈴", isCorrect: false, meaning: "偷鈴鐺的人怕鈴聲被人聽見，自己把耳朵摀起來。比喻自欺欺人。", usage: "批評明知事情真相卻企圖欺瞞掩飾，實則只能騙自己。", example: "明明赤字嚴重卻隱瞞不報，這無異於掩耳盜鈴。", reason: "老王是想騙別人來領車馬費，並非自己騙自己（自欺欺人）。" },
+          { id: "D", text: "滥殺無辜", isCorrect: false, meaning: "胡亂殺害沒有罪過的人。", usage: "用於殘暴、枉法濫刑的嚴重罪行。", example: "恐怖分子濫殺無辜，受到國際社會的強烈譴責。", reason: "與樂團吹奏毫無關聯，純屬字面開頭相同的混淆干擾項。" }
+        ],
+        classical_text: { work: "《韓非子》", chapter: "內儲說上", author: "韓非", original: "齊宣王使人吹竽，必三百人。南郭處士請為王吹竽...宣王死，湣王立，好一一聽之，處士逃。", vernacular: "齊宣王叫人吹竽，一定要三百人一起合奏。南郭先生請求為王吹竽...宣王死後湣王繼位，喜歡聽樂手一個一個單獨吹奏，南郭先生只好連夜逃跑了。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：濫竽充數", source: "中華民國教育部成語典", note: "初階寓言成語，辨析物品造假(魚目)與人員充數(濫竽)。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-11", mode: "idiom", difficulty: "hard", title: "開源社群中的實力震撼",
+        scenario: "剛畢業的軟體工程師，原本對自己的技術充滿自信。但當他進入頂尖的開源社群，看到那些大神寫出的底層架構碼後，深感自己的渺小與能力不足，只能在一旁發出無能為力的讚嘆。這種『看到偉大事物後，深感自己渺小無力』的心境，最適合用哪個成語形容？",
+        options: [
+          { id: "A", text: "望洋興嘆", isCorrect: true, meaning: "望洋：仰視的樣子（後多解為望著海洋）。原指看到海洋的浩瀚，感嘆自己的渺小。比喻因能力不足而感到無可奈何。", usage: "常用於面臨偉大、艱鉅的事物時，深感自身能力不足而發出的嘆息。", example: "面對如此龐大的資料庫重構工程，我們幾個人也只能望洋興嘆。", reason: "工程師見識到大神的架構（浩瀚海洋），深感自己能力不足而讚嘆嘆息，精準契合望洋興嘆的典故與語意。" },
+          { id: "B", text: "井底之蛙", isCorrect: false, meaning: "住在井底的小青蛙。比喻見識狹窄短淺的人。", usage: "多帶有貶義，諷刺眼界封閉卻自鳴得意的人。", example: "多出國看看世界，免得淪為井底之蛙而自鳴得意。", reason: "工程師已經跳出井口（進入頂尖社群）並認知到自己的不足，不再是自滿的井底之蛙了。" },
+          { id: "C", text: "嘆為觀止", isCorrect: false, meaning: "讚美所看到的事物好到了極點，無與倫比。", usage: "純粹極致的讚美，形容事物極為精妙完美。", example: "這場魔術表演的手法出神入化，令人嘆為觀止。", reason: "嘆為觀止只有『讚美』，缺乏了情境中『深感自己渺小與能力不足』的無力感（望洋興嘆更全面）。" },
+          { id: "D", text: "望梅止渴", isCorrect: false, meaning: "曹操帶兵缺水，騙士兵前方有梅林，士兵想起梅子酸味而流口水，解了口渴。比喻以空想來安慰自己。", usage: "用於無法實際得到，只能靠想像來滿足的情況。", example: "買不起名牌包，只能看看雜誌照片望梅止渴。", reason: "與感嘆能力不足無關，語境完全不合。" }
+        ],
+        classical_text: { work: "《莊子》", chapter: "秋水", author: "莊周", original: "於是焉河伯始旋其面目，望洋向若而歎曰：「野語有之曰：『聞道百，以為莫己若者。』我之謂也。」", vernacular: "這時黃河之神河伯才改變了自滿的神色，仰視著海神若嘆息說：「俗話說：『聽到了許多道理，就以為沒有人比得上自己。』說的就是我啊。」", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：望洋興嘆", source: "中華民國教育部成語典", note: "高階心境成語，需辨析單純讚美(嘆為觀止)與深感不足(望洋興嘆)的差異。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-12", mode: "idiom", difficulty: "medium", title: "總經理的裁員決策困境",
+        scenario: "在公司面臨轉型危機時，總經理既想大刀闊斧裁員以節省成本，又怕引發工會激烈抗爭，在決策會議上反覆無常、猶豫不決，遲遲不敢拍板定案，導致公司錯失了最佳的改革時機。這種遲疑不決、瞻前顧後的態度，用何者形容最貼切？",
+        options: [
+          { id: "A", text: "首鼠兩端", isCorrect: true, meaning: "首鼠：猶豫不決進退失據的樣子。兩端：兩頭。形容猶豫不決、動搖不定的樣子。", usage: "常用於批評在關鍵時刻缺乏決斷力，瞻前顧後、拿不定主意。", example: "在這個關鍵時刻，你必須果斷做出選擇，不可首鼠兩端。", reason: "總經理在裁員與工會抗爭之間反覆無常、遲不敢拍板，正是『首鼠兩端』的猶豫不決。" },
+          { id: "B", text: "破釜沉舟", isCorrect: false, meaning: "打破飯鍋，鑿沉渡船。比喻下定決心，不顧一切幹到底。", usage: "形容極度果斷、切斷退路的決心。", example: "為了拯救公司，他破釜沉舟，賣掉了所有房產注資。", reason: "與猶豫不決完全相反，這是極度果斷的表現。" },
+          { id: "C", text: "朝三暮四", isCorrect: false, meaning: "原指養猴人以欺騙手法愚弄猴子。後比喻心意不定、反覆無常。", usage: "多用於形容人的感情、志向反覆無常，變化多端。", example: "他換工作總是朝三暮四，沒有一份做得長久。", reason: "朝三暮四偏向『經常變換心意』，而首鼠兩端更強調『在面臨抉擇時的遲疑不決與進退失據』，後者更契合會議上不敢拍板的情境。" },
+          { id: "D", text: "隨波逐流", isCorrect: false, meaning: "順著水流而下。比喻沒有堅定的立場，缺乏判斷是非的能力，只能跟著別人走。", usage: "批評人沒有主見，盲目跟風。", example: "年輕人應該要有獨立思考的能力，不應在網路上隨波逐流。", reason: "總經理是在兩個選項間猶豫，並非沒有主見盲目跟從大眾。" }
+        ],
+        classical_text: { work: "《史記》", chapter: "魏其武安侯列傳", author: "司馬遷", original: "武安已罷朝，出止車門，召韓御史大夫載，怒曰：「與長孺共一老禿翁，何為首鼠兩端？」", vernacular: "武安侯退朝後，在車門外叫韓御史大夫同車，憤怒地說：「我和你本來要共同對付那個老頭子，你為什麼在朝廷上猶豫不決、動搖不定？」", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：首鼠兩端", source: "中華民國教育部成語典", note: "常見進階決策成語。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-13", mode: "idiom", difficulty: "hard", title: "政府機構的空降主管",
+        scenario: "某政府機構的空降主管，佔著高薪的職位，每天上班只是看報紙、喝茶，完全不處理公務，對單位的業務發展與市民福祉毫無建樹。這種「空佔著職位而不做事」的行為，應當如何形容？",
+        options: [
+          { id: "A", text: "尸位素餐", isCorrect: true, meaning: "尸位：空佔著職位而不做事；素餐：白吃飯。比喻空佔著職位，白領薪水而不作事。", usage: "強烈貶義，常用來批評失職、不作為的官員或主管。", example: "人民選出民意代表，是希望他們為民喉舌，絕非讓他們尸位素餐。", reason: "主管領高薪卻只看報喝茶不處理公務，正是標準的尸位素餐（佔著職位白領乾薪）。" },
+          { id: "B", text: "揠苗助長", isCorrect: false, meaning: "比喻為求速成而未循序漸進，反而有害於事。", usage: "批評急功近利違反客觀規律。", example: "逼五歲孩童學微積分，簡直是揠苗助長。", reason: "該主管是什麼都沒做，而不是急功近利做過頭。" },
+          { id: "C", text: "喧賓奪主", isCorrect: false, meaning: "客人的聲勢反壓過主人。比喻次要事物搶奪主要事物的地位。", usage: "指配角搶了主角的風頭。", example: "配角演得太好，未免有些喧賓奪主。", reason: "與空佔職位不做事毫無關聯。" },
+          { id: "D", text: "越俎代庖", isCorrect: false, meaning: "掌管祭祀的人放下祭器，代替廚師去料理食物。比喻踰越自己的職分而代人做事。", usage: "批評人多管閒事，侵犯他人職權。", example: "這件事該由人事部處理，我們財務部不宜越俎代庖。", reason: "該主管是『不做事』，越俎代庖是『做得太多甚至管到別人頭上』，完全相反。" }
+        ],
+        classical_text: { work: "《漢書》", chapter: "朱雲傳", author: "班固", original: "今朝廷大臣上不能匡主，下亡以益民，皆尸位素餐，孔子所謂『鄙夫不可與事君』，『苟患失之，亡所不至』者也。", vernacular: "如今朝廷的大臣，對上不能輔佐匡正君王，對下不能造福百姓，全都是空佔職位白領薪水，這就是孔子所說的『不能和這種庸俗鄙陋的人一起事奉君王』、『為了怕失去官位，什麼壞事都做得出來』的人啊。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：尸位素餐", source: "中華民國教育部成語典", note: "職場政治類高頻詞彙，注意『尸』在此為『代替神明受祭祀者（引申為空佔位子）』之意。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-14", mode: "idiom", difficulty: "medium", title: "奇幻歷史鉅作的熱銷盛況",
+        scenario: "一位寂寂無名的新人作家，出版了一部描寫奇幻歷史的鉅作，結果大受歡迎，全城民眾爭相購買，導致各大書店不僅大缺貨，連印刷廠用來印書的紙張價格都被連帶炒高。形容文學作品風行一時、廣受歡迎，最適合用哪個成語？",
+        options: [
+          { id: "A", text: "洛陽紙貴", isCorrect: true, meaning: "晉代左思寫成《三都賦》後，洛陽的人爭相抄寫，使得洛陽的紙價隨之上漲。比喻著作風行一時，流傳甚廣。", usage: "專門用於稱讚文學作品、書籍暢銷大賣，極受歡迎。", example: "這本小說一出版就榮登排行榜冠軍，一時洛陽紙貴。", reason: "小說大受歡迎導致紙張價格上漲，是洛陽紙貴最完美的現代情境重現。" },
+          { id: "B", text: "汗牛充棟", isCorrect: false, meaning: "運送書籍時，累得牛流汗；存放書籍時，裝滿了整個屋子。形容書籍極多。", usage: "用來形容藏書豐富，書籍數量龐大。", example: "圖書館裡的藏書汗牛充棟，涵蓋了各個領域的知識。", reason: "汗牛充棟強調『書的數量多』，而洛陽紙貴強調『某本書極度暢銷受歡迎』。" },
+          { id: "C", text: "韋編三絕", isCorrect: false, meaning: "韋：熟牛皮。編：串聯竹簡的皮條。孔子讀《易經》時，多次把穿竹簡的皮條翻斷了。比喻讀書勤奮刻苦。", usage: "稱讚人讀書非常用功，反覆研讀。", example: "他為了考取狀元，韋編三絕，夜以繼日地讀書。", reason: "形容讀書勤奮，與書籍是否暢銷大賣無關。" },
+          { id: "D", text: "萬家生佛", isCorrect: false, meaning: "家家戶戶都把某人當成活佛般敬奉。形容深受百姓愛戴的德政官員。", usage: "極高度的讚美，多用於稱頌為民造福的官吏或大善人。", example: "這位老縣長生前造福鄉里，深受愛戴，真是萬家生佛。", reason: "與文學作品暢銷毫無關係。" }
+        ],
+        classical_text: { work: "《晉書》", chapter: "左思傳", author: "房玄齡等", original: "於是豪貴之家競相傳寫，洛陽為之紙貴。", vernacular: "於是洛陽的富豪貴族家庭爭相傳閱抄寫（左思的《三都賦》），洛陽的紙價因此而上漲。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：洛陽紙貴", source: "中華民國教育部成語典", note: "出版界文學界極佳讚譽詞。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-15", mode: "idiom", difficulty: "medium", title: "指尖陀螺的過氣悲歌",
+        scenario: "幾年前風靡一時的指尖陀螺，現在已經完全退流行，堆在倉庫裡根本沒人要買。商場經理感嘆，這些過時的商品，就像過了重陽節之後的菊花，再也引不起大家的興趣，不值一文了。這叫什麼？",
+        options: [
+          { id: "A", text: "明日黃花", isCorrect: true, meaning: "明日：重陽節過後；黃花：菊花。原指重陽節過後，菊花逐漸枯萎，失去觀賞價值。比喻過時的事物，失去了原有的價值與吸引力。", usage: "用來形容曾流行一時，但現在已經過氣、無人問津的人事物。", example: "當年紅極一時的呼叫器，如今早已成了明日黃花。", reason: "指尖陀螺過時沒人買（如同重陽節後的菊花），精準契合『明日黃花』之意。此題防誤導重點在糾正坊間常見錯字『昨日』。" },
+          { id: "B", text: "昨日黃花", isCorrect: false, meaning: "坊間常見之錯字誤造詞（誤將『明日』寫成『昨日』）。", usage: "非正式規範成語，為嚴重誤用。", example: "此為混淆錯誤詞，正式寫作請勿使用。", reason: "蘇軾原詩為『明日歲華遲』，是指『過了重陽節（今日）的明天』菊花就過時了，寫成『昨日』邏輯與典故皆不通。" },
+          { id: "C", text: "曇花一現", isCorrect: false, meaning: "曇花開放的時間極短。比喻人或事物一出現便迅速消失。", usage: "強調『存在或流行時間極度短暫』。", example: "這名歌手憑藉一首歌爆紅，可惜只是曇花一現，很快就被遺忘了。", reason: "曇花一現強調『短暫』，而經理的感嘆重點在於『商品現在已經過時、失去價值』的情境（明日黃花更貼切題幹的菊花譬喻）。" },
+          { id: "D", text: "鐵樹開花", isCorrect: false, meaning: "鐵樹開花極為罕見。比喻事物非常罕見或極難實現。", usage: "形容不可能或極少發生的奇蹟。", example: "要讓他這個鐵公雞請客，簡直是鐵樹開花。", reason: "與商品過時退流行完全無關。" }
+        ],
+        classical_text: { work: "《九日次韻王鞏》", chapter: "宋詩", author: "宋·蘇軾", original: "相逢不用忙歸去，明日黃花蝶也愁。", vernacular: "既然相逢了就不用急著回去，等到過了重陽節（明日），菊花枯萎，連蝴蝶都要為之發愁了。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典辨正", source: "中華民國教育部成語典", note: "全民易錯字（昨日黃花為誤），本題極具教育糾正價值。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-16", mode: "idiom", difficulty: "easy", title: "祖傳秘方的絕對成功率",
+        scenario: "奶奶有一套祖傳的醃泡菜秘方，只要嚴格按照這個比例調配醬汁，做出來的泡菜絕對酸脆爽口，每次試做都成功，從來沒有失敗或出過差錯。這種「屢次嘗試都沒有差錯」的情況，稱為：",
+        options: [
+          { id: "A", text: "屢試不爽", isCorrect: true, meaning: "屢：多次；爽：差錯、失誤。形容經過多次試驗都沒有差錯。", usage: "褒義，稱讚某種方法、藥方或定律非常靈驗、準確。", example: "這帖治感冒的偏方，我用了好幾次，真是屢試不爽。", reason: "奶奶的秘方每次試做都成功、無一差錯，完全就是屢試不爽（不爽＝沒有差錯）的本義。" },
+          { id: "B", text: "敗興而歸", isCorrect: false, meaning: "遇到掃興的事而敗壞了興致，不愉快地回來。", usage: "形容出遊或辦事遇到不順利，心情不佳而返。", example: "遇到狂風暴雨，我們只好取消行程，敗興而歸。", reason: "這是故意利用現代口語『不爽（心情不好）』來製造的干擾項，與屢試不爽的『爽（差錯）』字義截然不同。" },
+          { id: "C", text: "徒勞無功", isCorrect: false, meaning: "白白浪費精力而沒有任何成效。", usage: "形容做事白費力氣。", example: "沒有正確的方法，再怎麼努力也是徒勞無功。", reason: "奶奶的秘方每次都成功，不是白費力氣。" },
+          { id: "D", text: "屢戰屢敗", isCorrect: false, meaning: "多次打仗多次失敗。", usage: "形容一直失敗。", example: "這支球隊本賽季屢戰屢敗，士氣低迷。", reason: "與每次都成功的意思完全相反。" }
+        ],
+        classical_text: { work: "《聊齋志異》", chapter: "卷八·冷生", author: "清·蒲松齡", original: "冷笑曰：『以此欺盲人則可。』因出其藥，調水飲生。屢試不爽。", vernacular: "冷生笑著說：『用這個來騙瞎子還可以。』於是拿出他的藥，用水調和給書生喝。經過多次試驗都沒有差錯（非常靈驗）。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：屢試不爽", source: "中華民國教育部成語典", note: "防誤導重點：現代人極易將『爽』誤解為心情不佳，實為『差錯』。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-17", mode: "idiom", difficulty: "medium", title: "陶淵明的讀書哲學",
+        scenario: "陶淵明自述讀書的方法是把握整體的意旨，不過度鑽研生僻字詞的細枝末節；一旦對書中的大意有所領會，便高興得連飯都忘了吃。這種「讀書著重理解大意，不拘泥於繁瑣字句」的態度，原本是個名士風度的褒義詞，請問它是哪一個成語？",
+        options: [
+          { id: "A", text: "不求甚解", isCorrect: true, meaning: "原指讀書著重理解義理，而不過度鑽研字句上的解釋。後多用以（貶義）指學習或做事不認真，只求略懂皮毛。", usage: "本題測驗其古典【褒義】本意：讀書能領會神髓，不鑽牛角尖。", example: "他讀書雖然不求甚解，但對於書中大意的掌握卻極為精準。", reason: "題幹直接引用了陶淵明《五柳先生傳》的讀書哲學，正是不求甚解的原意出處。" },
+          { id: "B", text: "囫圇吞棗", isCorrect: false, meaning: "把棗子整個吞下去。比喻理解事物含糊不清，不加思索地籠統接受。", usage: "純貶義，批評學習時不求理解，死記硬背。", example: "讀書若只是囫圇吞棗，遇到稍微變化的題目就會答不出來。", reason: "囫圇吞棗是『完全沒有理解』，而不求甚解（在陶淵明語境中）是『有領會大意，只是不鑽字眼』，兩者境界有別。" },
+          { id: "C", text: "走馬看花", isCorrect: false, meaning: "騎在奔跑的馬上看花。比喻大略觀看事情外貌，而不深入了解。", usage: "多指參觀或觀察事物不夠細緻。", example: "這次博物館之旅時間太趕，只能走馬看花，實在可惜。", reason: "走馬看花多用於『參觀景色或事物』，而陶淵明是在描述『讀書領會意旨』的態度。" },
+          { id: "D", text: "尋章摘句", isCorrect: false, meaning: "讀書時只摘取華麗的詞句，而不深入探究其宏大的義理。", usage: "貶義，批評讀書方法錯誤，只見樹木不見林。", example: "寫文章若只靠尋章摘句，拼湊名言，終究缺乏自己的靈魂。", reason: "尋章摘句正是陶淵明『不求甚解』所反對的態度（陶反對死鑽字句，強調領會精神）。" }
+        ],
+        classical_text: { work: "《五柳先生傳》", chapter: "全篇", author: "晉·陶淵明", original: "好讀書，不求甚解；每有會意，便欣然忘食。", vernacular: "喜歡讀書，但不拘泥於字句的繁瑣解釋；每當對書中旨意有所領會，就高興得連飯都忘了吃。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "晉·陶淵明《五柳先生傳》", source: "中華民國教育部成語典", note: "語意演變（褒轉貶）測試，測驗玩家對古典原意的認識。" }, status: "approved"
+      },
+
+      // ==========================================
+      // V1.3 科舉大考終極擴充包 (地獄陷阱題與經典國學)
+      // ==========================================
+      {
+        id: "q-idiom-18", mode: "idiom", difficulty: "hard", title: "旅遊業在疫情下的境遇",
+        scenario: "當全球性傳染病爆發、各國宣布封鎖邊境時，依賴國際航班與旅行團的觀光旅遊業，成為了所有產業中第一個遭受毀滅性打擊與災禍的行業。新聞評論員最適合用哪個成語來形容旅遊業「最先受到災禍攻擊」的處境？",
+        options: [
+          { id: "A", text: "首當其衝", isCorrect: true, meaning: "首：最先；衝：交通要道（引申為要衝、攻擊點）。比喻最先受到攻擊或遭遇災禍。", usage: "專門用於形容遭受『負面打擊或災難』時排在第一位。", example: "颱風從東部登陸，花東地區首當其衝，災情最為嚴重。", reason: "旅遊業是第一個遭受疫情『災禍』的產業，完全符合首當其衝的負面受災語境。" },
+          { id: "B", text: "一馬當先", isCorrect: false, meaning: "作戰時策馬衝在最前面。比喻領先、帶頭。", usage: "褒義詞，形容在正面事務中積極帶頭或成績領先。", example: "在這次募款活動中，總經理一馬當先，捐出了一百萬。", reason: "這是在形容遭受災難，一馬當先（積極帶頭）語氣與情感色彩完全錯誤。" },
+          { id: "C", text: "捷足先登", isCorrect: false, meaning: "動作輕快的人先到達目的。比喻行動最快者先達到目的或得嘗所願。", usage: "多用於搶佔市場先機或爭取正面利益。", example: "這塊黃金店面被對手捷足先登租走了。", reason: "旅遊業是受害，並非搶奪先機。" },
+          { id: "D", text: "首屈一指", isCorrect: false, meaning: "彎下手指頭計數時，首先彎下大拇指。表示第一或最優秀。", usage: "褒義詞，讚美某人在某方面表現最為傑出。", example: "他的雕刻技術在國內絕對是首屈一指。", reason: "現代人常誤將『首當其衝』當成『排第一』的通用詞，甚至用在受惠，這與『首屈一指』的純褒義讚美完全不同。" }
+        ],
+        classical_text: { work: "《漢書》", chapter: "五行志下之上", author: "班固", original: "鄭當其衝，不能修德。", vernacular: "鄭國地處交通要道（兵家必爭的衝擊之地），卻不能修養德政（所以常受戰禍）。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典檢索：首當其衝", source: "中華民國教育部成語典", note: "高頻易錯成語：常被誤用於正面事件的『第一名』。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-19", mode: "idiom", difficulty: "hard", title: "八卦雜誌的併購傳聞",
+        scenario: "八卦雜誌上個月報導某兩大金控公司即將合併，當時兩家公司都出面嚴正否認，大眾也以為是無稽之談。沒想到這個月雙方真的宣布了合併案。財經專家感嘆：「原來當初雜誌的報導並非憑空捏造，而是內部早有風聲流出，真的是『有根據的傳言』啊！」這叫什麼？",
+        options: [
+          { id: "A", text: "空穴來風", isCorrect: true, meaning: "有空穴，就會引來風。比喻流言乘隙而入，指『傳言是有根據、有原因的』。", usage: "原意指傳言【有其根據】；（注意：現代多被誤用為『毫無根據』，但本題測驗其正統典故原意）。", example: "這件緋聞既然傳得沸沸揚揚，想必是空穴來風，事出有因。", reason: "雜誌報導最終成真，證明當初的傳聞『是有根據的（有空穴才引來風）』，契合典故原意。" },
+          { id: "B", text: "捕風捉影", isCorrect: false, meaning: "想抓住風和影子。比喻所做之事或所說的話毫無根據，憑空揣測。", usage: "指完全沒有事實根據的胡亂猜測。", example: "這篇報導全是捕風捉影，完全沒有任何證據支持。", reason: "專家已經證實合併案是真的（有根據），所以用『捕風捉影』（無根據）是完全相反的。" },
+          { id: "C", text: "無中生有", isCorrect: false, meaning: "本無其事，憑空捏造。", usage: "指憑空捏造謊言或事物。", example: "他為了脫罪，竟然無中生有，捏造了一套說詞。", reason: "傳聞是有內部風聲的，並非無中生有。" },
+          { id: "D", text: "道聽塗說", isCorrect: false, meaning: "在路上聽到傳言，就在路上跟著亂傳。泛指沒有經過證實的傳聞。", usage: "批評人不經求證就隨便散播謠言。", example: "對於網路上道聽塗說的健康偏方，千萬不可輕信。", reason: "雖然初期是傳聞，但題幹重點在於專家確認了『當初的傳言確實是有根據的』，空穴來風在此意境最為精準反轉。" }
+        ],
+        classical_text: { work: "《風賦》", chapter: "楚辭/文選", author: "戰國·宋玉", original: "臣聞悲落葉於秋風，空穴來風，其所託者然，輒奮遂而不同。", vernacular: "我聽說秋風吹落葉令人悲傷，有空洞的地方就會引來風，風是因為有所依託才形成的，吹拂的樣子就不同了。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典：空穴來風", source: "中華民國教育部成語典", note: "終極防誤導題：高達九成現代人將此詞誤用為『毫無根據』，實為『事出有因』。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-20", mode: "idiom", difficulty: "medium", title: "權臣跋扈的朝野生態",
+        scenario: "這位新上任的宰相深得皇帝寵信，不僅大權獨攬，而且行事囂張跋扈。朝中百官看到他都退避三舍，深怕一不小心就被他陷害入獄。形容這種「權勢極大、氣焰囂張逼人」的狀態，最適合的成語是？",
+        options: [
+          { id: "A", text: "炙手可熱", isCorrect: true, meaning: "炙手：手一靠近就覺得燙。比喻權勢極大，氣焰囂張，令人不敢靠近。", usage: "本為【貶義或中性偏負面】詞，專指『人的權勢』極大而囂張。", example: "他如今是皇上面前炙手可熱的人物，誰敢去得罪他？", reason: "宰相大權獨攬、氣焰囂張令人畏懼（燙手），完全契合炙手可熱的古典原意。" },
+          { id: "B", text: "洛陽紙貴", isCorrect: false, meaning: "比喻著作風行一時，流傳甚廣。", usage: "專門用於稱讚文學作品、書籍暢銷大賣。", example: "這本小說一出版就榮登排行榜冠軍，一時洛陽紙貴。", reason: "現代人常把『炙手可熱』誤用為『商品極度熱銷』。若要形容熱銷，應用洛陽紙貴，不能用在權臣身上。" },
+          { id: "C", text: "如日中天", isCorrect: false, meaning: "好像太陽正當中午。比喻事物正發展到十分興盛的頂點。", usage: "褒義詞，形容事業或名聲極盛。", example: "這家科技公司的發展如日中天，股價屢創新高。", reason: "如日中天是純褒義的興盛，缺乏了題幹中『囂張跋扈、令人退避畏懼（燙手）』的強烈負面威脅感。" },
+          { id: "D", text: "如火如荼", isCorrect: false, meaning: "荼：茅草的白花。像火那樣紅，像荼那樣白。形容事物的發展蓬勃熱烈。", usage: "多形容活動、運動或比賽進行得極為熱烈。", example: "四年一度的奧運賽事正全面如火如荼地展開。", reason: "形容活動熱烈，不適合用來形容個人的囂張權勢。" }
+        ],
+        classical_text: { work: "《麗人行》", chapter: "唐詩", author: "唐·杜甫", original: "炙手可熱勢絕倫，慎莫近前丞相嗔。", vernacular: "他們的權勢大得燙手，簡直無與倫比，千萬不要靠近他們，以免惹得丞相發怒。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典：炙手可熱", source: "中華民國教育部成語典", note: "高頻易錯：現代常被新聞標題誤用為『商品熱賣』或『極受歡迎』。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-21", mode: "idiom", difficulty: "easy", title: "企業新總部的落成典禮",
+        scenario: "跨國集團耗資數十億，在信義計畫區蓋了一棟高達六十層樓的企業新總部。大樓採用全玻璃帷幕，內部裝潢極盡奢華，大廳還懸掛著巨大的水晶吊燈。參加落成典禮的賓客，最適合用哪個成語來讚嘆這棟「建築物高大華麗」？",
+        options: [
+          { id: "A", text: "美輪美奐", isCorrect: true, meaning: "輪：高大；奐：眾多、華麗。形容房屋規模高大、裝飾華美。", usage: "專屬限定詞，【只能用來形容建築物】的高大華美。", example: "這座新落成的國家歌劇院，設計得真是美輪美奐。", reason: "企業新總部大樓高大華麗，完全符合『美輪美奐』專用於建築物的限制。" },
+          { id: "B", text: "巧奪天工", isCorrect: false, meaning: "人工的精巧勝過天然。形容技藝十分巧妙。", usage: "多用來形容手工藝品、雕刻或藝術品的精妙。", example: "這件象牙微雕作品，連神態都栩栩如生，真是巧奪天工。", reason: "巧奪天工形容手工技藝精巧，不能用來形容高樓大廈的宏偉華麗。" },
+          { id: "C", text: "沉魚落雁", isCorrect: false, meaning: "魚見了沉入水底，雁見了降落沙洲。形容女子的容貌極為美麗。", usage: "專門用來形容女性的美貌。", example: "她有著沉魚落雁之容，閉月羞花之貌。", reason: "許多人會將『美輪美奐』誤用在美女或衣服上。此處沉魚落雁不可用來形容建築。" },
+          { id: "D", text: "秀色可餐", isCorrect: false, meaning: "美麗的容色讓人看了就像吃飽了一樣。形容女子姿色美麗，或風景秀麗。", usage: "形容女子美貌或山水風景極佳。", example: "這裡的湖光山色，真是秀色可餐。", reason: "形容風景或女子，不適合形容鋼筋水泥的現代奢華建築大樓。" }
+        ],
+        classical_text: { work: "《禮記》", chapter: "檀弓下", author: "西漢·戴聖編", original: "晉獻文子成室，晉大夫發焉。張老曰：『美哉輪焉，美哉奐焉！歌於斯，哭於斯，聚國族於斯。』", vernacular: "晉國大夫趙武（獻文子）的房屋建成了，晉國大夫們去送禮祝賀。張老說：『多麼高大啊！多麼華麗啊！以後要在這裡祭祀唱歌，要在這裡辦喪事哭泣，要在這裡聚集宗族了。』", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典：美輪美奐", source: "中華民國教育部成語典", note: "對象限定詞：僅限用於建築物。" }, status: "approved"
+      },
+      {
+        id: "q-idiom-22", mode: "idiom", difficulty: "hard", title: "經典管理學的絕對法則",
+        scenario: "彼得·杜拉克在五十年前提出的《管理的實踐》一書，其中關於「目標管理與自我控制」的核心概念，至今仍被全球各大企業奉為圭臬，無論時代如何變遷，這套理論都無法被推翻或刪改。形容這種「確鑿不移、不可更改的言論」，最適合的成語是？",
+        options: [
+          { id: "A", text: "不刊之論", isCorrect: true, meaning: "刊：古代指消除刻錯的字（引申為修改、刪改）。比喻確鑿不移、不可更改的言論或真理。", usage: "極高的學術或理論讚譽，指其正確無比，不容刪改。", example: "這篇論文邏輯嚴密、證據確鑿，堪稱不刊之論。", reason: "管理學理論歷經五十年無法被推翻刪改，正是『不刊之論』（不能刪改的正確言論）。" },
+          { id: "B", text: "不足為訓", isCorrect: false, meaning: "訓：法則、典範。不值得作為效法的準則或法則。", usage: "指某種行為或作法不值得學習。", example: "他雖然僥倖成功，但手段並不光彩，實在不足為訓。", reason: "現代人常把『不足為訓』誤以為是『不值得教訓』；同時把『不刊之論』誤以為是『不能刊登的文章』。這兩個都是極易錯的陷阱。" },
+          { id: "C", text: "無稽之談", isCorrect: false, meaning: "沒有根據的言論。", usage: "批評荒謬、毫無根據的謠言或說法。", example: "世界末日將在明天到來的說法，純屬無稽之談。", reason: "與『無法推翻的真理』意思完全相反。" },
+          { id: "D", text: "一家之言", isCorrect: false, meaning: "指有獨特見解，自成一派的學說或言論。", usage: "多指個人獨立的學術見解，未必是絕對真理。", example: "這只是我個人的一家之言，僅供各位專家參考。", reason: "一家之言帶有謙虛或指單一派別，而『不刊之論』強調絕對無法刪改的正確性，更符合題意。" }
+        ],
+        classical_text: { work: "《漢書》", chapter: "揚雄傳下", author: "班固", original: "以為經莫大於《易》，故作《太玄》；傳莫大於《論語》，作《法言》；史篇莫善於《倉頡》，作《訓纂》；箴莫善於《虞箴》，作《州箴》；賦莫深於《離騷》，反而廣之；辭莫麗於相如，弘而敷之；皆為不刊之書。", vernacular: "揚雄認為經典沒有比《易經》更偉大的...這些他所寫的書，都是不可刪改的不朽著作。", citationUrl: "教育部《成語典》" },
+        source_reference: { title: "教育部成語典：不刊之論", source: "中華民國教育部成語典", note: "極易錯字義：『刊』為古代削去竹簡錯字的動作，非現代『刊登』。" }, status: "approved"
+      },
+      {
+        id: "q-trans-05", mode: "translation", difficulty: "medium", title: "諸葛亮《出師表》的初衷",
+        scenario: "諸葛亮在出兵北伐前，向後主劉禪上《出師表》，回顧自己當年隱居隆中時的志向：「臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。」請問「苟全性命於亂世，不求聞達於諸侯」最精確的白話文翻譯為何？",
+        options: [
+          { id: "A", text: "只求在動亂的時代中保全性命，不希求在諸侯之間揚名顯達。", isCorrect: true, meaning: "苟全：勉強保全；聞達：出名、顯達。", usage: "表達自己原本淡泊名利、無意出仕的隱士心境，藉此凸顯後來感念先帝知遇之恩而出山的忠誠。", example: "他退休後隱居鄉間，過著苟全性命於亂世，不求聞達於諸侯的恬淡生活。", reason: "精準對譯原文，『苟全』為勉強保全，『聞達』為出名顯耀。" },
+          { id: "B", text: "像狗一樣屈辱地在亂世中求生，絕不去打聽諸侯們的八卦消息。", isCorrect: false, meaning: "誤將『苟』解為狗，將『聞』解為打聽消息。", usage: "荒謬的字面誤讀。", example: "無此用法。", reason: "『苟』在此為副詞『勉強、且』之意；『聞』為名聲被聽聞（出名）。" },
+          { id: "C", text: "如果在亂世中性命能得以保全，那我就不會去求諸侯讓我做官。", isCorrect: false, meaning: "語氣變成了條件交換，失去了原本淡泊名利的超然心態。", usage: "扭曲了諸葛亮的原始語氣。", example: "無此用法。", reason: "原文是兩個並列的心境描述，並非『如果...就不...』的條件句。" },
+          { id: "D", text: "隨便把性命丟在亂世也無所謂，反正諸侯們也聽不到我的名字。", isCorrect: false, meaning: "將『苟全』解為隨便丟棄性命，完全顛倒了『保全』之意。", usage: "徹底的誤譯。", example: "無此用法。", reason: "『全』是保全，絕非隨便丟棄。" }
+        ],
+        classical_text: { work: "《出師表》", chapter: "全篇", author: "三國·諸葛亮", original: "臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。先帝不以臣卑鄙，猥自枉屈，三顧臣於草廬之中...", vernacular: "我本是平民，在南陽親自種田，只求在亂世中苟且保全性命，不奢求在諸侯中做官出名。先帝不嫌棄我身分低微見識淺陋，委屈自己，三次到草廬中來拜訪我...", citationUrl: "教育部高中國文" },
+        source_reference: { title: "三國·諸葛亮《出師表》", source: "國民中學國文教材", note: "國中必修核心古文經典" }, status: "approved"
+      },
+      {
+        id: "q-trans-06", mode: "translation", difficulty: "hard", title: "范仲淹《岳陽樓記》的超然",
+        scenario: "范仲淹在《岳陽樓記》中，期許仁人志士能擁有超越世俗得失的寬廣胸襟，他寫道：「不以物喜，不以己悲。居廟堂之高，則憂其民；處江湖之遠，則憂其君。」其中「不以物喜，不以己悲」的正確哲理涵義為何？",
+        options: [
+          { id: "A", text: "不因為外在環境的優劣而喜悅，也不因為個人的遭遇得失而悲傷。", isCorrect: true, meaning: "物：外在的客觀環境或事物；己：自己的個人遭遇。以：因為。", usage: "形容一種超越了個人私利與外在物質條件的超然心境，情緒不被外界與一己之私所左右。", example: "真正的政治家應當具備不以物喜，不以己悲的胸懷，一心為公。", reason: "『物』代表外在物質與環境，『己』代表自我際遇，此為古代仁人志士的最高修養境界。" },
+          { id: "B", text: "不把物質享受當作喜悅的來源，也不要把自己的悲傷表現出來。", isCorrect: false, meaning: "將『己悲』誤解為『把自己的悲傷表現出來』。", usage: "偏離了儒家『心境不受波動』的內在哲理，變成了表面情緒控管。", example: "無此用法。", reason: "『以』是『因為』的意思。原文是指『不因為自己而悲傷』，而非『不表現悲傷』。" },
+          { id: "C", text: "不因為買到好東西就太高興，不因為自己長得不好看就自卑。", isCorrect: false, meaning: "將宏大的家國天下哲理，降格為庸俗的日常購物與容貌焦慮。", usage: "極度狹隘的過度現代化誤讀。", example: "無此用法。", reason: "岳陽樓記論述的是士大夫的政治情操，『物』並非單純指購物，『己』亦非容貌。" },
+          { id: "D", text: "不要把別人的東西佔為己有而高興，不要因為自己的錯誤而讓別人悲傷。", isCorrect: false, meaning: "完全曲解了主客體，把句子變成了一種道德告誡。", usage: "語法與邏輯完全錯誤的翻譯。", example: "無此用法。", reason: "此句採用了互文修辭，主體都是『自己』的情緒，與『佔有別人東西』無關。" }
+        ],
+        classical_text: { work: "《岳陽樓記》", chapter: "全篇", author: "宋·范仲淹", original: "嗟夫！予嘗求古仁人之心，或異二者之為，何哉？不以物喜，不以己悲。居廟堂之高，則憂其民；處江湖之遠，則憂其君。", vernacular: "唉！我曾經探求古代品德高尚者的心思，或許與前述兩種表現（因景物而悲喜）有所不同，為什麼呢？因為他們不因外在環境的好壞而喜悅，也不因個人的遭遇而悲傷。位居朝廷高官，就擔憂他的百姓；退居偏遠民間，就擔憂他的國君。", citationUrl: "教育部高中國文" },
+        source_reference: { title: "宋·范仲淹《岳陽樓記》", source: "高級中學國文教材", note: "高中必修核心古文經典" }, status: "approved"
+      },
+      {
+        id: "q-dial-05", mode: "dialogue", difficulty: "medium", title: "面對創業失敗的豁達",
+        scenario: "你的大學同學畢業後滿懷熱血去創業，結果不到兩年就因為資金周轉不靈而破產收場。他一無所有地回到老家，雖然無奈，但他笑著對你說：「沒關係，這點風雨打不倒我，就當作是人生的一場歷練吧，我未來會過得更坦然。」如果要用一句古詩詞來呼應他此刻的豁達心境，哪一句最契合？",
+        options: [
+          { id: "A", text: "竹杖芒鞋輕勝馬，誰怕？一蓑煙雨任平生。", isCorrect: true, meaning: "拄著竹杖、穿著草鞋，走起來比騎馬還要輕快，有什麼好怕的？披著一件簑衣，任憑一生在風雨中度過也無所謂。", usage: "蘇軾《定風波》。表達在逆境與風雨中，不畏艱難、曠達超脫的人生態度。", example: "經歷了商場上的大風大浪，他如今隱居鄉間，頗有一蓑煙雨任平生之慨。", reason: "同學破產失去一切（如同沒有馬只能穿草鞋），但依然笑對人生風雨，完美呼應蘇軾在雨中無所畏懼的超然。" },
+          { id: "B", text: "春風得意馬蹄疾，一日看盡長安花。", isCorrect: false, meaning: "迎著春風得意洋洋，馬兒跑得飛快；一天之內就把長安城裡的名花都看遍了。", usage: "孟郊《登科後》。形容考試中榜或事業成功時，心情極度愉快歡暢。", example: "他剛拿下年度業績冠軍，正是春風得意馬蹄疾的時候。", reason: "同學是創業破產失敗，用形容金榜題名、極度成功的詩句完全不合時宜。" },
+          { id: "C", text: "千山鳥飛絕，萬徑人蹤滅。", isCorrect: false, meaning: "群山中的鳥兒都飛得不見蹤影，所有小路上的行人足跡也全部消失了。", usage: "柳宗元《江雪》。描寫大雪封山的極度荒寒與孤寂，亦隱喻作者內心的孤傲與冷清。", example: "這座無人島上的景色，真有千山鳥飛絕的荒涼感。", reason: "這首詩意境過於冷寂孤傲，缺乏同學那份『笑著面對風雨』的豁達與韌性。" },
+          { id: "D", text: "問君能有幾多愁？恰似一江春水向東流。", isCorrect: false, meaning: "請問你心裡究竟有多少哀愁？就好像那滿滿一江的春水日夜不停地向東流去。", usage: "李煜《虞美人》。抒發極度深沉、綿綿不絕的亡國之痛與哀愁。", example: "每當想起逝去的親人，他總是問君能有幾多愁。", reason: "同學表現出的是『沒關係、打不倒我』的豁達，而非被無盡的哀愁所淹沒。" }
+        ],
+        classical_text: { work: "《定風波》", chapter: "全闋", author: "宋·蘇軾", original: "莫聽穿林打葉聲，何妨吟嘯且徐行。竹杖芒鞋輕勝馬，誰怕？一蓑煙雨任平生。料峭春風吹酒醒，微冷，山頭斜照卻相迎。回首向來蕭瑟處，歸去，也無風雨也無晴。", vernacular: "不要去聽那穿透樹林敲打樹葉的風雨聲，不妨一邊長嘯高歌一邊悠然行走。拄著竹杖穿著草鞋，比騎馬還要輕快，有什麼好怕的？就披著一件簑衣，任憑一生在風雨中度過吧。...", citationUrl: "教育部高中國文" },
+        source_reference: { title: "宋·蘇軾《定風波》", source: "高級中學國文教材", note: "生命情境詩詞化用題。" }, status: "approved"
+      },
+      {
+        id: "q-dial-06", mode: "dialogue", difficulty: "medium", title: "老主管向年輕工程師請益",
+        scenario: "公司導入了最新的 AI 生成工具，五十五歲的資深行銷總監發現自己完全不會操作，於是主動走到二十二歲的實習生座位旁，虛心請教他如何下指令(Prompt)。總監對驚訝的實習生說：「這沒什麼好奇怪的，_________，你在這方面比我懂，當然就是我的老師。」空格處填入韓愈《師說》中的哪一句最為恰當？",
+        options: [
+          { id: "A", text: "聞道有先後，術業有專攻", isCorrect: true, meaning: "懂得道理的時間有先後的不同，在學術技藝上各有專精的研究領域。", usage: "韓愈《師說》。用來打破年紀與階級的迷思，強調向有專長的人學習。", example: "別看他年紀輕，在寫程式這方面他可是專家，畢竟聞道有先後，術業有專攻。", reason: "資深總監向年輕實習生請教新科技，正是打破年紀階級、尊重專業『專攻』的最佳寫照。" },
+          { id: "B", text: "師者，所以傳道、受業、解惑也", isCorrect: false, meaning: "老師，是負責傳授道理、教授學業、解答疑難問題的人。", usage: "定義老師的職責與功能。", example: "擔任教職必須謹記：師者，所以傳道、受業、解惑也。", reason: "這句話在定義老師的功能，但無法解釋『為什麼老總監要向年輕人學習』這個核心情境。" },
+          { id: "C", text: "業精於勤，荒於嬉", isCorrect: false, meaning: "學業的精進在於勤奮，而荒廢在於貪玩嬉戲。", usage: "韓愈《進學解》。勉勵學生讀書必須勤奮不懈。", example: "快期末考了別再打電動，要知道業精於勤，荒於嬉。", reason: "總監是在請教問題，並不是在勉勵實習生要勤奮讀書。" },
+          { id: "D", text: "千里馬常有，而伯樂不常有", isCorrect: false, meaning: "能日行千里的良馬雖然常有，但能識拔良馬的伯樂卻不常出現。", usage: "韓愈《馬說》。感嘆世上缺乏能賞識人才的長官。", example: "他懷才不遇多年，真是千里馬常有，而伯樂不常有。", reason: "這是感嘆懷才不遇，與『請教專業技術』無關。" }
+        ],
+        classical_text: { work: "《師說》", chapter: "全篇", author: "唐·韓愈", original: "是故弟子不必不如師，師不必賢於弟子。聞道有先後，術業有專攻，如是而已。", vernacular: "所以學生不一定不如老師，老師也不一定比學生高明。懂得道理的時間有先後的不同，在學術技藝上各有專精的領域，如此罷了。", citationUrl: "教育部高中國文" },
+        source_reference: { title: "唐·韓愈《師說》", source: "高級中學國文教材", note: "尊師重道與專業分工結合之經典篇章。" }, status: "approved"
+      },
+      {
+        id: "q-dial-07", mode: "dialogue", difficulty: "hard", title: "創投家追求極致回報的風險",
+        scenario: "在矽谷的一場創業論壇上，知名創投家解釋他為何總是投資那些看似瘋狂、風險極高的太空探索或腦機介面公司，而不投資穩定獲利的傳統連鎖餐廳。他說：「那些真正能改變世界、帶來百倍回報的偉大事業，其過程往往伴隨著極大的困難與未知，沒有過人的勇氣是無法抵達的。」若用王安石《遊褒禪山記》的名言來總結他的投資哲學，何者最為精準？",
+        options: [
+          { id: "A", text: "世之奇偉、瑰怪、非常之觀，常在於險遠，而人之所罕至焉，故非有志者不能至也。", isCorrect: true, meaning: "世上奇妙雄偉、珍貴奇特、不平常的景觀，常常存在於危險遙遠、人們很少到達的地方，所以沒有堅定意志的人是無法抵達的。", usage: "借遊山探險，比喻做學問或成就大事業，必須有百折不撓的意志去克服艱難險阻。", example: "科學家勇闖南極探測冰層，深知世之奇偉非常之觀，常在於險遠。", reason: "『險遠』完美對應了『風險極高、困難與未知』，『非常之觀』對應了『百倍回報的偉大事業』，極度契合創投哲學。" },
+          { id: "B", text: "醉翁之意不在酒，在乎山水之間也。", isCorrect: false, meaning: "醉翁（歐陽脩自稱）的心意其實不在於喝酒，而在於欣賞山水的美景。", usage: "歐陽脩《醉翁亭記》。比喻言辭或行為的真正意圖不在表面上所做的事，而在於別有用心。", example: "他今天特地來幫忙打掃，其實是想見你妹妹，真是醉翁之意不在酒。", reason: "創投家投資太空公司就是為了成就偉大事業與回報，並非『別有用心』掩飾其他目的。" },
+          { id: "C", text: "先天下之憂而憂，後天下之樂而樂。", isCorrect: false, meaning: "在天下人擔憂之前先擔憂，在天下人享樂之後才享樂。", usage: "范仲淹《岳陽樓記》。表達士大夫以天下為己任，吃苦在前、享樂在後的政治抱負。", example: "一位偉大的政治家，必然具備先天下之憂而憂的襟懷。", reason: "創投家是追求商業與科技的極致回報與突破，而非政治上『吃苦在前享樂在後』的道德犧牲。" },
+          { id: "D", text: "登泰山而小天下。", isCorrect: false, meaning: "登上泰山，往下看就覺得天下變小了。", usage: "《孟子·盡心上》。形容人的眼界開闊，境界提升後，看待事物的眼光也隨之廣大。", example: "留學歸國後，他處理國際事務時頗有登泰山而小天下之感。", reason: "這句話強調的是『視野與境界的高超』，缺乏了情境中強調的『必須歷經危險、少人敢去』的風險概念。" }
+        ],
+        classical_text: { work: "《遊褒禪山記》", chapter: "全篇", author: "宋·王安石", original: "夫夷以近，則游者眾；險以遠，則至者少。而世之奇偉、瑰怪、非常之觀，常在於險遠，而人之所罕至焉，故非有志者不能至也。", vernacular: "平坦且距離近的地方，遊客就多；危險且距離遠的地方，到達的人就少。然而世上奇妙雄偉、珍貴奇特、不平常的景觀，常常存在於危險遙遠、人們很少到達的地方，所以沒有堅定意志的人是無法抵達的。", citationUrl: "教育部高中國文" },
+        source_reference: { title: "宋·王安石《遊褒禪山記》", source: "高級中學國文教材", note: "極具現代管理與投資哲學的經典論述。" }, status: "approved"
+      },
+      {
+        id: "q-hybrid-03", mode: "hybrid", difficulty: "hard", title: "跨國企業的文化包容與底線",
+        scenario: "跨國集團剛併購了一家外商公司。在融合會議上，執行長指示：「我們必須尊重彼此在休假制度、辦公風格上的多元差異，不用強求大家變成同一種模樣；但是，對於『絕不收受廠商回扣』這項道德底線，雙方絕不能有任何妥協或同流合污。」執行長的這種經營哲學，最符合《論語》中君子的哪一種特質？",
+        options: [
+          { id: "A", text: "君子和而不同，小人同而不和。", isCorrect: true, meaning: "君子能與人和睦相處，但保有自己的獨立見解與底線，不盲目附和；小人則表面上盲目附和一致，但內心卻不能和睦。", usage: "形容在群體中能包容差異，但堅持道德與原則底線的態度。", example: "在民主社會中，各政黨應該做到和而不同，理性辯論。", reason: "『和』對應了『包容辦公風格的多元差異』，『不同』對應了『堅守道德底線不盲目妥協』，完美契合題幹精神。" },
+          { id: "B", text: "君子成人之美，不成人之惡。", isCorrect: false, meaning: "君子成全別人的好事，不促成別人的壞事。", usage: "稱讚人樂於助人，促成美事。", example: "既然他們真心相愛，我們就君子成人之美，祝福他們吧。", reason: "這是在談論『成全別人』，而會議上的重點是『團隊內部的多元包容與道德底線』。" },
+          { id: "C", text: "君子喻於義，小人喻於利。", isCorrect: false, meaning: "君子懂得的是道義，小人懂得的是利益。", usage: "區分君子與小人追求目標的本質差異（道德 vs 利益）。", example: "商人若是只顧賺錢不顧環保，便是小人喻於利了。", reason: "雖然跟道德有關，但缺乏了題幹前半段『尊重多元差異（和）』的包容意涵。" },
+          { id: "D", text: "君子坦蕩蕩，小人長戚戚。", isCorrect: false, meaning: "君子心胸平坦寬廣，小人經常憂愁焦慮。", usage: "形容君子行事光明磊落，心中無愧。", example: "他一生沒做過虧心事，自然是君子坦蕩蕩，睡得安穩。", reason: "形容個人心理狀態，與組織文化融合的『差異與底線』無關。" }
+        ],
+        classical_text: { work: "《論語》", chapter: "子路篇第十三", author: "孔子弟子", original: "子曰：「君子和而不同，小人同而不和。」", vernacular: "孔子說：「君子能與人協調和睦，但不會盲目附和；小人表面上盲目附和別人，但內心卻不能與人和睦。」", citationUrl: "十三經注疏本" },
+        source_reference: { title: "《論語注疏·子路》", source: "漢·何晏集解", note: "經典跨界題：將孔子哲學應用於現代企業文化管理。" }, status: "approved"
       }
     ];
 
@@ -1015,56 +742,13 @@
       title: "待審核候選題：職場溝通障礙的形容",
       scenario: "新舊團隊整合會議中，雙方針對軟體專案架構各說各話，完全不在同一個邏輯頻道上交流，會議整整耗費三小時卻沒有任何交集。",
       options: [
-        {
-          id: "A",
-          text: "雞同鴨講",
-          isCorrect: true,
-          meaning: "比喻彼此語言不通，或雙方認知差距過大，各說各話無法溝通。",
-          usage: "口語或生活情境通用。",
-          example: "這場會議雙方專業領域差距太遠，簡直是雞同鴨講。",
-          reason: "雙方毫無交集各說各話，極具現代代表性。"
-        },
-        {
-          id: "B",
-          text: "南轅北轍",
-          isCorrect: false,
-          meaning: "心想往南走，車子卻向北行。比喻行動與目標完全相反。",
-          usage: "強調行動與原意背道而馳。",
-          example: "企圖藉由熬夜提高讀書效率，無疑是南轅北轍。",
-          reason: "本題焦點在雙方溝通對話缺乏交集，非行動與目標背馳。"
-        },
-        {
-          id: "C",
-          text: "對牛彈琴",
-          isCorrect: false,
-          meaning: "對著牛彈奏美妙琴樂。比喻對不懂道理的人講高深道理。",
-          usage: "通常是一方高深而另一方無知。",
-          example: "跟不懂電腦的人解釋演算法，簡直是對牛彈琴。",
-          reason: "題目強調雙方各說各話，非單方面聽眾水準不足。"
-        },
-        {
-          id: "D",
-          text: "風馬牛不相及",
-          isCorrect: false,
-          meaning: "比喻事物之間毫不相干或兩地相距遙遠。",
-          usage: "《左傳》典故，強調事物毫無牽連關聯。",
-          example: "這兩項研究的領域風馬牛不相及，無法直接類比。",
-          reason: "形容會議溝通現場時以雞同鴨講最為生動貼切。"
-        }
+        { id: "A", text: "雞同鴨講", isCorrect: true, meaning: "比喻彼此語言不通，或雙方認知差距過大，各說各話無法溝通。", usage: "口語或生活情境通用。", example: "這場會議雙方專業領域差距太遠，簡直是雞同鴨講。", reason: "雙方毫無交集各說各話，極具現代代表性。" },
+        { id: "B", text: "南轅北轍", isCorrect: false, meaning: "心想往南走，車子卻向北行。比喻行動與目標完全相反。", usage: "強調行動與原意背道而馳。", example: "企圖藉由熬夜提高讀書效率，無疑是南轅北轍。", reason: "本題焦點在雙方溝通對話缺乏交集，非行動與目標背馳。" },
+        { id: "C", text: "對牛彈琴", isCorrect: false, meaning: "對著牛彈奏美妙琴樂。比喻對不懂道理的人講高深道理。", usage: "通常是一方高深而另一方無知。", example: "跟不懂電腦的人解釋演算法，簡直是對牛彈琴。", reason: "題目強調雙方各說各話，非單方面聽眾水準不足。" },
+        { id: "D", text: "風馬牛不相及", isCorrect: false, meaning: "比喻事物之間毫不相干或兩地相距遙遠。", usage: "《左傳》典故，強調事物毫無牽連關聯。", example: "這兩項研究的領域風馬牛不相及，無法直接類比。", reason: "形容會議溝通現場時以雞同鴨講最為生動貼切。" }
       ],
-      classical_text: {
-        work: "民間俗諺語源考",
-        chapter: "語源考",
-        author: "無考",
-        original: "粵諺：雞同鴨講，眼碌碌。",
-        vernacular: "方言俗語，指語言不同無法溝通。",
-        citationUrl: "教育部台灣台語常用詞辭典"
-      },
-      source_reference: {
-        title: "民間語言典故考訂組",
-        source: "待進行多答案排除檢核",
-        note: "審核註記：南轅北轍是否可能造成雙答案疑義？待審核小組判定"
-      },
+      classical_text: { work: "民間俗諺語源考", chapter: "語源考", author: "無考", original: "粵諺：雞同鴨講，眼碌碌。", vernacular: "方言俗語，指語言不同無法溝通。", citationUrl: "教育部台灣台語常用詞辭典" },
+      source_reference: { title: "民間語言典故考訂組", source: "待進行多答案排除檢核", note: "審核註記：南轅北轍是否可能造成雙答案疑義？待審核小組判定" },
       status: "pending"
     };
 
@@ -1180,7 +864,7 @@
         quote: "目無全牛，官知止而神欲行。",
         author: "《莊子·養生主》",
         context: "技藝純熟至極，眼中所見已非整隻牛，而是本質結構，全憑心神直覺運作。",
-        modern: "各領域專業達到爐火純青時，直擊問題核心本質，遊刃有餘。",
+        modern: "各領域專業達到爐火純青時，直擊問題核心本質，遊刃大有可為。",
         action: "今日心法：專注於事物底層邏輯與規律，抽絲剝繭，迎刃而解。"
       }
     ];
@@ -1255,74 +939,13 @@
     // ----------------------------------------------------
     // 3. 全域狀態管理與 LocalStorage 持久化
     // ----------------------------------------------------
-    // 翰林雅號晉升體系（融入圖騰與專屬徽章印記）
     const SCHOLAR_RANKS = [
-      { 
-        id: 'rank-1', 
-        title: '童生', 
-        subtitle: '蒙學初窺', 
-        icon: '🪶', 
-        tagColor: 'bg-amber-100 text-amber-900 border-amber-300',
-        emblemBorder: 'border-amber-400 bg-amber-50 text-amber-900',
-        desc: '初入文言語境研究所，探索字詞神韻。', 
-        reqText: '完成首回合研討 (10題)', 
-        check: s => s.roundsCompleted >= 1 
-      },
-      { 
-        id: 'rank-2', 
-        title: '秀才', 
-        subtitle: '尋章摘句', 
-        icon: '📜', 
-        tagColor: 'bg-blue-100 text-blue-900 border-blue-300',
-        emblemBorder: 'border-blue-400 bg-blue-50 text-blue-900',
-        desc: '勤勉向學，辨析語境漸入佳境。', 
-        reqText: '累計答對 10 題', 
-        check: s => s.totalCorrect >= 10 
-      },
-      { 
-        id: 'rank-3', 
-        title: '舉人', 
-        subtitle: '洞若觀火', 
-        icon: '🏮', 
-        tagColor: 'bg-orange-100 text-orange-900 border-orange-300',
-        emblemBorder: 'border-orange-400 bg-orange-50 text-orange-900',
-        desc: '敏銳察覺細微言外之意與混淆項。', 
-        reqText: '單回合取得 80 分以上', 
-        check: s => s.highScore >= 80 
-      },
-      { 
-        id: 'rank-4', 
-        title: '貢士', 
-        subtitle: '博通古今', 
-        icon: '🏛️', 
-        tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-        emblemBorder: 'border-emerald-400 bg-emerald-50 text-emerald-900',
-        desc: '通曉經傳詩文，融會現代生活語用。', 
-        reqText: '累計答對 25 題', 
-        check: s => s.totalCorrect >= 25 
-      },
-      { 
-        id: 'rank-5', 
-        title: '進士', 
-        subtitle: '杏苑傳臚', 
-        icon: '🌸', 
-        tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
-        emblemBorder: 'border-rose-400 bg-rose-50 text-rose-900',
-        desc: '十題考辨無懈可擊，文林聲名鵲起。', 
-        reqText: '單回合榮獲 100 分滿分', 
-        check: s => s.highScore >= 100 
-      },
-      { 
-        id: 'rank-6', 
-        title: '翰林學士', 
-        subtitle: '詞林宗匠', 
-        icon: '👑', 
-        tagColor: 'bg-yellow-100 text-amber-950 border-amber-400',
-        emblemBorder: 'border-amber-500 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-950 shadow-xs',
-        desc: '典雅博洽，深孚眾望，為文言語境之宗師。', 
-        reqText: '累計答對 50 題且獲滿分', 
-        check: s => s.totalCorrect >= 50 && s.highScore >= 100 
-      }
+      { id: 'rank-1', title: '童生', subtitle: '蒙學初窺', icon: '🪶', tagColor: 'bg-amber-100 text-amber-900 border-amber-300', emblemBorder: 'border-amber-400 bg-amber-50 text-amber-900', desc: '初入文言語境研究所，探索字詞神韻。', reqText: '完成首回合研討 (10題)', check: s => s.roundsCompleted >= 1 },
+      { id: 'rank-2', title: '秀才', subtitle: '尋章摘句', icon: '📜', tagColor: 'bg-blue-100 text-blue-900 border-blue-300', emblemBorder: 'border-blue-400 bg-blue-50 text-blue-900', desc: '勤勉向學，辨析語境漸入佳境。', reqText: '累計答對 10 題', check: s => s.totalCorrect >= 10 },
+      { id: 'rank-3', title: '舉人', subtitle: '洞若觀火', icon: '🏮', tagColor: 'bg-orange-100 text-orange-900 border-orange-300', emblemBorder: 'border-orange-400 bg-orange-50 text-orange-900', desc: '敏銳察覺細微言外之意與混淆項。', reqText: '單回合取得 80 分以上', check: s => s.highScore >= 80 },
+      { id: 'rank-4', title: '貢士', subtitle: '博通古今', icon: '🏛️', tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300', emblemBorder: 'border-emerald-400 bg-emerald-50 text-emerald-900', desc: '通曉經傳詩文，融會現代生活語用。', reqText: '累計答對 25 題', check: s => s.totalCorrect >= 25 },
+      { id: 'rank-5', title: '進士', subtitle: '杏苑傳臚', icon: '🌸', tagColor: 'bg-rose-100 text-rose-900 border-rose-300', emblemBorder: 'border-rose-400 bg-rose-50 text-rose-900', desc: '十題考辨無懈可擊，文林聲名鵲起。', reqText: '單回合榮獲 100 分滿分', check: s => s.highScore >= 100 },
+      { id: 'rank-6', title: '翰林學士', subtitle: '詞林宗匠', icon: '👑', tagColor: 'bg-yellow-100 text-amber-950 border-amber-400', emblemBorder: 'border-amber-500 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-950 shadow-xs', desc: '典雅博洽，深孚眾望，為文言語境之宗師。', reqText: '累計答對 50 題且獲滿分', check: s => s.totalCorrect >= 50 && s.highScore >= 100 }
     ];
 
     const SPECIAL_BADGES = [
@@ -1333,59 +956,18 @@
       { id: 'badge-zhuangyuan', name: '獨占鰲頭', icon: '👑', desc: '於科舉殿試中考獲 100 分榮登天子欽點狀元', check: s => s.kejuPassed && s.kejuPassed.includes('dianshi-100') }
     ];
 
-    // 科舉四大考科詳細規範
     const KEJU_STAGES = [
-      {
-        id: 'yuanshi',
-        title: '童試 · 提督院試',
-        season: '本府學政考舍',
-        qualification: '童生皆可赴考',
-        passScore: 80,
-        awardTitle: '秀才',
-        awardRankId: 'rank-2',
-        desc: '地方府縣選拔基層學子，合格者准入府州縣學讀書，免除徭役，受封「秀才」。',
-        reqStage: null
-      },
-      {
-        id: 'xiangshi',
-        title: '鄉試 · 鹿鳴秋闈',
-        season: '每逢子、午、卯、酉年八月省城大比',
-        qualification: '需具備「秀才」功名',
-        passScore: 80,
-        awardTitle: '舉人',
-        awardRankId: 'rank-3',
-        desc: '於省城貢院大比，中式者尊稱「老爺」，受封「舉人」，可赴京入宴鹿鳴之饗。',
-        reqStage: 'yuanshi'
-      },
-      {
-        id: 'huishi',
-        title: '會試 · 禮部春闈',
-        season: '逢丑、未、辰、戌年二月京師會試',
-        qualification: '需具備「舉人」功名',
-        passScore: 90,
-        awardTitle: '貢士',
-        awardRankId: 'rank-4',
-        desc: '全國舉人齊聚京師禮部貢院策試，合格者受封「貢士」，取得入保和殿殿試資格。',
-        reqStage: 'xiangshi'
-      },
-      {
-        id: 'dianshi',
-        title: '殿試 · 紫宸御策',
-        season: '春三月保和殿天子親策',
-        qualification: '需具備「貢士」功名',
-        passScore: 90,
-        awardTitle: '進士 / 鼎甲狀元',
-        awardRankId: 'rank-5',
-        desc: '天子親自命題策問，不黜落只定甲第。滿分特封「一甲第一名狀元及第」！',
-        reqStage: 'huishi'
-      }
+      { id: 'yuanshi', title: '童試 · 提督院試', season: '本府學政考舍', qualification: '童生皆可赴考', passScore: 80, awardTitle: '秀才', awardRankId: 'rank-2', desc: '地方府縣選拔基層學子，合格者准入府州縣學讀書，免除徭役，受封「秀才」。', reqStage: null },
+      { id: 'xiangshi', title: '鄉試 · 鹿鳴秋闈', season: '每逢子、午、卯、酉年八月省城大比', qualification: '需具備「秀才」功名', passScore: 80, awardTitle: '舉人', awardRankId: 'rank-3', desc: '於省城貢院大比，中式者尊稱「老爺」，受封「舉人」，可赴京入宴鹿鳴之饗。', reqStage: 'yuanshi' },
+      { id: 'huishi', title: '會試 · 禮部春闈', season: '逢丑、未、辰、戌年二月京師會試', qualification: '需具備「舉人」功名', passScore: 90, awardTitle: '貢士', awardRankId: 'rank-4', desc: '全國舉人齊聚京師禮部貢院策試，合格者受封「貢士」，取得入保和殿殿試資格。', reqStage: 'xiangshi' },
+      { id: 'dianshi', title: '殿試 · 紫宸御策', season: '春三月保和殿天子親策', qualification: '需具備「貢士」功名', passScore: 90, awardTitle: '進士 / 鼎甲狀元', awardRankId: 'rank-5', desc: '天子親自命題策問，不黜落只定甲第。滿分特封「一甲第一名狀元及第」！', reqStage: 'huishi' }
     ];
 
     const STATE = {
-      view: 'home', // 'home' | 'select' | 'quiz' | 'explanation' | 'summary' | 'bookmarks' | 'mistakes' | 'admin'
+      view: 'home',
       selectedMode: 'all',
       selectedDifficulty: 'all',
-      currentExamStage: null, // 科舉考試狀態：'yuanshi' | 'xiangshi' | 'huishi' | 'dianshi' | null
+      currentExamStage: null,
       questionBank: [],
       bookmarks: [],
       mistakes: [],
@@ -1395,25 +977,16 @@
       userAnswers: {},
       lockedAnswers: {},
       isAdminLoggedIn: false,
-      fontSize: 'normal', // 'normal' | 'large' | 'huge'
-      hintsRemaining: 2, // 每回合提供 2 次求索錦囊（剔除障眼法）
-      eliminatedOptions: {}, // { [qId]: ['B', ...] }
-      playerStats: {
-        roundsCompleted: 0,
-        totalCorrect: 0,
-        highScore: 0,
-        hasClearedMistake: false,
-        kejuPassed: [] // 通過之科舉考科 ID
-      }
+      fontSize: 'normal',
+      hintsRemaining: 2,
+      eliminatedOptions: {},
+      playerStats: { roundsCompleted: 0, totalCorrect: 0, highScore: 0, hasClearedMistake: false, kejuPassed: [] }
     };
 
     function getCurrentRank() {
-      const stats = STATE.playerStats;
       let highest = SCHOLAR_RANKS[0];
       for (const r of SCHOLAR_RANKS) {
-        if (r.check(stats)) {
-          highest = r;
-        }
+        if (r.check(STATE.playerStats)) highest = r;
       }
       return highest;
     }
@@ -1459,9 +1032,7 @@
             <div class="flex items-center gap-1.5 mt-0.5">
               <span class="text-xl">${cur.icon}</span>
               <span class="font-serif text-lg font-black text-[#261A12]">${cur.title}</span>
-              <span class="text-[10px] px-2 py-0.2 rounded font-bold ${cur.tagColor}">
-                ${cur.subtitle}
-              </span>
+              <span class="text-[10px] px-2 py-0.2 rounded font-bold ${cur.tagColor}">${cur.subtitle}</span>
             </div>
             <div class="text-[11px] text-[#635345] mt-1">${cur.desc}</div>
             ${next ? `
@@ -1470,9 +1041,7 @@
                 <span class="text-stone-400">（${next.reqText}）</span>
               </div>
             ` : `
-              <div class="mt-1.5 text-[10px] text-emerald-800 font-bold">
-                已登文林絕頂！當代詞林宗匠。
-              </div>
+              <div class="mt-1.5 text-[10px] text-emerald-800 font-bold">已登文林絕頂！當代詞林宗匠。</div>
             `}
           </div>
           <div class="w-12 h-12 rounded-2xl bg-amber-800 text-amber-100 flex flex-col items-center justify-center border-2 border-amber-600 shadow-xs shrink-0">
@@ -1490,9 +1059,7 @@
           return `
             <div class="p-2.5 rounded-xl border transition-all ${isCurrent ? 'bg-amber-100/70 border-amber-500 shadow-2xs' : isUnlocked ? 'bg-emerald-50/50 border-emerald-300' : 'bg-stone-50 border-stone-200 opacity-60'} flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold border shrink-0 ${isCurrent ? 'bg-amber-700 text-white border-amber-800' : isUnlocked ? 'bg-white border-emerald-400 text-emerald-800' : 'bg-stone-200 border-stone-300 text-stone-400'}">
-                  ${r.icon}
-                </div>
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold border shrink-0 ${isCurrent ? 'bg-amber-700 text-white border-amber-800' : isUnlocked ? 'bg-white border-emerald-400 text-emerald-800' : 'bg-stone-200 border-stone-300 text-stone-400'}">${r.icon}</div>
                 <div>
                   <div class="flex items-center gap-1.5">
                     <span class="font-serif font-black text-xs md:text-sm text-[#2C1E15]">${r.title} · ${r.subtitle}</span>
@@ -1501,9 +1068,7 @@
                   <div class="text-[9px] text-[#756455]">要求：${r.reqText}</div>
                 </div>
               </div>
-              <span class="text-[10px] font-bold ${isUnlocked ? 'text-emerald-800' : 'text-stone-400'}">
-                ${isUnlocked ? '已授封' : '未達成'}
-              </span>
+              <span class="text-[10px] font-bold ${isUnlocked ? 'text-emerald-800' : 'text-stone-400'}">${isUnlocked ? '已授封' : '未達成'}</span>
             </div>
           `;
         }).join('');
@@ -1534,6 +1099,13 @@
         const qb = localStorage.getItem('joan_lab_qbank');
         STATE.questionBank = qb ? JSON.parse(qb) : [...OFFICIAL_INITIAL_BANK, DEMO_PENDING_QUESTION];
         
+        // 若本機存檔裡的題目數量比最新的官方題庫少（代表有擴充），則同步更新官方新增的題目進去
+        if (STATE.questionBank.length < OFFICIAL_INITIAL_BANK.length) {
+            const existingIds = STATE.questionBank.map(q => q.id);
+            const newQuestions = OFFICIAL_INITIAL_BANK.filter(q => !existingIds.includes(q.id));
+            STATE.questionBank = [...STATE.questionBank, ...newQuestions];
+        }
+
         const bm = localStorage.getItem('joan_lab_bookmarks');
         STATE.bookmarks = bm ? JSON.parse(bm) : ["q-idiom-01"];
         
@@ -1609,17 +1181,13 @@
       ['normal', 'large', 'huge'].forEach(m => {
         const btn = document.getElementById(`btn-font-${m}`);
         if (btn) {
-          if (m === mode) {
-            btn.className = "px-2 py-1 text-xs rounded font-bold bg-amber-700 text-white shadow-xs transition-all";
-          } else {
-            btn.className = "px-2 py-1 text-xs rounded font-bold text-[#6C5C4D] hover:text-amber-900 transition-all";
-          }
+          if (m === mode) btn.className = "px-2 py-1 text-xs rounded font-bold bg-amber-700 text-white shadow-xs transition-all";
+          else btn.className = "px-2 py-1 text-xs rounded font-bold text-[#6C5C4D] hover:text-amber-900 transition-all";
         }
       });
       renderCurrentView();
     }
 
-    // 隨機洗牌
     function shuffle(arr) {
       const a = [...arr];
       for (let i = a.length - 1; i > 0; i--) {
@@ -1632,78 +1200,16 @@
     // ----------------------------------------------------
     // 科舉考試專屬操作邏輯
     // ----------------------------------------------------
-    function openKejuModal() {
-      audio.playClick();
-      renderKejuModalContent();
-      const modal = document.getElementById('modal-keju');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeKejuModal() {
-      const modal = document.getElementById('modal-keju');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function renderKejuModalContent() {
-      const passedList = STATE.playerStats.kejuPassed || [];
-      const sumEl = document.getElementById('keju-passed-summary');
-      if (sumEl) {
-        const basePassedCount = ['yuanshi', 'xiangshi', 'huishi', 'dianshi'].filter(id => passedList.some(p => p.startsWith(id))).length;
-        sumEl.innerText = `已及第 ${basePassedCount} / 4 功名`;
-      }
-
-      const listContainer = document.getElementById('keju-stages-list');
-      if (!listContainer) return;
-
-      listContainer.innerHTML = KEJU_STAGES.map((stg) => {
-        const isPassed = passedList.some(p => p.startsWith(stg.id));
-        const isUnlocked = !stg.reqStage || passedList.some(p => p.startsWith(stg.reqStage));
-
-        return `
-          <div class="p-3.5 rounded-2xl border-2 transition-all ${isPassed ? 'bg-emerald-50/70 border-emerald-500 shadow-2xs' : isUnlocked ? 'bg-[#FFFDF9] border-amber-400/90 shadow-2xs' : 'bg-stone-50 border-stone-200 opacity-60'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="space-y-1">
-              <div class="flex items-center gap-2">
-                <span class="w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center border ${isPassed ? 'bg-emerald-700 text-white border-emerald-800' : isUnlocked ? 'bg-amber-700 text-white border-amber-800' : 'bg-stone-200 text-stone-500 border-stone-300'}">
-                  ${isPassed ? '✓' : isUnlocked ? '闈' : '🔒'}
-                </span>
-                <span class="font-serif font-black text-sm md:text-base text-[#2A1D15]">${stg.title}</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
-                  錄取線：${stg.passScore} 分
-                </span>
-              </div>
-              <p class="text-[11px] text-[#5C4A3C] leading-snug">${stg.desc}</p>
-              <div class="text-[10px] text-stone-500">
-                應試資格：${stg.qualification} · 及第授封：<strong class="text-amber-900">${stg.awardTitle}</strong>
-              </div>
-            </div>
-
-            <div class="shrink-0 self-end sm:self-center">
-              ${isPassed ? `
-                <button onclick="startKejuExam('${stg.id}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
-                  重溫及第闈
-                </button>
-              ` : isUnlocked ? `
-                <button onclick="startKejuExam('${stg.id}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white font-bold text-xs shadow-md touch-btn flex items-center gap-1">
-                  <span>正身赴試</span>
-                  <span>→</span>
-                </button>
-              ` : `
-                <span class="text-xs text-stone-400 font-bold px-2 py-1 bg-stone-100 rounded-lg">尚未開考</span>
-              `}
-            </div>
-          </div>
-        `;
-      }).join('');
+    function getNextExamStage(currentId) {
+      const idx = KEJU_STAGES.findIndex(s => s.id === currentId);
+      if (idx >= 0 && idx < KEJU_STAGES.length - 1) return KEJU_STAGES[idx + 1];
+      return null;
     }
 
     function startKejuExam(stageId) {
       audio.playClick();
-      closeKejuModal();
       STATE.currentExamStage = stageId;
 
-      // 依考科難度篩選或洗牌題組
       let diff = 'easy';
       if (stageId === 'xiangshi') diff = 'medium';
       else if (stageId === 'huishi' || stageId === 'dianshi') diff = 'hard';
@@ -1751,7 +1257,6 @@
         chosen = shuffle(pool).slice(0, 10);
       }
 
-      // 若題庫不足 10 題，循環複習填滿 10 題
       if (chosen.length > 0 && chosen.length < 10) {
         const base = [...chosen];
         while (chosen.length < 10) {
@@ -1764,67 +1269,57 @@
           ...opt,
           displayLabel: ['A', 'B', 'C', 'D'][oIdx]
         }));
-        return {
-          ...q,
-          roundKey: `${q.id}-${idx}`,
-          options: shuffledOptions
-        };
+        return { ...q, roundKey: `${q.id}-${idx}`, options: shuffledOptions };
       });
 
       STATE.currentIndex = 0;
       STATE.userAnswers = {};
       STATE.lockedAnswers = {};
-      STATE.hintsRemaining = 2; // 重置錦囊次數
-      STATE.eliminatedOptions = {}; // 重置排除選項
+      STATE.hintsRemaining = 2;
+      STATE.eliminatedOptions = {};
       STATE.view = 'quiz';
       renderCurrentView();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 求索錦囊（剔除障眼法 50/50）
     function useHint() {
       if (STATE.hintsRemaining <= 0) {
         showToast('本回合求索錦囊已用盡');
         return;
       }
       const q = STATE.roundQuestions[STATE.currentIndex];
-      if (!q || STATE.lockedAnswers[q.id]) return;
+      if (!q || STATE.lockedAnswers[q.roundKey]) return;
 
-      if (!STATE.eliminatedOptions[q.id]) {
-        STATE.eliminatedOptions[q.id] = [];
-      }
-
-      const availableWrongOpts = q.options.filter(o => !o.isCorrect && !STATE.eliminatedOptions[q.id].includes(o.displayLabel));
+      if (!STATE.eliminatedOptions[q.roundKey]) STATE.eliminatedOptions[q.roundKey] = [];
+      const availableWrongOpts = q.options.filter(o => !o.isCorrect && !STATE.eliminatedOptions[q.roundKey].includes(o.displayLabel));
       if (availableWrongOpts.length === 0) {
         showToast('無法再排除更多干擾項');
         return;
       }
 
       const chosenToEliminate = availableWrongOpts[Math.floor(Math.random() * availableWrongOpts.length)];
-      STATE.eliminatedOptions[q.id].push(chosenToEliminate.displayLabel);
+      STATE.eliminatedOptions[q.roundKey].push(chosenToEliminate.displayLabel);
       STATE.hintsRemaining--;
-      audio.playTone(587.33, 'sine', 0.15, 0.08); // D5
+      audio.playTone(587.33, 'sine', 0.15, 0.08);
       showToast(`已施展錦囊：剔除障眼選項 [${chosenToEliminate.displayLabel}]！`);
       renderCurrentView();
     }
 
     function handleOptionSelect(label) {
       const q = STATE.roundQuestions[STATE.currentIndex];
-      if (!q || STATE.lockedAnswers[q.id]) return;
+      if (!q || STATE.lockedAnswers[q.roundKey]) return;
 
       const opt = q.options.find(o => o.displayLabel === label);
       if (!opt) return;
 
-      STATE.userAnswers[q.id] = label;
-      STATE.lockedAnswers[q.id] = true;
+      STATE.userAnswers[q.roundKey] = label;
+      STATE.lockedAnswers[q.roundKey] = true;
 
       if (opt.isCorrect) {
         audio.playCorrect();
       } else {
         audio.playIncorrect();
-        if (!STATE.mistakes.includes(q.id)) {
-          STATE.mistakes.unshift(q.id);
-        }
+        if (!STATE.mistakes.includes(q.id)) STATE.mistakes.unshift(q.id);
       }
       saveData();
       renderCurrentView();
@@ -1843,26 +1338,23 @@
       renderCurrentView();
     }
 
-    // 安全檢視單一題目（取代行內 JSON 序列化，防止語法跳脫錯誤）
     function reviewSingleQuestion(qId, targetView = 'quiz') {
       const q = STATE.questionBank.find(item => item.id === qId);
       if (!q) return;
 
-      const shuffledOptions = shuffle(q.options).map((opt, idx) => ({
-        ...opt,
-        displayLabel: ['A', 'B', 'C', 'D'][idx]
-      }));
-
-      STATE.roundQuestions = [{ ...q, options: shuffledOptions }];
+      const shuffledOptions = shuffle(q.options).map((opt, idx) => ({ ...opt, displayLabel: ['A', 'B', 'C', 'D'][idx] }));
+      const roundKey = `${q.id}-0`;
+      STATE.roundQuestions = [{ ...q, roundKey, options: shuffledOptions }];
       STATE.currentIndex = 0;
       STATE.userAnswers = {};
       STATE.lockedAnswers = {};
+      STATE.eliminatedOptions = {};
 
       if (targetView === 'explanation') {
         const correctOpt = shuffledOptions.find(o => o.isCorrect);
         if (correctOpt) {
-          STATE.userAnswers[q.id] = correctOpt.displayLabel;
-          STATE.lockedAnswers[q.id] = true;
+          STATE.userAnswers[roundKey] = correctOpt.displayLabel;
+          STATE.lockedAnswers[roundKey] = true;
         }
       }
 
@@ -1872,141 +1364,72 @@
     }
 
     // ----------------------------------------------------
-    // 6. 各頁面 HTML 產生器（極致精簡頂部卡片，降低視覺佔比）
+    // 6. 各頁面 HTML 產生器
     // ----------------------------------------------------
     function getHomeHTML() {
+      const passedList = STATE.playerStats.kejuPassed || [];
       const curRank = getCurrentRank();
-      const kejuPassedCount = ['yuanshi', 'xiangshi', 'huishi', 'dianshi'].filter(id => STATE.playerStats.kejuPassed && STATE.playerStats.kejuPassed.some(p => p.startsWith(id))).length;
+      
+      const stagesHTML = KEJU_STAGES.map((stg) => {
+        const isPassed = passedList.some(p => p.startsWith(stg.id));
+        const isUnlocked = !stg.reqStage || passedList.some(p => p.startsWith(stg.reqStage));
 
-      return `
-        <div class="space-y-4 fade-in">
-          <!-- 輕巧書卷微橫幅（大幅壓低垂直高度，不遮擋視野） -->
-          <div class="rounded-2xl bg-gradient-to-r from-[#FFFDF9] via-[#FAF3E3] to-[#F5EEDC] p-3.5 md:p-5 border border-[#E3D7BD] shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div class="space-y-1">
-              <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 border border-emerald-300 text-[10px] font-bold">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                防誤導檢覈 · 教育部《成語典》與正統經傳注疏
+        return `
+          <div class="p-4 rounded-3xl border-2 transition-all ${isPassed ? 'bg-gradient-to-r from-emerald-50 to-[#F2F9F4] border-emerald-400 shadow-sm' : isUnlocked ? 'bg-[#FFFDF9] border-amber-500 shadow-md transform hover:-translate-y-1' : 'bg-stone-50 border-stone-200 opacity-70'} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl text-sm font-bold flex items-center justify-center border ${isPassed ? 'bg-emerald-700 text-white border-emerald-800' : isUnlocked ? 'bg-amber-700 text-white border-amber-800' : 'bg-stone-200 text-stone-500 border-stone-300 shadow-inner'}">
+                  ${isPassed ? '✓' : isUnlocked ? '闈' : '🔒'}
+                </span>
+                <span class="font-serif font-black text-base md:text-lg text-[#2A1D15]">${stg.title}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-bold ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
+                  及格線：${stg.passScore} 分
+                </span>
               </div>
-              <h1 class="font-serif text-lg md:text-2xl font-black text-[#2B1F17] leading-snug">
-                精準辨析語境 · 領略文字言外之意
-              </h1>
-              <p class="text-[11px] md:text-xs text-[#635345] leading-relaxed max-w-lg">
-                連結生活、職場與經典原典，四選項深入透析，拒絕模糊誤導。
-              </p>
+              <p class="text-xs text-[#5C4A3C] leading-relaxed max-w-lg">${stg.desc}</p>
+              <div class="text-[11px] text-stone-500 mt-1">及第授封：<strong class="text-amber-900">${stg.awardTitle}</strong></div>
             </div>
 
-            <!-- 核心快捷操作 -->
-            <div class="flex items-center gap-2 shrink-0">
-              <button onclick="openKejuModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-950 hover:from-emerald-900 hover:to-black text-amber-200 font-bold text-xs md:text-sm shadow-md touch-btn flex items-center gap-1.5 border border-amber-400/40">
-                <span>🏛️ 貢院赴考</span>
-                <span class="text-[10px] bg-emerald-700/80 text-white px-1.5 py-0.2 rounded-full">${kejuPassedCount}/4</span>
-              </button>
-              <button onclick="navigateTo('select')" class="px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs md:text-sm shadow-md touch-btn flex items-center gap-1.5">
-                <span>開啟 10 題</span>
-                <span>→</span>
-              </button>
-              <button onclick="startRound('review', 'all')" class="px-3 py-2.5 rounded-xl bg-[#EDE4CE] hover:bg-[#E4D9C0] text-[#4A3B2C] font-bold text-xs border border-[#DACBB0] touch-btn">
-                錯題 (${STATE.mistakes.length})
-              </button>
-            </div>
-          </div>
-
-          <!-- 五大模式選擇卡 -->
-          <div>
-            <div class="flex items-center justify-between mb-2.5">
-              <h2 class="font-serif text-sm md:text-base font-bold text-[#35271E] flex items-center gap-1.5">
-                <span class="w-1.5 h-3.5 bg-amber-700 rounded-full"></span>
-                五大語境探究所
-              </h2>
-              <button onclick="openRanksModal()" class="text-xs text-amber-900 hover:underline flex items-center gap-1 font-semibold">
-                <span>授封：${curRank.icon} ${curRank.title}</span>
-                <span class="text-[10px] text-stone-400">成就譜 →</span>
-              </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-              ${[
-                { id: 'idiom', title: '成語情境判斷所', desc: '辨析生活與職場高頻易混淆成語。', tag: '生活職場' },
-                { id: 'translation', title: '古文翻譯局', desc: '十三經與經典散文，字字對譯原文。', tag: '原典直譯' },
-                { id: 'dialogue', title: '古今對話室', desc: '現代處境困局，借古人智慧名句突破。', tag: '名句化用' },
-                { id: 'hybrid', title: '古今混合挑戰', desc: '跨越時空的綜合題型，深度考驗語感。', tag: '綜合考驗' },
-                { id: 'review', title: '錯題複習所', desc: '自動收錄失誤題目，精準強化盲點。', tag: '弱點突破' }
-              ].map(m => `
-                <div onclick="${m.id === 'review' ? "startRound('review', 'all')" : `STATE.currentExamStage=null; STATE.selectedMode='${m.id}'; navigateTo('select')`}" class="p-3.5 rounded-2xl bg-[#FFFDF9] border border-[#E8DFC9] hover:border-amber-600 transition-all cursor-pointer touch-btn flex flex-col justify-between">
-                  <div>
-                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200">
-                      ${m.tag}
-                    </span>
-                    <h3 class="font-serif text-sm md:text-base font-bold text-[#2A1D15] mt-1.5">
-                      ${m.title}
-                    </h3>
-                    <p class="text-[11px] text-[#6F5F51] mt-0.5 leading-relaxed">
-                      ${m.desc}
-                    </p>
-                  </div>
-                  <div class="mt-2.5 pt-2 border-t border-[#F2EBDC] flex items-center justify-between text-[11px] text-amber-800 font-bold">
-                    <span>進入模式</span>
-                    <span>→</span>
-                  </div>
+            <div class="shrink-0 w-full sm:w-auto">
+              ${isPassed ? `
+                <button onclick="startKejuExam('${stg.id}')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-600 text-emerald-900 font-bold text-xs touch-btn flex items-center justify-center gap-1.5">
+                  <span>重溫本闈</span><span>↺</span>
+                </button>
+              ` : isUnlocked ? `
+                <button onclick="startKejuExam('${stg.id}')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white font-bold text-sm shadow-lg touch-btn flex items-center justify-center gap-1.5 animate-pulse">
+                  <span>入考舍應試</span><span>→</span>
+                </button>
+              ` : `
+                <div class="w-full sm:w-auto text-center px-4 py-2.5 bg-stone-100 border border-stone-300 rounded-xl text-xs text-stone-400 font-bold">
+                  需先通過前一闈
                 </div>
-              `).join('')}
+              `}
             </div>
           </div>
-        </div>
-      `;
-    }
+        `;
+      }).join('');
 
-    function getSelectHTML() {
       return `
-        <div class="max-w-xl mx-auto space-y-5 fade-in">
-          <div class="flex items-center justify-between">
-            <button onclick="navigateTo('home')" class="text-xs text-[#705E4E] hover:text-amber-900 font-semibold">
-              ← 返回首頁
-            </button>
-            <div class="text-xs text-stone-500">客製 10 題專項研討</div>
+        <div class="space-y-6 fade-in max-w-2xl mx-auto">
+          <div class="text-center space-y-3 py-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-bold">
+              <span class="w-2 h-2 rounded-full bg-amber-600"></span>
+              防誤導嚴格查核 · 全新 ${STATE.questionBank.filter(q => q.status === 'approved').length} 題擴充包
+            </div>
+            <h1 class="font-serif text-3xl md:text-5xl font-black text-[#2B1F17] leading-tight">貢院科舉 · 金榜題名</h1>
+            <p class="text-xs md:text-sm text-[#635345] max-w-md mx-auto">唯有精準辨析語境，通過層層嚴格考驗，方能登堂入室、位列詞林宗匠。</p>
+          </div>
+          
+          <div class="space-y-4">
+            ${stagesHTML}
           </div>
 
-          <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DBBF] shadow-xs space-y-5">
-            <div>
-              <label class="block text-xs font-bold text-[#2D2017] mb-2">步驟一：選擇研討模式</label>
-              <div class="grid grid-cols-1 gap-2">
-                ${[
-                  { id: 'all', title: '綜合混合挑戰（預設配比）', desc: '成語3 + 翻譯2 + 對話2 + 混合3 題' },
-                  { id: 'idiom', title: '成語情境判斷所', desc: '生活與職場易混淆成語專題' },
-                  { id: 'translation', title: '古文翻譯局', desc: '經典名篇逐字精準白話翻譯' },
-                  { id: 'dialogue', title: '古今對話室', desc: '現代情境與古人智慧名句融合' },
-                  { id: 'hybrid', title: '古今混合挑戰', desc: '語意、語氣與修辭深究' }
-                ].map(m => `
-                  <button onclick="STATE.selectedMode='${m.id}'; renderCurrentView();" class="w-full text-left p-3 rounded-xl border-2 transition-all ${STATE.selectedMode === m.id ? 'border-amber-700 bg-amber-50/70 text-amber-950 font-bold' : 'border-[#EAE1CB] bg-white text-[#4A3B2C]'}">
-                    <div class="text-xs md:text-sm font-bold">${m.title}</div>
-                    <div class="text-[10px] text-[#786655] mt-0.5">${m.desc}</div>
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-[#2D2017] mb-2">步驟二：選擇題目難度</label>
-              <div class="grid grid-cols-4 gap-2">
-                ${[
-                  { id: 'all', label: '隨機' },
-                  { id: 'easy', label: '初階' },
-                  { id: 'medium', label: '中階' },
-                  { id: 'hard', label: '高階' }
-                ].map(d => `
-                  <button onclick="STATE.selectedDifficulty='${d.id}'; renderCurrentView();" class="py-2.5 text-center rounded-xl border-2 text-xs font-bold transition-all ${STATE.selectedDifficulty === d.id ? 'border-amber-700 bg-amber-700 text-white' : 'border-[#EAE1CB] bg-white text-[#4A3B2C]'}">
-                    ${d.label}
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-[#F0E6D0] flex items-center justify-between">
-              <div class="text-[11px] text-[#7B6856]">每回包含 <strong>10 題</strong>，不限答題時間。</div>
-              <button onclick="startRound()" class="px-7 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-sm shadow-md touch-btn">
-                開始作答 →
-              </button>
-            </div>
+          <div class="pt-6 border-t border-[#E5DAC0] flex flex-col items-center justify-center gap-3">
+            <div class="text-[11px] text-stone-500 font-semibold">遭遇瓶頸？在錯題所反覆特訓以備戰科考</div>
+            <button onclick="STATE.currentExamStage=null; startRound('review', 'all')" class="px-6 py-3 rounded-xl bg-[#EDE4CE] hover:bg-[#E4D9C0] text-[#4A3B2C] font-bold text-xs border border-[#DACBB0] touch-btn flex items-center gap-2 shadow-xs">
+              <svg class="w-4 h-4 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>進入錯題特訓所 (${STATE.mistakes.length} 題)</span>
+            </button>
           </div>
         </div>
       `;
@@ -2016,73 +1439,49 @@
       const q = STATE.roundQuestions[STATE.currentIndex];
       if (!q) return `<div class="text-center p-8">題目加載中...</div>`;
 
-      const isLocked = !!STATE.lockedAnswers[q.id];
+      const isLocked = !!STATE.lockedAnswers[q.roundKey];
       const isBookmarked = STATE.bookmarks.includes(q.id);
-      const eliminated = STATE.eliminatedOptions[q.id] || [];
+      const eliminated = STATE.eliminatedOptions[q.roundKey] || [];
       const currentExam = STATE.currentExamStage ? KEJU_STAGES.find(s => s.id === STATE.currentExamStage) : null;
 
       return `
         <div class="space-y-4 fade-in">
-          <!-- 科舉專屬橫幅（若在科舉試院中） -->
           ${currentExam ? `
             <div class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-stone-900 text-amber-100 border border-amber-400/40 shadow-xs flex items-center justify-between text-xs">
-              <div class="flex items-center gap-1.5">
-                <span class="text-sm">🏛️</span>
-                <span class="font-serif font-bold">${currentExam.title}</span>
-                <span class="text-[10px] text-amber-300 font-sans">（錄取線：${currentExam.passScore} 分 · 考官監考中）</span>
-              </div>
+              <div class="flex items-center gap-1.5"><span class="text-sm">🏛️</span><span class="font-serif font-bold">${currentExam.title}</span><span class="text-[10px] text-amber-300 font-sans">（錄取線：${currentExam.passScore} 分）</span></div>
               <span class="text-[10px] bg-emerald-950/80 px-2 py-0.5 rounded text-emerald-200 border border-emerald-700">貢院號舍</span>
             </div>
           ` : ''}
 
-          <!-- 進度與工具欄 -->
           <div class="bg-[#FFFDF9] rounded-2xl p-3 border border-[#E7DDCA] shadow-xs flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-              <span class="font-serif text-sm md:text-base font-black text-amber-900">
-                第 ${STATE.currentIndex + 1} / ${STATE.roundQuestions.length} 題
-              </span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#EDE4CD] text-[#5A493B]">
-                ${q.mode === 'idiom' ? '成語情境' : q.mode === 'translation' ? '古文翻譯' : q.mode === 'dialogue' ? '古今對話' : '古今混合'}
-              </span>
-              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${q.difficulty === 'easy' ? 'bg-emerald-100 text-emerald-800' : q.difficulty === 'medium' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
-                ${q.difficulty === 'easy' ? '初階' : q.difficulty === 'medium' ? '中階' : '高階'}
-              </span>
+              <span class="font-serif text-sm md:text-base font-black text-amber-900">第 ${STATE.currentIndex + 1} / ${STATE.roundQuestions.length} 題</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#EDE4CD] text-[#5A493B]">${q.mode === 'idiom' ? '成語情境' : q.mode === 'translation' ? '古文翻譯' : q.mode === 'dialogue' ? '古今對話' : '古今混合'}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${q.difficulty === 'easy' ? 'bg-emerald-100 text-emerald-800' : q.difficulty === 'medium' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${q.difficulty === 'easy' ? '初階' : q.difficulty === 'medium' ? '中階' : '高階'}</span>
             </div>
-
-            <!-- 求索錦囊（剔除障眼法） -->
             <button onclick="useHint()" ${STATE.hintsRemaining <= 0 || isLocked ? 'disabled' : ''} class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1 transition-all ${STATE.hintsRemaining > 0 && !isLocked ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900 touch-btn' : 'bg-stone-100 border-stone-200 text-stone-400 opacity-60'}" title="排除一個錯誤干擾選項">
               <span>💡 錦囊 (${STATE.hintsRemaining})</span>
             </button>
-
-            <!-- 收藏按鈕 -->
             <button onclick="toggleBookmarkCurrent('${q.id}')" class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1 ${isBookmarked ? 'bg-amber-100 border-amber-400 text-amber-800' : 'bg-white border-stone-200 text-stone-500'}">
-              <svg class="w-3.5 h-3.5 ${isBookmarked ? 'fill-current text-amber-700' : 'fill-none'}" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-              </svg>
+              <svg class="w-3.5 h-3.5 ${isBookmarked ? 'fill-current text-amber-700' : 'fill-none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
               <span class="hidden sm:inline">${isBookmarked ? '已珍藏' : '珍藏'}</span>
             </button>
           </div>
 
-          <!-- 題目主內容卡片 -->
           <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DAC0] shadow-sm space-y-4">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2.5">
-                <h2 class="font-serif font-bold text-lg md:text-xl text-[#2A1D15]">
-                  ${q.title}
-                </h2>
+                <h2 class="font-serif font-bold text-lg md:text-xl text-[#2A1D15]">${q.title}</h2>
                 ${q.classical_text && q.classical_text.original ? `
                   <button onclick="speakText('${q.classical_text.original.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 shrink-0 touch-btn" title="朗誦原典">
                     <span>🔊 聽誦讀</span>
                   </button>
                 ` : ''}
               </div>
-
-              <!-- 情境框 -->
               <div class="p-4 md:p-5 rounded-2xl bg-[#F6EFE0] border-l-4 border-amber-700 text-[#423326] shadow-xs text-dynamic">
                 <div class="text-[10px] uppercase tracking-wider text-[#7C6957] font-bold mb-1">語境題幹描述</div>
                 <div class="font-serif leading-relaxed whitespace-pre-line">${q.scenario}</div>
               </div>
-
               ${q.classical_text && q.classical_text.original ? `
                 <div class="mt-2.5 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-[11px] flex flex-wrap items-center justify-between gap-1">
                   <span>典籍名篇：<strong>${q.classical_text.work}</strong> · ${q.classical_text.chapter}</span>
@@ -2091,34 +1490,24 @@
               ` : ''}
             </div>
 
-            <!-- 選項列表 -->
             <div class="space-y-2.5 pt-1">
               <div class="text-[11px] text-[#877564] font-bold">請點擊選擇經審核之唯一最佳選項：</div>
               <div class="grid grid-cols-1 gap-2.5">
                 ${q.options.map(opt => {
-                  const isSelected = STATE.userAnswers[q.id] === opt.displayLabel;
+                  const isSelected = STATE.userAnswers[q.roundKey] === opt.displayLabel;
                   const isOptEliminated = eliminated.includes(opt.displayLabel);
 
                   let btnStyle = "bg-white border-[#E7DDC8] text-[#3A2B1F]";
-                  if (isOptEliminated) {
-                    btnStyle = "bg-stone-100 border-stone-200 text-stone-400 opacity-40 line-through cursor-not-allowed";
-                  } else if (isLocked) {
-                    if (opt.isCorrect) {
-                      btnStyle = "bg-emerald-50 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500/20";
-                    } else if (isSelected && !opt.isCorrect) {
-                      btnStyle = "bg-rose-50 border-rose-500 text-rose-950 font-medium";
-                    } else {
-                      btnStyle = "bg-stone-50 border-stone-200 text-stone-400 opacity-60";
-                    }
-                  } else {
-                    btnStyle += " hover:border-amber-400 hover:bg-amber-50/40 touch-btn";
-                  }
+                  if (isOptEliminated) btnStyle = "bg-stone-100 border-stone-200 text-stone-400 opacity-40 line-through cursor-not-allowed";
+                  else if (isLocked) {
+                    if (opt.isCorrect) btnStyle = "bg-emerald-50 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500/20";
+                    else if (isSelected && !opt.isCorrect) btnStyle = "bg-rose-50 border-rose-500 text-rose-950 font-medium";
+                    else btnStyle = "bg-stone-50 border-stone-200 text-stone-400 opacity-60";
+                  } else btnStyle += " hover:border-amber-400 hover:bg-amber-50/40 touch-btn";
 
                   return `
                     <button onclick="handleOptionSelect('${opt.displayLabel}')" ${isLocked || isOptEliminated ? 'disabled' : ''} class="w-full text-left p-3.5 md:p-4 rounded-2xl border-2 transition-all flex items-start gap-3 ${btnStyle}">
-                      <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 border ${isLocked && opt.isCorrect ? 'bg-emerald-700 text-white border-emerald-800' : isLocked && isSelected && !opt.isCorrect ? 'bg-rose-600 text-white border-rose-700' : isOptEliminated ? 'bg-stone-200 text-stone-400 border-stone-300' : 'bg-[#EAE0CA] text-[#4A3B2C] border-[#DFD5BD]'}">
-                        ${opt.displayLabel}
-                      </span>
+                      <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 border ${isLocked && opt.isCorrect ? 'bg-emerald-700 text-white border-emerald-800' : isLocked && isSelected && !opt.isCorrect ? 'bg-rose-600 text-white border-rose-700' : isOptEliminated ? 'bg-stone-200 text-stone-400 border-stone-300' : 'bg-[#EAE0CA] text-[#4A3B2C] border-[#DFD5BD]'}">${opt.displayLabel}</span>
                       <div class="flex-1 pt-0.5">
                         <div class="font-serif leading-snug text-dynamic ${isOptEliminated ? 'line-through' : ''}">${opt.text}</div>
                         ${isOptEliminated ? `<span class="inline-block mt-1 text-[10px] text-stone-500 font-bold">已由錦囊排除</span>` : ''}
@@ -2131,13 +1520,11 @@
               </div>
             </div>
 
-            <!-- 答題鎖定跳轉 -->
             ${isLocked ? `
               <div class="pt-3 border-t border-[#F0E6D0] flex flex-col sm:flex-row items-center justify-between gap-3 fade-in">
                 <div class="text-[11px] text-[#7A6755]">已鎖定答案（每題10分）。查看詳細四選項剖析：</div>
                 <button onclick="navigateTo('explanation')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs shadow-md touch-btn flex items-center justify-center gap-1.5">
-                  <span>閱讀四選項全解析</span>
-                  <span>→</span>
+                  <span>閱讀四選項全解析</span><span>→</span>
                 </button>
               </div>
             ` : ''}
@@ -2156,38 +1543,27 @@
           <div class="bg-[#FFFDF9] rounded-3xl p-5 md:p-7 border-2 border-[#E5DAC0] shadow-sm space-y-5">
             <div class="flex items-center justify-between border-b border-[#F0E6D0] pb-3">
               <div>
-                <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">
-                  四解全析 · 第 ${STATE.currentIndex + 1} 題
-                </span>
-                <h2 class="font-serif font-black text-lg md:text-xl text-[#291C14]">
-                  ${q.title}
-                </h2>
+                <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">四解全析 · 第 ${STATE.currentIndex + 1} 題</span>
+                <h2 class="font-serif font-black text-lg md:text-xl text-[#291C14]">${q.title}</h2>
               </div>
               <div class="flex items-center gap-1.5">
                 <button onclick="toggleBookmarkCurrent('${q.id}')" class="px-2.5 py-1.5 rounded-lg bg-[#EDE4CD] hover:bg-[#E2D8BF] text-[#4A392B] text-xs font-bold touch-btn">
                   ${isBookmarked ? '已珍藏' : '珍藏'}
                 </button>
-                <button onclick="openDisputeModal('${q.id}')" class="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-300 touch-btn">
-                  申訴疑義
-                </button>
+                <button onclick="openDisputeModal('${q.id}')" class="px-2.5 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-300 touch-btn">申訴疑義</button>
               </div>
             </div>
 
-            <!-- 典籍名篇考據與語音朗讀 -->
             ${q.classical_text ? `
               <div class="p-4 rounded-2xl bg-[#F4EDE0] border border-[#E3D6BE] space-y-2.5">
                 <div class="flex items-center justify-between text-xs font-bold text-[#6D5B4B]">
                   <span class="flex items-center gap-1">📜 經典文本出處與句讀</span>
-                  <button onclick="speakText('${q.classical_text.original.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 touch-btn" title="朗讀原典句讀">
-                    <span>🔊 聆聽正音</span>
-                  </button>
+                  <button onclick="speakText('${q.classical_text.original.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[10px] font-bold flex items-center gap-1 touch-btn"><span>🔊 聆聽正音</span></button>
                 </div>
                 <div class="font-serif text-xs md:text-sm text-[#2E2016] bg-white/70 p-3 rounded-xl border border-[#DFD3BA] leading-relaxed">
                   <strong>原文：</strong>${q.classical_text.original}
                 </div>
-                <div class="text-[11px] md:text-xs text-[#4F3E30] leading-relaxed">
-                  <strong>白話譯文：</strong>${q.classical_text.vernacular}
-                </div>
+                <div class="text-[11px] md:text-xs text-[#4F3E30] leading-relaxed"><strong>白話譯文：</strong>${q.classical_text.vernacular}</div>
                 <div class="text-[10px] text-[#7A6959] pt-1.5 border-t border-[#DFD3BA] flex flex-wrap items-center justify-between gap-1">
                   <span>篇章：${q.classical_text.work} · ${q.classical_text.chapter}（${q.classical_text.author}）</span>
                   <span>版本查核：${q.source_reference?.note || '經審定無多解'}</span>
@@ -2195,27 +1571,17 @@
               </div>
             ` : ''}
 
-            <!-- 四個選項完整診斷 -->
             <div class="space-y-3">
-              <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-amber-700"></span>
-                <span>四個選項深入辨析與診斷（防誤導標準）</span>
-              </div>
-
+              <div class="text-xs font-bold text-[#2A1D15] flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-700"></span><span>四個選項深入辨析與診斷（防誤導標準）</span></div>
               ${q.options.map(opt => `
                 <div class="p-4 rounded-2xl border-2 transition-all ${opt.isCorrect ? 'bg-emerald-50/60 border-emerald-500 shadow-xs' : 'bg-[#FFFDF9] border-[#E8DEC7]'}">
                   <div class="flex items-center justify-between gap-2 mb-1.5">
                     <div class="flex items-center gap-2">
-                      <span class="w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${opt.isCorrect ? 'bg-emerald-700 text-white' : 'bg-[#EDE4CE] text-[#524132]'}">
-                        ${opt.displayLabel}
-                      </span>
+                      <span class="w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${opt.isCorrect ? 'bg-emerald-700 text-white' : 'bg-[#EDE4CE] text-[#524132]'}">${opt.displayLabel}</span>
                       <span class="font-serif text-base font-bold text-[#261A12]">${opt.text}</span>
                     </div>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${opt.isCorrect ? 'bg-emerald-200 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-600 border border-stone-200'}">
-                      ${opt.isCorrect ? '✓ 符合本題情境正解' : '✕ 未選此項之理由'}
-                    </span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${opt.isCorrect ? 'bg-emerald-200 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-600 border border-stone-200'}">${opt.isCorrect ? '✓ 符合本題情境正解' : '✕ 未選此項之理由'}</span>
                   </div>
-
                   <div class="space-y-1.5 text-xs text-[#473629] mt-2">
                     <p><strong class="text-amber-950">【詞義釋析】</strong>${opt.meaning}</p>
                     <p><strong class="text-amber-950">【適用場合】</strong>${opt.usage}</p>
@@ -2228,19 +1594,12 @@
               `).join('')}
             </div>
 
-            <!-- 下一題控制 -->
             <div class="pt-4 border-t border-[#F0E6D0] flex items-center justify-between">
-              <button onclick="navigateTo('quiz')" class="px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-xs font-bold">
-                ← 返回題目
-              </button>
+              <button onclick="navigateTo('quiz')" class="px-4 py-2 rounded-xl border border-stone-300 text-stone-600 text-xs font-bold">← 返回題目</button>
               ${STATE.currentIndex < STATE.roundQuestions.length - 1 ? `
-                <button onclick="STATE.currentIndex++; navigateTo('quiz');" class="px-6 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-md touch-btn">
-                  邁向第 ${STATE.currentIndex + 2} 題 →
-                </button>
+                <button onclick="STATE.currentIndex++; navigateTo('quiz');" class="px-6 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-md touch-btn">邁向第 ${STATE.currentIndex + 2} 題 →</button>
               ` : `
-                <button onclick="navigateTo('summary')" class="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md touch-btn">
-                  完成 10 題 · 查看結算報告 🏆
-                </button>
+                <button onclick="navigateTo('summary')" class="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md touch-btn">完成 10 題 · 查看結算報告 🏆</button>
               `}
             </div>
           </div>
@@ -2253,7 +1612,7 @@
       const incorrectList = [];
 
       STATE.roundQuestions.forEach(q => {
-        const userLabel = STATE.userAnswers[q.id];
+        const userLabel = STATE.userAnswers[q.roundKey];
         const opt = q.options.find(o => o.displayLabel === userLabel);
         if (opt && opt.isCorrect) correctCount++;
         else incorrectList.push(q);
@@ -2262,13 +1621,11 @@
       const score = correctCount * 10;
       const vocabCount = STATE.roundQuestions.length * 4;
 
-      // 結算累計數據並判定是否晉階
       const prevRank = getCurrentRank();
       STATE.playerStats.roundsCompleted += 1;
       STATE.playerStats.totalCorrect += correctCount;
       STATE.playerStats.highScore = Math.max(STATE.playerStats.highScore, score);
 
-      // 科舉考試判定邏輯
       let kejuResult = null;
       if (STATE.currentExamStage) {
         const exam = KEJU_STAGES.find(s => s.id === STATE.currentExamStage);
@@ -2277,149 +1634,71 @@
           if (isPassed) {
             let passRecordKey = exam.id;
             if (exam.id === 'dianshi') {
-              if (score === 100) passRecordKey = 'dianshi-100'; // 狀元
-              else if (score >= 90) passRecordKey = 'dianshi-90'; // 榜眼/探花
+              if (score === 100) passRecordKey = 'dianshi-100';
+              else if (score >= 90) passRecordKey = 'dianshi-90';
             }
             if (!STATE.playerStats.kejuPassed.includes(passRecordKey)) {
               STATE.playerStats.kejuPassed.push(passRecordKey);
             }
           }
-          kejuResult = {
-            exam,
-            isPassed,
-            score,
-            isZhuangyuan: exam.id === 'dianshi' && score === 100,
-            isBangyan: exam.id === 'dianshi' && score === 90,
-            isTanhua: exam.id === 'dianshi' && score === 80
-          };
+          kejuResult = { exam, isPassed, score, isZhuangyuan: exam.id === 'dianshi' && score === 100, isBangyan: exam.id === 'dianshi' && score === 90, isTanhua: exam.id === 'dianshi' && score === 80 };
         }
       }
 
       saveData();
-
       const newRank = getCurrentRank();
       const didRankUp = newRank.id !== prevRank.id;
-      if (didRankUp || (kejuResult && kejuResult.isPassed)) {
-        audio.playRankUp();
-      }
+      if (didRankUp || (kejuResult && kejuResult.isPassed)) audio.playRankUp();
 
       return `
         <div class="max-w-xl mx-auto space-y-5 fade-in">
-          <!-- 科舉放榜聖旨橫幅（若參加科舉考試） -->
           ${kejuResult ? `
             <div class="rounded-3xl p-5 md:p-6 border-2 ${kejuResult.isPassed ? 'bg-gradient-to-br from-amber-100 via-amber-50 to-emerald-50 border-amber-500 text-[#291B13] shadow-lg' : 'bg-[#FAF5EB] border-stone-300 text-stone-700'} space-y-3">
               <div class="flex items-center justify-between border-b ${kejuResult.isPassed ? 'border-amber-300' : 'border-stone-200'} pb-2">
-                <div class="flex items-center gap-2">
-                  <span class="text-2xl">${kejuResult.isPassed ? '📜' : '🍂'}</span>
-                  <div>
-                    <span class="text-[10px] uppercase font-bold tracking-wider ${kejuResult.isPassed ? 'text-amber-900' : 'text-stone-500'}">貢院科舉大試 · 揭曉放榜</span>
-                    <h3 class="font-serif text-lg font-black">${kejuResult.exam.title}</h3>
-                  </div>
-                </div>
-                <span class="text-xs px-2.5 py-1 rounded-full font-bold ${kejuResult.isPassed ? 'bg-emerald-700 text-white shadow-xs' : 'bg-stone-200 text-stone-700'}">
-                  ${kejuResult.isPassed ? '金榜題名 · 及第' : '名落孫山 · 尚祈磨礪'}
-                </span>
+                <div class="flex items-center gap-2"><span class="text-2xl">${kejuResult.isPassed ? '📜' : '🍂'}</span><div><span class="text-[10px] uppercase font-bold tracking-wider ${kejuResult.isPassed ? 'text-amber-900' : 'text-stone-500'}">貢院科舉大試 · 揭曉放榜</span><h3 class="font-serif text-lg font-black">${kejuResult.exam.title}</h3></div></div>
+                <span class="text-xs px-2.5 py-1 rounded-full font-bold ${kejuResult.isPassed ? 'bg-emerald-700 text-white shadow-xs' : 'bg-stone-200 text-stone-700'}">${kejuResult.isPassed ? '金榜題名 · 及第' : '名落孫山 · 尚祈磨礪'}</span>
               </div>
-
               ${kejuResult.isPassed ? `
                 <div class="font-serif leading-relaxed text-xs md:text-sm text-[#3E2B1E] bg-white/70 p-3.5 rounded-2xl border border-amber-300/80 shadow-2xs">
-                  ${kejuResult.isZhuangyuan ? `
-                    <div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 欽點狀元及第】</div>
-                    奉天承運，皇帝詔曰：士子才高八斗，十題辨析無一失誤，字字珠璣。特敕封為「一甲第一名狀元及第」，名列文苑絕頂，冠帶榮身！
-                  ` : kejuResult.isBangyan ? `
-                    <div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 榜眼及第】</div>
-                    經殿試親策，學富五車，十得其九。特授「一甲第二名榜眼及第」，晉登進士門閥！
-                  ` : `
-                    <div class="text-emerald-900 font-black text-sm mb-1">【禮闈中式 · 賜封功名】</div>
-                    主考官具題：應試士子答對 ${correctCount} 題，已達 ${kejuResult.exam.passScore} 分之錄取規程。准予錄取，特賜「${kejuResult.exam.awardTitle}」功名，准入下一試！
-                  `}
+                  ${kejuResult.isZhuangyuan ? `<div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 欽點狀元及第】</div>奉天承運，皇帝詔曰：士子才高八斗，十題辨析無一失誤，字字珠璣。特敕封為「一甲第一名狀元及第」，名列文苑絕頂，冠帶榮身！` : kejuResult.isBangyan ? `<div class="text-emerald-900 font-black text-sm mb-1">【天子策試 · 榜眼及第】</div>經殿試親策，學富五車，十得其九。特授「一甲第二名榜眼及第」，晉登進士門閥！` : `<div class="text-emerald-900 font-black text-sm mb-1">【禮闈中式 · 賜封功名】</div>主考官具題：應試士子答對 ${correctCount} 題，已達 ${kejuResult.exam.passScore} 分之錄取規程。准予錄取，特賜「${kejuResult.exam.awardTitle}」功名，准入下一試！`}
                 </div>
               ` : `
-                <div class="text-xs text-[#6F5E4E] leading-relaxed bg-white/50 p-3 rounded-xl border border-stone-200">
-                  本次考獲 ${score} 分，未達本科規程之 ${kejuResult.exam.passScore} 分錄取線。考官賜勉：「十年磨一劍，文字之學貴在含英咀華，切莫氣餒，重整旗鼓再來！」
-                </div>
+                <div class="text-xs text-[#6F5E4E] leading-relaxed bg-white/50 p-3 rounded-xl border border-stone-200">本次考獲 ${score} 分，未達本科規程之 ${kejuResult.exam.passScore} 分錄取線。考官賜勉：「十年磨一劍，切莫氣餒，重整旗鼓再來！」</div>
               `}
-
-              <div class="flex justify-end gap-2 pt-1">
-                <button onclick="openKejuModal()" class="px-4 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
-                  查看科舉功名譜 →
-                </button>
-              </div>
+              <div class="flex justify-end gap-2 pt-1"><button onclick="openRanksModal()" class="px-4 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">查看科舉功名譜 →</button></div>
             </div>
           ` : ''}
 
-          <!-- 晉爵雅號提示橫幅 -->
           ${didRankUp && !kejuResult ? `
             <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-800 text-white shadow-lg border-2 border-amber-300 animate-bounce flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2.5">
-                <span class="text-2xl">🎉</span>
-                <div>
-                  <div class="text-[10px] text-amber-200 font-bold uppercase tracking-wider">翰林雅號晉階受封</div>
-                  <div class="font-serif text-base font-black">恭喜榮晉【${newRank.title} · ${newRank.subtitle}】！</div>
-                </div>
-              </div>
-              <button onclick="openRanksModal()" class="px-3 py-1 bg-white text-amber-900 rounded-lg text-xs font-bold shrink-0">
-                查看雅號
-              </button>
+              <div class="flex items-center gap-2.5"><span class="text-2xl">🎉</span><div><div class="text-[10px] text-amber-200 font-bold uppercase tracking-wider">翰林雅號晉階受封</div><div class="font-serif text-base font-black">恭喜榮晉【${newRank.title} · ${newRank.subtitle}】！</div></div></div>
+              <button onclick="openRanksModal()" class="px-3 py-1 bg-white text-amber-900 rounded-lg text-xs font-bold shrink-0">查看雅號</button>
             </div>
           ` : ''}
 
           <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#FFFDF9] via-[#FAF4E6] to-[#F1E5CC] p-6 md:p-8 border-2 border-[#E0D2B4] shadow-md text-center space-y-4">
-            <div class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold">
-              CLASSICAL CHINESE LAB · 回合研討結算
-            </div>
-
-            <!-- 當前雅號標記 -->
-            <div onclick="openRanksModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-amber-300 cursor-pointer text-xs font-serif text-[#2C1E15] mx-auto">
-              <span>📜 授封雅號：</span>
-              <strong class="text-amber-900">${newRank.title} · ${newRank.subtitle}</strong>
-            </div>
-
-            <h2 class="font-serif text-2xl md:text-3xl font-black text-[#261A12]">
-              ${score === 100 ? "文林泰斗 · 字字珠璣" : score >= 80 ? "博學鴻儒 · 妙筆生花" : score >= 60 ? "勤學雅士 · 漸入佳境" : "璞玉待雕 · 沉潛蓄勢"}
-            </h2>
-
+            <div class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold">CLASSICAL CHINESE LAB · 回合研討結算</div>
+            <div onclick="openRanksModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-amber-300 cursor-pointer text-xs font-serif text-[#2C1E15] mx-auto"><span>📜 授封雅號：</span><strong class="text-amber-900">${newRank.title} · ${newRank.subtitle}</strong></div>
+            <h2 class="font-serif text-2xl md:text-3xl font-black text-[#261A12]">${score === 100 ? "文林泰斗 · 字字珠璣" : score >= 80 ? "博學鴻儒 · 妙筆生花" : score >= 60 ? "勤學雅士 · 漸入佳境" : "璞玉待雕 · 沉潛蓄勢"}</h2>
             <div class="inline-flex items-baseline justify-center gap-1.5 px-6 py-3 rounded-2xl bg-white/90 border border-amber-300/80 shadow-xs">
-              <span class="font-serif text-5xl font-black text-amber-900">${score}</span>
-              <span class="text-base font-bold text-stone-500">/ 100 分</span>
+              <span class="font-serif text-5xl font-black text-amber-900">${score}</span><span class="text-base font-bold text-stone-500">/ 100 分</span>
             </div>
-
-            <p class="text-xs text-[#614F40]">
-              本次研討共完成 10 題情境辨析，總共吸收了 <strong>${vocabCount}</strong> 個不同成語與古典名句的深度字義剖析！
-            </p>
-
+            <p class="text-xs text-[#614F40]">本次研討共完成 10 題情境辨析，總共吸收了 <strong>${vocabCount}</strong> 個不同成語與古典名句的深度字義剖析！</p>
             <div class="grid grid-cols-3 gap-2 pt-3 border-t border-[#E5D7BE]">
-              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
-                <div class="text-[10px] text-[#786655]">答對題數</div>
-                <div class="font-serif text-lg font-black text-emerald-800">${correctCount} / 10</div>
-              </div>
-              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
-                <div class="text-[10px] text-[#786655]">正確率</div>
-                <div class="font-serif text-lg font-black text-amber-900">${score}%</div>
-              </div>
-              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]">
-                <div class="text-[10px] text-[#786655]">本次錯題</div>
-                <div class="font-serif text-lg font-black text-rose-800">${incorrectList.length}</div>
-              </div>
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]"><div class="text-[10px] text-[#786655]">答對題數</div><div class="font-serif text-lg font-black text-emerald-800">${correctCount} / 10</div></div>
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]"><div class="text-[10px] text-[#786655]">正確率</div><div class="font-serif text-lg font-black text-amber-900">${score}%</div></div>
+              <div class="p-2.5 bg-white/70 rounded-xl border border-[#DFD0B4]"><div class="text-[10px] text-[#786655]">本次錯題</div><div class="font-serif text-lg font-black text-rose-800">${incorrectList.length}</div></div>
             </div>
           </div>
 
           ${incorrectList.length > 0 ? `
             <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E7DDC8] space-y-3">
-              <div class="text-xs font-bold text-[#2E1F16] flex items-center justify-between">
-                <span>本回失誤題目分析</span>
-                <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">已自動收錄至錯題所</span>
-              </div>
+              <div class="text-xs font-bold text-[#2E1F16] flex items-center justify-between"><span>本回失誤題目分析</span><span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">已自動收錄至錯題所</span></div>
               <div class="space-y-2">
                 ${incorrectList.map((q, idx) => `
                   <div class="p-3 rounded-xl bg-[#FAF5EA] border border-[#EADBBD] flex items-center justify-between text-xs gap-2">
-                    <div class="truncate">
-                      <strong>${idx + 1}. ${q.title}</strong>
-                      <div class="text-[10px] text-[#6D5A4A] truncate">正解：${q.options.find(o => o.isCorrect)?.text}</div>
-                    </div>
-                    <button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="px-2.5 py-1 bg-amber-700 text-white rounded font-bold text-[10px] shrink-0">
-                      看解析
-                    </button>
+                    <div class="truncate"><strong>${idx + 1}. ${q.title}</strong><div class="text-[10px] text-[#6D5A4A] truncate">正解：${q.options.find(o => o.isCorrect)?.text}</div></div>
+                    <button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="px-2.5 py-1 bg-amber-700 text-white rounded font-bold text-[10px] shrink-0">看解析</button>
                   </div>
                 `).join('')}
               </div>
@@ -2427,18 +1706,17 @@
           ` : ''}
 
           <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-            <button onclick="startRound()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-700 text-white font-bold text-xs touch-btn">
-              再來一回 (10 題) 🔄
-            </button>
-            <button onclick="openKejuModal()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs touch-btn">
-              進京赴考 · 科舉試院 🏛️
-            </button>
-            <button onclick="startRound('review', 'all')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#EDE4CD] text-[#4A3B2C] font-bold text-xs border border-[#D8C7A9]">
-              錯題專項突破
-            </button>
-            <button onclick="navigateTo('home')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-stone-600 text-xs font-semibold">
-              返回首頁
-            </button>
+            ${kejuResult && !kejuResult.isPassed ? `
+              <button onclick="startKejuExam('${STATE.currentExamStage}')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-700 text-white font-bold text-xs touch-btn shadow-md">重新應試本闈 🔄</button>
+            ` : ''}
+            
+            ${kejuResult && kejuResult.isPassed && getNextExamStage(STATE.currentExamStage) ? `
+              <button onclick="startKejuExam('${getNextExamStage(STATE.currentExamStage).id}')" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs touch-btn shadow-md animate-pulse">前往下一闈 →</button>
+            ` : ''}
+
+            <button onclick="navigateTo('home')" class="w-full sm:w-auto px-6 py-3 rounded-xl ${kejuResult ? 'bg-[#EDE4CD] text-[#4A3B2C] border border-[#D8C7A9]' : 'bg-amber-700 text-white'} font-bold text-xs touch-btn">返回貢院大廳</button>
+            
+            <button onclick="STATE.currentExamStage=null; startRound('review', 'all')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-white text-stone-700 font-bold text-xs border border-stone-300">錯題特訓</button>
           </div>
         </div>
       `;
@@ -2448,19 +1726,12 @@
       return `
         <div class="space-y-4 fade-in">
           <div class="flex items-center justify-between">
-            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">
-              ← 返回首頁
-            </button>
+            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">← 返回首頁</button>
             <span class="text-xs text-stone-500">珍藏 ${STATE.bookmarks.length} 則名句</span>
           </div>
           <h2 class="font-serif text-xl font-black text-[#2B1D15]">成語與古典名篇珍藏簿</h2>
-
           ${STATE.bookmarks.length === 0 ? `
-            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2">
-              <div class="text-3xl">📚</div>
-              <div class="font-serif text-sm font-bold text-[#443325]">尚無珍藏詞句</div>
-              <p class="text-[11px] text-[#776655]">作答或檢視解析時點擊「珍藏」，即可將名句記錄於此。</p>
-            </div>
+            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2"><div class="text-3xl">📚</div><div class="font-serif text-sm font-bold text-[#443325]">尚無珍藏詞句</div><p class="text-[11px] text-[#776655]">作答或檢視解析時點擊「珍藏」，即可將名句記錄於此。</p></div>
           ` : `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               ${STATE.bookmarks.map(bmId => {
@@ -2470,23 +1741,12 @@
                 return `
                   <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E6DCBE] shadow-xs flex flex-col justify-between space-y-2">
                     <div>
-                      <div class="flex items-start justify-between gap-1">
-                        <span class="font-serif text-base font-black text-amber-950">${correctOpt ? correctOpt.text : q.title}</span>
-                        <button onclick="toggleBookmarkCurrent('${q.id}')" class="text-rose-600 p-1 text-xs">✕</button>
-                      </div>
+                      <div class="flex items-start justify-between gap-1"><span class="font-serif text-base font-black text-amber-950">${correctOpt ? correctOpt.text : q.title}</span><button onclick="toggleBookmarkCurrent('${q.id}')" class="text-rose-600 p-1 text-xs">✕</button></div>
                       <div class="text-xs text-[#5D4A3C] mt-1">${correctOpt?.meaning}</div>
-                      ${q.classical_text ? `
-                        <div class="mt-2 p-2 rounded-lg bg-[#F5EDE0] text-[10px] text-[#4F3E30] font-serif">
-                          <div><strong>出處：</strong>${q.classical_text.work} · ${q.classical_text.chapter}</div>
-                          <div class="italic truncate mt-0.5">「${q.classical_text.original}」</div>
-                        </div>
-                      ` : ''}
+                      ${q.classical_text ? `<div class="mt-2 p-2 rounded-lg bg-[#F5EDE0] text-[10px] text-[#4F3E30] font-serif"><div><strong>出處：</strong>${q.classical_text.work} · ${q.classical_text.chapter}</div><div class="italic truncate mt-0.5">「${q.classical_text.original}」</div></div>` : ''}
                     </div>
                     <div class="pt-2 border-t border-[#F2E8D5] flex items-center justify-between text-[10px]">
-                      <span class="text-stone-400">模式：${q.mode}</span>
-                      <button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="font-bold text-amber-800">
-                        查看四解 →
-                      </button>
+                      <span class="text-stone-400">模式：${q.mode}</span><button onclick="reviewSingleQuestion('${q.id}', 'explanation')" class="font-bold text-amber-800">查看四解 →</button>
                     </div>
                   </div>
                 `;
@@ -2501,23 +1761,12 @@
       return `
         <div class="space-y-4 fade-in">
           <div class="flex items-center justify-between">
-            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">
-              ← 返回首頁
-            </button>
-            ${STATE.mistakes.length > 0 ? `
-              <button onclick="startRound('review', 'all')" class="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-bold text-xs">
-                錯題立即特訓
-              </button>
-            ` : ''}
+            <button onclick="navigateTo('home')" class="text-xs text-[#73604F] hover:text-amber-900 font-semibold">← 返回首頁</button>
+            ${STATE.mistakes.length > 0 ? `<button onclick="startRound('review', 'all')" class="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-bold text-xs">錯題立即特訓</button>` : ''}
           </div>
           <h2 class="font-serif text-xl font-black text-[#2B1D15]">錯題複習所</h2>
-
           ${STATE.mistakes.length === 0 ? `
-            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2">
-              <div class="text-3xl">✨</div>
-              <div class="font-serif text-sm font-bold text-[#3B2C1F]">目前無積累錯題！</div>
-              <p class="text-[11px] text-[#736252]">作答失誤時系統會自動收錄於此供隨時重練。</p>
-            </div>
+            <div class="bg-[#FFFDF9] rounded-3xl p-10 text-center border-2 border-dashed border-[#DFD3BA] space-y-2"><div class="text-3xl">✨</div><div class="font-serif text-sm font-bold text-[#3B2C1F]">目前無積累錯題！</div><p class="text-[11px] text-[#736252]">作答失誤時系統會自動收錄於此供隨時重練。</p></div>
           ` : `
             <div class="space-y-2.5">
               ${STATE.mistakes.map(mId => {
@@ -2526,17 +1775,10 @@
                 const correctOpt = q.options.find(o => o.isCorrect);
                 return `
                   <div class="bg-[#FFFDF9] rounded-xl p-4 border border-rose-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="space-y-1 max-w-md">
-                      <div class="font-serif font-bold text-[#2A1D15] text-sm">${q.title}</div>
-                      <div class="text-xs text-emerald-800 font-bold">正解：${correctOpt?.text} —— ${correctOpt?.meaning}</div>
-                    </div>
+                    <div class="space-y-1 max-w-md"><div class="font-serif font-bold text-[#2A1D15] text-sm">${q.title}</div><div class="text-xs text-emerald-800 font-bold">正解：${correctOpt?.text} —— ${correctOpt?.meaning}</div></div>
                     <div class="flex items-center gap-2 shrink-0">
-                      <button onclick="STATE.mistakes=STATE.mistakes.filter(id=>id!=='${q.id}'); STATE.playerStats.hasClearedMistake=true; saveData(); renderCurrentView(); showToast('已自錯題清單移除！');" class="px-2.5 py-1 text-xs border border-stone-200 rounded text-stone-500">
-                        掌握移除
-                      </button>
-                      <button onclick="reviewSingleQuestion('${q.id}', 'quiz')" class="px-3 py-1 bg-amber-700 text-white text-xs font-bold rounded">
-                        單題重測
-                      </button>
+                      <button onclick="STATE.mistakes=STATE.mistakes.filter(id=>id!=='${q.id}'); STATE.playerStats.hasClearedMistake=true; saveData(); renderCurrentView(); showToast('已自錯題清單移除！');" class="px-2.5 py-1 text-xs border border-stone-200 rounded text-stone-500">掌握移除</button>
+                      <button onclick="STATE.currentExamStage=null; reviewSingleQuestion('${q.id}', 'quiz')" class="px-3 py-1 bg-amber-700 text-white text-xs font-bold rounded">單題重測</button>
                     </div>
                   </div>
                 `;
@@ -2551,44 +1793,23 @@
       return `
         <div class="space-y-5 fade-in">
           <div class="flex items-center justify-between border-b border-[#E3D7BF] pb-3">
-            <div>
-              <span class="text-[10px] font-bold text-emerald-800 tracking-wider">AUDIT DESK · 審核組工作台</span>
-              <h2 class="font-serif text-xl font-black text-[#261A12]">題庫防誤導審查中心</h2>
-            </div>
-            <button onclick="STATE.isAdminLoggedIn=false; navigateTo('home'); showToast('已登出管理審核端');" class="text-xs text-stone-500 underline">
-              登出
-            </button>
+            <div><span class="text-[10px] font-bold text-emerald-800 tracking-wider">AUDIT DESK · 審核組工作台</span><h2 class="font-serif text-xl font-black text-[#261A12]">題庫防誤導審查中心</h2></div>
+            <button onclick="STATE.isAdminLoggedIn=false; navigateTo('home'); showToast('已登出管理審核端');" class="text-xs text-stone-500 underline">登出</button>
           </div>
-
-          <!-- 申訴隊列 -->
           <div class="bg-[#FFFDF9] rounded-2xl p-4 border-2 border-amber-300 shadow-xs space-y-3">
-            <h3 class="font-serif text-sm font-bold text-[#2D1F16] flex items-center gap-1.5">
-              <span>⚖️</span>
-              <span>使用者學術申訴紀錄 (${STATE.disputes.filter(d => d.status === 'pending').length} 待辦)</span>
-            </h3>
-
+            <h3 class="font-serif text-sm font-bold text-[#2D1F16] flex items-center gap-1.5"><span>⚖️</span><span>使用者學術申訴紀錄 (${STATE.disputes.filter(d => d.status === 'pending').length} 待辦)</span></h3>
             ${STATE.disputes.length === 0 ? `
-              <div class="p-3 bg-amber-50/50 rounded-xl text-center text-xs text-[#7F6F5E]">
-                目前尚無使用者申訴紀錄，題庫運作良好。
-              </div>
+              <div class="p-3 bg-amber-50/50 rounded-xl text-center text-xs text-[#7F6F5E]">目前尚無使用者申訴紀錄，題庫運作良好。</div>
             ` : `
               <div class="space-y-2">
                 ${STATE.disputes.map(disp => `
                   <div class="p-3 rounded-xl bg-[#FAF5EB] border border-[#E5DAC0] text-xs space-y-1.5">
-                    <div class="flex justify-between font-bold">
-                      <span>題目：${disp.questionTitle}</span>
-                      <span class="${disp.status === 'pending' ? 'text-amber-800' : 'text-emerald-800'}">${disp.status === 'pending' ? '待查' : '已處置'}</span>
-                    </div>
-                    <div>主張成立選項：<strong>${disp.suggestedOption}</strong></div>
-                    <div class="text-[#554335]">理由：${disp.userReason}</div>
+                    <div class="flex justify-between font-bold"><span>題目：${disp.questionTitle}</span><span class="${disp.status === 'pending' ? 'text-amber-800' : 'text-emerald-800'}">${disp.status === 'pending' ? '待查' : '已處置'}</span></div>
+                    <div>主張成立選項：<strong>${disp.suggestedOption}</strong></div><div class="text-[#554335]">理由：${disp.userReason}</div>
                     ${disp.status === 'pending' ? `
                       <div class="flex justify-end gap-2 pt-1 border-t border-[#DFD3BB]">
-                        <button onclick="disableQuestion('${disp.questionId}', '${disp.disputeId}')" class="px-2.5 py-1 bg-rose-700 text-white rounded text-[10px] font-bold">
-                          認定爭議 · 下架停用該題
-                        </button>
-                        <button onclick="resolveDispute('${disp.disputeId}')" class="px-2.5 py-1 bg-stone-200 text-stone-700 rounded text-[10px] font-bold">
-                          維持原判結案
-                        </button>
+                        <button onclick="disableQuestion('${disp.questionId}', '${disp.disputeId}')" class="px-2.5 py-1 bg-rose-700 text-white rounded text-[10px] font-bold">認定爭議 · 下架停用該題</button>
+                        <button onclick="resolveDispute('${disp.disputeId}')" class="px-2.5 py-1 bg-stone-200 text-stone-700 rounded text-[10px] font-bold">維持原判結案</button>
                       </div>
                     ` : ''}
                   </div>
@@ -2596,54 +1817,18 @@
               </div>
             `}
           </div>
-
-          <!-- 題庫清單管理 -->
           <div class="bg-[#FFFDF9] rounded-2xl p-4 border border-[#E7DDC8] space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 class="font-serif text-sm font-bold text-[#2D1F16]">
-                題庫全清單（共 ${STATE.questionBank.length} 題）
-              </h3>
-              <span class="text-[10px] text-stone-500">經審核方可發布上線</span>
-            </div>
-
+            <div class="flex items-center justify-between"><h3 class="font-serif text-sm font-bold text-[#2D1F16]">題庫全清單（共 ${STATE.questionBank.length} 題）</h3><span class="text-[10px] text-stone-500">經審核方可發布上線</span></div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr class="border-b border-[#E5DAC0] bg-[#FAF5EB] text-[#635142]">
-                    <th class="p-2">ID</th>
-                    <th class="p-2">題型</th>
-                    <th class="p-2">難度</th>
-                    <th class="p-2">標題</th>
-                    <th class="p-2">審查狀態</th>
-                    <th class="p-2 text-right">操作</th>
-                  </tr>
-                </thead>
+                <thead><tr class="border-b border-[#E5DAC0] bg-[#FAF5EB] text-[#635142]"><th class="p-2">ID</th><th class="p-2">題型</th><th class="p-2">難度</th><th class="p-2">標題</th><th class="p-2">審查狀態</th><th class="p-2 text-right">操作</th></tr></thead>
                 <tbody class="divide-y divide-[#F1E8D5]">
                   ${STATE.questionBank.map(q => `
                     <tr>
-                      <td class="p-2 font-mono text-[10px] text-stone-500">${q.id}</td>
-                      <td class="p-2">${q.mode}</td>
-                      <td class="p-2">${q.difficulty}</td>
-                      <td class="p-2 font-bold truncate max-w-[120px]">${q.title}</td>
-                      <td class="p-2">
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${q.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : q.status === 'pending' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-800'}">
-                          ${q.status === 'approved' ? '已核准' : q.status === 'pending' ? '待審核' : '已停用'}
-                        </span>
-                      </td>
+                      <td class="p-2 font-mono text-[10px] text-stone-500">${q.id}</td><td class="p-2">${q.mode}</td><td class="p-2">${q.difficulty}</td><td class="p-2 font-bold truncate max-w-[120px]">${q.title}</td>
+                      <td class="p-2"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${q.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : q.status === 'pending' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-800'}">${q.status === 'approved' ? '已核准' : q.status === 'pending' ? '待審核' : '已停用'}</span></td>
                       <td class="p-2 text-right">
-                        ${q.status === 'pending' ? `
-                          <button onclick="approveQuestion('${q.id}')" class="px-2 py-0.5 bg-emerald-700 text-white rounded text-[10px] font-bold">
-                            核准上架
-                          </button>
-                        ` : q.status === 'approved' ? `
-                          <button onclick="toggleDisableQuestion('${q.id}', true)" class="px-2 py-0.5 bg-stone-200 text-stone-700 rounded text-[10px]">
-                            下架
-                          </button>
-                        ` : `
-                          <button onclick="toggleDisableQuestion('${q.id}', false)" class="px-2 py-0.5 bg-blue-700 text-white rounded text-[10px]">
-                            重新上架
-                          </button>
-                        `}
+                        ${q.status === 'pending' ? `<button onclick="approveQuestion('${q.id}')" class="px-2 py-0.5 bg-emerald-700 text-white rounded text-[10px] font-bold">核准上架</button>` : q.status === 'approved' ? `<button onclick="toggleDisableQuestion('${q.id}', true)" class="px-2 py-0.5 bg-stone-200 text-stone-700 rounded text-[10px]">下架</button>` : `<button onclick="toggleDisableQuestion('${q.id}', false)" class="px-2 py-0.5 bg-blue-700 text-white rounded text-[10px]">重新上架</button>`}
                       </td>
                     </tr>
                   `).join('')}
@@ -2651,17 +1836,11 @@
               </table>
             </div>
           </div>
-
-          <!-- 匯出與重置 -->
           <div class="flex items-center justify-between p-3 rounded-xl bg-[#EDE4CD] text-xs">
             <span class="text-[#5B493A]">題庫管理作業</span>
             <div class="flex gap-2">
-              <button onclick="exportBankJSON()" class="px-3 py-1 bg-white border border-stone-300 rounded font-bold">
-                匯出題庫 JSON
-              </button>
-              <button onclick="resetBank()" class="px-3 py-1 bg-rose-700 text-white rounded font-bold">
-                重設為官方預設
-              </button>
+              <button onclick="exportBankJSON()" class="px-3 py-1 bg-white border border-stone-300 rounded font-bold">匯出題庫 JSON</button>
+              <button onclick="resetBank()" class="px-3 py-1 bg-rose-700 text-white rounded font-bold">重設為官方預設</button>
             </div>
           </div>
         </div>
@@ -2679,9 +1858,7 @@
       if (!q) return;
 
       const select = document.getElementById('dispute-option-select');
-      select.innerHTML = q.options.map(opt => `
-        <option value="${opt.displayLabel}">選項 ${opt.displayLabel}：${opt.text}</option>
-      `).join('');
+      select.innerHTML = q.options.map(opt => `<option value="${opt.displayLabel}">選項 ${opt.displayLabel}：${opt.text}</option>`).join('');
 
       document.getElementById('dispute-reason-input').value = '';
       const modal = document.getElementById('modal-dispute');
@@ -2698,20 +1875,11 @@
     function submitDispute() {
       const reason = document.getElementById('dispute-reason-input').value.trim();
       const option = document.getElementById('dispute-option-select').value;
-      if (!reason) {
-        showToast('請填寫具體申訴疑義或理由');
-        return;
-      }
+      if (!reason) { showToast('請填寫具體申訴疑義或理由'); return; }
 
       const q = STATE.questionBank.find(item => item.id === currentDisputeTargetQId);
       STATE.disputes.unshift({
-        disputeId: `disp-${Date.now()}`,
-        questionId: currentDisputeTargetQId,
-        questionTitle: q ? q.title : '未知題目',
-        suggestedOption: option,
-        userReason: reason,
-        timestamp: new Date().toLocaleTimeString('zh-TW'),
-        status: 'pending'
+        disputeId: `disp-${Date.now()}`, questionId: currentDisputeTargetQId, questionTitle: q ? q.title : '未知題目', suggestedOption: option, userReason: reason, timestamp: new Date().toLocaleTimeString('zh-TW'), status: 'pending'
       });
       saveData();
       closeDisputeModal();
@@ -2720,9 +1888,8 @@
 
     function openAdmin() {
       audio.playClick();
-      if (STATE.isAdminLoggedIn) {
-        navigateTo('admin');
-      } else {
+      if (STATE.isAdminLoggedIn) navigateTo('admin');
+      else {
         const modal = document.getElementById('modal-admin-login');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -2794,14 +1961,14 @@
       STATE.bookmarks = ["q-idiom-01"];
       STATE.mistakes = [];
       STATE.disputes = [];
-      STATE.playerStats = { roundsCompleted: 0, totalCorrect: 0, highScore: 0, hasClearedMistake: false };
+      STATE.playerStats = { roundsCompleted: 0, totalCorrect: 0, highScore: 0, hasClearedMistake: false, kejuPassed: [] };
       saveData();
       renderCurrentView();
       showToast('已重設為官方初始狀態！');
     }
 
     // ----------------------------------------------------
-    // 8. 核心路由與視圖動態渲染 (修復白畫面關鍵)
+    // 8. 核心路由與視圖動態渲染
     // ----------------------------------------------------
     function navigateTo(view) {
       STATE.view = view;
@@ -2816,7 +1983,6 @@
       let htmlContent = '';
       switch (STATE.view) {
         case 'home': htmlContent = getHomeHTML(); break;
-        case 'select': htmlContent = getSelectHTML(); break;
         case 'quiz': htmlContent = getQuizHTML(); break;
         case 'explanation': htmlContent = getExplanationHTML(); break;
         case 'summary': htmlContent = getSummaryHTML(); break;
@@ -2827,7 +1993,7 @@
       }
       
       container.innerHTML = htmlContent;
-      updateRankBadge(); // 確保每次切換畫面時，頂部的雅號都會同步更新
+      updateRankBadge();
     }
 
     // ----------------------------------------------------
@@ -2841,7 +2007,7 @@
       } else if (e.key === 'Enter' || e.key === ' ') {
         if (STATE.view === 'quiz') {
           const q = STATE.roundQuestions[STATE.currentIndex];
-          if (q && STATE.lockedAnswers[q.id]) navigateTo('explanation');
+          if (q && STATE.lockedAnswers[q.roundKey]) navigateTo('explanation');
         } else if (STATE.view === 'explanation') {
           if (STATE.currentIndex < STATE.roundQuestions.length - 1) {
             STATE.currentIndex++;
@@ -2853,7 +2019,6 @@
       }
     });
 
-    // 啟動入口
     window.onload = function() {
       loadSavedData();
       renderCurrentView();
